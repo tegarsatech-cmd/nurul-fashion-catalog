@@ -8,7 +8,7 @@
 - [x] Perbaiki `package.json` → single root build (`npm run build` → `vite build`)
 - [x] Perbaiki `.vercelignore` → gunakan prefix `/` untuk root-only exclusions
 - [x] Perbaiki `vercel.json` → framework auto-detect, cleanUrls
-- [x] Deploy production: https://maulidah.vercel.app ✅
+- [x] Deploy production: https://katalogmaul.vercel.app ✅ (alias lama: https://maulidah.vercel.app)
 - [ ] **Pengujian:** Desktop (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
 - [ ] **Pengujian:** Android (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
 - [ ] **Pengujian:** iPhone (Safari) - Dashboard Admin, Sidebar, Menu, CRUD
