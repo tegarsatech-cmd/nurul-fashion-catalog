@@ -97,6 +97,10 @@ document.querySelectorAll('.sidebar-link[data-page]').forEach(link => {
         showPage(page);
         document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
         link.classList.add('active');
+        // Tutup drawer sidebar di mobile setelah memilih menu
+        if (isMobileView() && sidebar) {
+            setSidebarOpen(false);
+        }
     });
 });
 
@@ -190,8 +194,25 @@ function isMobileView() {
     return window.matchMedia('(max-width: 768px)').matches;
 }
 
+// Akses localStorage yang aman (tidak crash di mode private/incognito)
+function safeStorageGet(key) {
+    try {
+        return window.localStorage.getItem(key);
+    } catch (error) {
+        return null;
+    }
+}
+
+function safeStorageSet(key, value) {
+    try {
+        window.localStorage.setItem(key, value);
+    } catch (error) {
+        // Abaikan — mode private/incognito atau quota penuh
+    }
+}
+
 function getInitialSidebarState() {
-    const stored = localStorage.getItem('adminSidebarOpen');
+    const stored = safeStorageGet('adminSidebarOpen');
     if (stored === null) {
         return !isMobileView();
     }
@@ -200,12 +221,17 @@ function getInitialSidebarState() {
 
 function isSidebarOpen() {
     if (!sidebar) return true;
-    return sidebar.classList.contains('active') || !sidebar.classList.contains('collapsed');
+    if (isMobileView()) {
+        // Di mobile, sidebar adalah off-canvas drawer.
+        // Terbuka HANYA jika punya class 'active'.
+        return sidebar.classList.contains('active');
+    }
+    return !sidebar.classList.contains('collapsed');
 }
 
 function setSidebarOpen(open) {
     if (!sidebar || !mainContent) return;
-    localStorage.setItem('adminSidebarOpen', open ? 'true' : 'false');
+    safeStorageSet('adminSidebarOpen', open ? 'true' : 'false');
 
     if (open) {
         sidebar.classList.remove('collapsed');
@@ -241,7 +267,7 @@ if (adminToggle) {
 }
 
 window.addEventListener('resize', () => {
-    const stored = localStorage.getItem('adminSidebarOpen');
+    const stored = safeStorageGet('adminSidebarOpen');
     const open = stored === null ? isSidebarOpen() : stored === 'true';
     setSidebarOpen(open);
 });

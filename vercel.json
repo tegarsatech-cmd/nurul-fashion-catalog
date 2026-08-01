@@ -1,22 +1,4 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "UrbanStyle-Catalog/dist"
-      }
-    }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/admin.html", "dest": "/admin.html" },
-    { "src": "/login.html", "dest": "/login.html" },
-    { "src": "/seed.html", "dest": "/seed.html" },
-    { "src": "/.*", "dest": "/index.html" }
-  ],
-  "cleanUrls": false,
+  "cleanUrls": true,
   "trailingSlash": false
 }
-

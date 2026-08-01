@@ -1,4 +1,19 @@
-# ✅ SEMUA SELESAI - Fix RLS Policy Error & Pemisahan Login
+# ✅ YANG TELAH SELESAI
+
+## ✅ Vercel Deployment (SELESAI)
+- [x] Perbaiki `admin.js` → sidebar auto-close di mobile setelah pilih menu
+- [x] Perbaiki `admin.js` → gunakan `safeStorageGet` di resize handler (anti crash di private/incognito)
+- [x] Hapus `UrbanStyle-Catalog/vercel.json` (konflik konfigurasi)
+- [x] Perbaiki `vite.config.js` → root pointing ke `UrbanStyle-Catalog/`, output ke `dist/`
+- [x] Perbaiki `package.json` → single root build (`npm run build` → `vite build`)
+- [x] Perbaiki `.vercelignore` → gunakan prefix `/` untuk root-only exclusions
+- [x] Perbaiki `vercel.json` → framework auto-detect, cleanUrls
+- [x] Deploy production: https://maulidah.vercel.app ✅
+- [ ] **Pengujian:** Desktop (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
+- [ ] **Pengujian:** Android (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
+- [ ] **Pengujian:** iPhone (Safari) - Dashboard Admin, Sidebar, Menu, CRUD
+
+## ✅ RLS Policy Error & Pemisahan Login
 
 ## ✅ Step 1: Buat SQL Migration Fix RLS Policies
 - [x] Buat file `fix_rls_policies.sql`

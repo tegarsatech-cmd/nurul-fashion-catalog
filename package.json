@@ -1,12 +1,19 @@
 {
-  "name": "nurul-fashion-deploy",
+  "name": "nurul-fashion",
   "version": "1.0.0",
   "private": true,
-  "description": "Root package untuk Vercel build (build Vite di UrbanStyle-Catalog)",
+  "type": "module",
+  "description": "Nurul Fashion - Katalog fashion modern dengan dashboard admin berbasis Supabase",
   "scripts": {
-    "dev": "npm --prefix UrbanStyle-Catalog run dev",
-    "build": "npm --prefix UrbanStyle-Catalog install && npm --prefix UrbanStyle-Catalog run build",
-    "preview": "npm --prefix UrbanStyle-Catalog run preview"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
   }
 }
 

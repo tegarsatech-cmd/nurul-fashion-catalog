@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Vercel cache
+.vercel/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editor & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Uploads lokal
+uploads/
+
+# ===== ROOT-LEVEL ONLY EXCLUSIONS =====
+# Prefix / means only match at root level
+# Folder duplikat / legacy (hanya di root)
+/nurul_fashion_store/
+/image/
+
+# Legacy Firebase remnants (hanya di root)
+/firestore.js
+/write_admin.js
+/assets/
+/lib/
+/storage.js
+/auth.js
+
+# SQL migration files (hanya di root)
+/*.sql
+
+# Server Node.js lokal (hanya di root)
+/server.js
+
+# Backup
+*.bak
+*.tmp
+package-lock.json.tmp
+
+# Test files
+*.test
+*.test.js

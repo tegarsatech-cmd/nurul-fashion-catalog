@@ -617,6 +617,32 @@ body {
 
 .galeri-admin-item:hover .galeri-actions { opacity: 1; }
 
+@media (hover: none), (pointer: coarse) {
+    .galeri-admin-item .galeri-actions {
+        opacity: 1;
+        background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+        align-items: flex-end;
+        padding: 12px;
+        justify-content: flex-start;
+    }
+    .galeri-admin-item .galeri-actions .btn-sm {
+        padding: 8px 14px;
+        font-size: 13px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        background: rgba(255,255,255,0.9);
+        color: #111;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .galeri-admin-item .galeri-actions .btn-edit:hover,
+    .galeri-admin-item .galeri-actions .btn-delete:hover {
+        background: #fff;
+        color: #111;
+    }
+}
+
 /* ===== TOAST NOTIFICATION ===== */
 .toast-container {
     position: fixed;
