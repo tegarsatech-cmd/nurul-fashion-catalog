@@ -57,3 +57,5 @@ uploads/
 # File backup
 *.bak
 
+.vercel
+.env*
