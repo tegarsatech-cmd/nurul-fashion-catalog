@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Nurul Fashion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">NF</div>
+            <h3>Nurul Fashion</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="sidebar-link active" data-page="dashboard"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+            <a href="#produk" class="sidebar-link" data-page="produk"><i class="fas fa-box"></i> <span>Produk</span></a>
+            <a href="#kategori" class="sidebar-link" data-page="kategori"><i class="fas fa-tags"></i> <span>Kategori</span></a>
+            <a href="#galeri" class="sidebar-link" data-page="galeri"><i class="fas fa-images"></i> <span>Galeri</span></a>
+            <a href="#pengaturan" class="sidebar-link" data-page="pengaturan"><i class="fas fa-cog"></i> <span>Pengaturan</span></a>
+            <a href="#" class="sidebar-link logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </nav>
+    </aside>
+    <main class="main-content" id="mainContent">
+        <div class="admin-toggle" id="adminToggle"><i class="fas fa-bars"></i></div>
+        <div class="toast-container" id="toastContainer"></div>
+
+        <!-- ===== DASHBOARD PAGE ===== -->
+        <div class="page" id="page-dashboard">
+            <div class="page-header"><h1>Dashboard</h1></div>
+            <div class="welcome-banner"><h2>Selamat datang, <span id="adminName">Admin</span></h2><p>Kelola website Nurul Fashion dengan mudah</p></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-box"></i></div><div class="stat-info"><h3 id="totalProduk">0</h3><p>Total Produk</p></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-tags"></i></div><div class="stat-info"><h3 id="totalKategori">0</h3><p>Total Kategori</p></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3 id="produkTersedia">0</h3><p>Produk Tersedia</p></div></div>
+                <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><h3 id="produkHabis">0</h3><p>Produk Habis</p></div></div>
+            </div>
+        </div>
+
+        <!-- ===== PRODUK PAGE ===== -->
+        <div class="page" id="page-produk">
+            <div class="page-header"><h1>Manajemen Produk</h1><button class="btn btn-primary" id="btnAddProduk"><i class="fas fa-plus"></i> Tambah Produk</button></div>
+            <div class="table-container"><table class="table"><thead><tr><th>Gambar</th><th>Nama</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody id="produkTableBody"></tbody></table></div>
+        </div>
+
+        <!-- ===== KATEGORI PAGE ===== -->
+        <div class="page" id="page-kategori">
+            <div class="page-header"><h1>Manajemen Kategori</h1><button class="btn btn-primary" id="btnAddKategori"><i class="fas fa-plus"></i> Tambah Kategori</button></div>
+            <div class="table-container"><table class="table"><thead><tr><th>Icon</th><th>Nama Kategori</th><th>Aksi</th></tr></thead><tbody id="kategoriTableBody"></tbody></table></div>
+        </div>
+
+        <!-- ===== GALERI PAGE ===== -->
+        <div class="page" id="page-galeri">
+            <div class="page-header"><h1>Manajemen Galeri</h1><button class="btn btn-primary" id="btnAddGaleri"><i class="fas fa-plus"></i> Tambah Foto</button></div>
+            <div class="galeri-admin-grid" id="galeriAdminGrid"></div>
+        </div>
+
+
+        <!-- ===== PENGATURAN PAGE ===== -->
+        <div class="page" id="page-pengaturan">
+            <div class="page-header"><h1>Pengaturan</h1><button class="btn btn-primary" id="btnSaveKontak"><i class="fas fa-save"></i> Simpan</button></div>
+            <form id="kontakForm" class="form-admin">
+                <div class="form-row">
+                    <div class="form-group"><label>Nama Toko</label><input type="text" id="adminStoreName" placeholder="Nurul Fashion"></div>
+                    <div class="form-group"><label>Nomor WhatsApp</label><input type="text" id="adminWaNumber" placeholder="6283121514320"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Email</label><input type="email" id="adminEmail" placeholder="email@nurulfashion.com"></div>
+                    <div class="form-group"><label>Jam Operasional</label><input type="text" id="adminJam" placeholder="Senin - Sabtu, 09:00 - 21:00"></div>
+                </div>
+                <div class="form-group"><label>Alamat</label><textarea id="adminAlamat" rows="2" placeholder="Alamat lengkap toko"></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Instagram</label><input type="text" id="adminInstagram" placeholder="https://instagram.com/nurulfashion"></div>
+                    <div class="form-group"><label>Facebook</label><input type="text" id="adminFacebook" placeholder="https://facebook.com/nurulfashion"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>TikTok</label><input type="text" id="adminTiktok" placeholder="https://tiktok.com/@nurulfashion"></div>
+                    <div class="form-group"><label>Google Maps Embed URL</label><input type="text" id="adminMapsUrl" placeholder="URL embed Google Maps"></div>
+                </div>
+            </form>
+        </div>
+
+    </main>
+</div>
+
+<!-- ===== MODAL PRODUK ===== -->
+<div class="modal" id="produkModal">
+    <div class="modal-content">
+        <div class="modal-header"><h2 id="produkModalTitle">Tambah Produk</h2><span class="modal-close" id="closeProdukModal">&times;</span></div>
+        <form id="produkForm" class="form-admin">
+            <input type="hidden" id="produkEditId">
+            <div class="form-group"><label>Nama Produk</label><input type="text" id="produkNama" placeholder="Nama produk" required></div>
+            <div class="form-row">
+                <div class="form-group"><label>Kategori</label><select id="produkKategori" required><option value="">Pilih Kategori</option></select></div>
+                <div class="form-group"><label>Harga (Rp)</label><input type="number" id="produkHarga" placeholder="100000" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Stok</label><select id="produkStok"><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select></div>
+                <div class="form-group"><label>Ukuran</label><input type="text" id="produkUkuran" placeholder="S, M, L, XL"></div>
+            </div>
+            <div class="form-group"><label>Warna</label><input type="text" id="produkWarna" placeholder="Hitam, Putih, Abu-abu"></div>
+            <div class="form-group"><label>Gambar Produk</label><input type="file" id="produkGambar" accept="image/*"><div class="file-preview" id="produkFilePreview"><img id="produkPreviewImg" src="" alt="preview"> <span id="produkFileName"></span></div></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal('produkModal')"><i class="fas fa-times"></i> Batal</button>
+                <button type="submit" class="btn btn-primary" id="btnSimpanProduk"><i class="fas fa-save"></i> Simpan Produk</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== MODAL KATEGORI ===== -->
+<div class="modal" id="kategoriModal">
+    <div class="modal-content">
+        <div class="modal-header"><h2 id="kategoriModalTitle">Tambah Kategori</h2><span class="modal-close" id="closeKategoriModal">&times;</span></div>
+        <form id="kategoriForm" class="form-admin">
+            <input type="hidden" id="kategoriEditId">
+            <div class="form-group"><label>Nama Kategori</label><input type="text" id="kategoriNama" placeholder="Contoh: Hoodie" required></div>
+            <div class="form-group"><label>Icon (Font Awesome class)</label><input type="text" id="kategoriIcon" placeholder="fas fa-tshirt"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal('kategoriModal')"><i class="fas fa-times"></i> Batal</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Kategori</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== MODAL GALERI ===== -->
+<div class="modal" id="galeriModal">
+    <div class="modal-content">
+        <div class="modal-header"><h2 id="galeriModalTitle">Tambah Foto Galeri</h2><span class="modal-close" id="closeGaleriModal">&times;</span></div>
+        <form id="galeriForm" class="form-admin">
+            <input type="hidden" id="galeriEditId">
+            <div class="form-group"><label>Judul Foto</label><input type="text" id="galeriJudul" placeholder="Judul foto" required></div>
+            <div class="form-group"><label>Upload Foto</label><input type="file" id="galeriGambar" accept="image/*"><div class="file-preview" id="galeriFilePreview"><img id="galeriPreviewImg" src="" alt="preview"> <span id="galeriFileName"></span></div></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal('galeriModal')"><i class="fas fa-times"></i> Batal</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Foto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>
+

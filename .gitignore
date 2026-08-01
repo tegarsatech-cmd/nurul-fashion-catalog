@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Vercel
+.vercel/
+nurul_fashion_store/.vercel/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editor & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Uploads (opsional - file lokal)
+uploads/
+
+# =====================================================
+# File legacy / duplikat yang TIDAK dibutuhkan untuk deploy
+# (TIDAK dihapus dari disk, hanya dikecualikan dari Git repo)
+# =====================================================
+
+# Project duplikat (hanya UrbanStyle-Catalog yang di-deploy ke Vercel)
+/nurul_fashion_store/
+
+# Foto lokal WhatsApp (semua gambar produk berasal dari Supabase/Unsplash)
+/image/
+
+# Legacy Firebase/Firestore remnants di root
+/firestore.js
+/write_admin.js
+/assets/
+/lib/
+/storage.js
+/auth.js
+
+# SQL migration files (sudah dijalankan manual di Supabase)
+/*.sql
+
+# Server Node.js lokal (tidak dipakai untuk static hosting)
+/UrbanStyle-Catalog/server.js
+
+# File test
+/UrbanStyle-Catalog/assets/js/admin.js.test
+
+# File backup
+*.bak
+

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Data - Nurul Fashion</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; margin: 0; }
+        .seed-card { background: #1a1a1a; padding: 40px; border-radius: 20px; max-width: 600px; width: 100%; text-align: center; }
+        .logo { width: 60px; height: 60px; background: linear-gradient(135deg, #FF69B4, #FF1493); color: #fff; font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 16px; margin: 0 auto 20px; }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        p { color: #888; margin-bottom: 24px; font-size: 14px; }
+        .btn { padding: 14px 32px; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; border: none; }
+        .btn-primary { background: #FF69B4; color: #fff; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,105,180,0.4); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .log { background: #0d0d0d; padding: 16px; border-radius: 10px; text-align: left; font-size: 13px; color: #22c55e; margin-top: 20px; max-height: 300px; overflow-y: auto; }
+        .log .error { color: #ef4444; }
+        .log .info { color: #888; }
+    </style>
+</head>
+<body>
+    <div class="seed-card">
+        <div class="logo">NF</div>
+        <h1>Seed Data Nurul Fashion</h1>
+        <p>Klik tombol di bawah untuk mendaftarkan admin dan mengisi data dummy</p>
+        <button class="btn btn-primary" id="seedBtn">Jalankan Seed Data</button>
+        <div class="log" id="logOutput">Menunggu eksekusi...</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script type="module">
+        import supabase from "./auth.js";
+
+        const log = document.getElementById('logOutput');
+        const btn = document.getElementById('seedBtn');
+
+        function addLog(msg, type) {
+            const p = document.createElement('div');
+            const color = type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#888';
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '➡️';
+            p.innerHTML = '<span style="color:' + color + '">' + icon + ' ' + msg + '</span>';
+            log.appendChild(p);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function insertData(table, data) {
+            const { error } = await supabase.from(table).insert(data);
+            if (error) throw error;
+        }
+
+        btn.addEventListener('click', async function() {
+            btn.disabled = true;
+            btn.textContent = '⏳ Memproses...';
+            log.innerHTML = '';
+
+            try {
+                addLog('Mendaftarkan akun admin tegarsatech@gmail.com...');
+                try {
+                    const { error: signUpError } = await supabase.auth.signUp({
+                        email: 'tegarsatech@gmail.com',
+                        password: 'Satech220R'
+                    });
+                    if (signUpError && signUpError.code !== 'user_already_exists') throw signUpError;
+                    addLog('Akun admin berhasil didaftarkan!', 'success');
+                } catch (e) {
+                    if (e.code === 'user_already_exists' || e.message?.includes('already')) {
+                        addLog('Akun admin sudah terdaftar, lanjut ke data...', 'success');
+                    } else {
+                        throw e;
+                    }
+                }
+
+                addLog('Menambahkan 6 kategori...');
+                const cats = ['Hoodie', 'Kaos', 'Jaket', 'Celana', 'Kemeja', 'Sepatu'];
+                for (const nama of cats) {
+                    await insertData('categories', { nama: nama, icon: 'fas fa-tag' });
+                    addLog('Kategori "' + nama + '" ditambahkan', 'success');
+                }
+
+                addLog('Menambahkan 8 produk dengan gambar...');
+                const produkList = [
+                    { nama: 'Nurul Hoodie Hitam', kategori: 'Hoodie', harga: 250000, stok: 'Tersedia', ukuran: 'S, M, L, XL', warna: 'Hitam, Abu-abu', gambar: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400' },
+                    { nama: 'Streetwear Kaos Premium', kategori: 'Kaos', harga: 150000, stok: 'Tersedia', ukuran: 'M, L, XL', warna: 'Putih, Hitam, Navy', gambar: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400' },
+                    { nama: 'Jaket Bomber', kategori: 'Jaket', harga: 350000, stok: 'Tersedia', ukuran: 'L, XL', warna: 'Hitam, Coklat', gambar: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400' },
+                    { nama: 'Cargo Pants Modern', kategori: 'Celana', harga: 199000, stok: 'Tersedia', ukuran: 'S, M, L, XL', warna: 'Hitam, Army, Cream', gambar: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400' },
+                    { nama: 'Kemeja Flanel Premium', kategori: 'Kemeja', harga: 179000, stok: 'Habis', ukuran: 'M, L, XL', warna: 'Merah, Biru, Hitam', gambar: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400' },
+                    { nama: 'Sneakers White', kategori: 'Sepatu', harga: 450000, stok: 'Tersedia', ukuran: '39, 40, 41, 42, 43', warna: 'Putih, Hitam', gambar: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400' },
+                    { nama: 'Hoodie Gold Edition', kategori: 'Hoodie', harga: 299000, stok: 'Tersedia', ukuran: 'S, M, L', warna: 'Hitam, Gold', gambar: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=400' },
+                    { nama: 'Kaos Vintage Wash', kategori: 'Kaos', harga: 125000, stok: 'Tersedia', ukuran: 'S, M, L, XL', warna: 'Abu-abu, Hitam, Putih', gambar: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400' }
+                ];
+                for (const p of produkList) {
+                    await insertData('products', { 
+                        nama: p.nama, kategori: p.kategori, harga: p.harga, 
+                        stok: p.stok, ukuran: p.ukuran, warna: p.warna, 
+                        gambar: p.gambar, created_at: new Date().toISOString() 
+                    });
+                    addLog('Produk "' + p.nama + '" ditambahkan', 'success');
+                }
+
+                addLog('Menambahkan 6 foto galeri...');
+                const galeriList = [
+                    { judul: 'Collection 2026', gambar: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=600' },
+                    { judul: 'Street Style', gambar: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600' },
+                    { judul: 'Nurul Fashion', gambar: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600' },
+                    { judul: 'Modern Look', gambar: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600' },
+                    { judul: 'Premium Style', gambar: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600' },
+                    { judul: 'Casual Vibes', gambar: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600' }
+                ];
+                for (const g of galeriList) {
+                    await insertData('gallery', { judul: g.judul, gambar: g.gambar, created_at: new Date().toISOString() });
+                    addLog('Galeri "' + g.judul + '" ditambahkan', 'success');
+                }
+
+                addLog('Menambahkan pengaturan kontak...');
+                await insertData('settings', {
+                    nama_toko: 'Nurul Fashion',
+wa_number: '6283121514320',
+                    email: 'hello@nurulfashion.com',
+                    jam_operasional: 'Senin - Sabtu, 09:00 - 21:00',
+                    alamat: 'Jl. Fashion No. 1, Jakarta Pusat',
+                    instagram: 'https://instagram.com/nurulfashion',
+                    facebook: 'https://facebook.com/nurulfashion',
+                    tiktok: 'https://tiktok.com/@nurulfashion',
+                    maps_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.0!2d106.8!3d-6.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMDAuMCJTIDEwNsKwNDgnMDAuMCJF!5e0!3m2!1sid!2sid!4v1'
+                });
+                addLog('Pengaturan kontak berhasil ditambahkan', 'success');
+
+                addLog('==================================', 'success');
+                addLog('✅ SEMUA DATA BERHASIL DIISI!', 'success');
+                addLog('✅ Akun: tegarsatech@gmail.com / Satech220R', 'success');
+                addLog('✅ 6 Kategori, 8 Produk, 6 Galeri', 'success');
+                addLog('', 'info');
+                addLog('📌 Buka index.html untuk melihat website', 'success');
+                addLog('📌 Buka admin.html untuk login dashboard', 'success');
+
+                btn.textContent = '✅ Selesai! Buka Website';
+                btn.onclick = function() { window.location.href = 'index.html'; };
+
+            } catch (error) {
+                addLog('ERROR: ' + error.message, 'error');
+                console.error(error);
+                btn.disabled = false;
+                btn.textContent = 'Coba Lagi';
+            }
+        });
+    </script>
+</body>
+</html>

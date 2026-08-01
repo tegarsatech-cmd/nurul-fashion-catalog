@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurul Fashion - Fashion Modern</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <div class="logo">NF</div>
+                <span class="brand-name">Nurul Fashion</span>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#katalog" class="nav-link">Katalog</a></li>
+                <li><a href="#galeri" class="nav-link">Galeri</a></li>
+                <li><a href="#kontak" class="nav-link">Kontak</a></li>
+                <li><a href="admin.html" class="btn-admin"><i class="fas fa-crown"></i> Dashboard Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <span class="hero-badge" data-aos="fade-down" data-aos-delay="200"><i class="fas fa-star"></i> Katalog Fashion Eksklusif 2026</span>
+            <h1 data-aos="fade-up" data-aos-delay="400">Upgrade Style Kamu Dengan <span class="pink-text">Koleksi Terbaru</span></h1>
+            <p data-aos="fade-up" data-aos-delay="600">Tampilkan karakter terbaik melalui pilihan fashion modern berkualitas.</p>
+            <div class="hero-buttons" data-aos="fade-up" data-aos-delay="800">
+                <a href="#katalog" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Lihat Koleksi</a>
+                <a href="#kontak" class="btn btn-secondary"><i class="fas fa-phone-alt"></i> Hubungi Kami</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUK UNGGULAN -->
+    <section class="produk-unggulan section" id="produk">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-badge">Produk Unggulan</span>
+                <h2>Koleksi <span class="pink-text">Terpopuler</span></h2>
+                <p>Temukan produk fashion paling diminati bulan ini</p>
+            </div>
+            <div class="product-grid" id="featuredProducts"></div>
+        </div>
+    </section>
+
+    <!-- KATALOG -->
+    <section class="katalog section" id="katalog">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-badge">Katalog Lengkap</span>
+                <h2>Semua <span class="pink-text">Produk</span></h2>
+                <p>Jelajahi koleksi fashion terlengkap kami</p>
+            </div>
+            <div class="katalog-controls" data-aos="fade-up">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari produk...">
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter"><option value="all">Semua Kategori</option></select>
+                    <select id="sortFilter">
+                        <option value="default">Urutkan</option>
+                        <option value="termurah">Termurah</option>
+                        <option value="termahal">Termahal</option>
+                        <option value="az">A - Z</option>
+                        <option value="za">Z - A</option>
+                    </select>
+                </div>
+            </div>
+            <div class="product-grid" id="allProducts"></div>
+    </section>
+
+    <!-- GALERI -->
+    <section class="galeri section" id="galeri">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-badge">Galeri Fashion</span>
+                <h2>Inspirasi <span class="pink-text">Style</span></h2>
+                <p>Koleksi foto fashion terbaik kami</p>
+            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+    </section>
+
+    <!-- KONTAK -->
+    <section class="kontak section" id="kontak">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-badge">Hubungi Kami</span>
+                <h2>Get In <span class="pink-text">Touch</span></h2>
+                <p>Jangan ragu untuk menghubungi kami</p>
+            </div>
+            <div class="kontak-wrapper">
+                <div class="kontak-info" data-aos="fade-right">
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-store"></i></div>
+                        <div class="info-content"><h4>Nama Toko</h4><p id="storeName">Nurul Fashion</p></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon whatsapp"><i class="fab fa-whatsapp"></i></div>
+                        <div class="info-content"><h4>WhatsApp</h4><p id="waNumber">-</p></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-content"><h4>Email</h4><p id="emailInfo">-</p></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-clock"></i></div>
+                        <div class="info-content"><h4>Jam Operasional</h4><p id="operationalHours">-</p></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-content"><h4>Alamat</h4><p id="storeAddress">-</p></div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" id="socialInstagram" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" id="socialFacebook" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" id="socialTiktok" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="kontak-map" data-aos="fade-left">
+                    <div class="map-container" id="mapContainer">
+                        <div class="map-placeholder">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <p>Peta akan tampil di sini</p>
+                        </div>
+                    </div>
+                    <a href="#" id="waButton" class="btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREVIEW MODAL -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content preview-modal-content">
+            <div class="modal-header">
+                <h2 id="previewTitle">Preview Produk</h2>
+                <button type="button" class="modal-close" id="closePreviewModal" aria-label="Tutup preview">&times;</button>
+            </div>
+            <div class="preview-body">
+                <div class="preview-image">
+                    <img id="previewImage" src="" alt="Preview Produk" loading="lazy">
+                </div>
+                <div class="preview-details">
+                    <h3 id="previewName"></h3>
+                    <p class="preview-price" id="previewPrice"></p>
+                    <p class="preview-meta"><strong>Kategori:</strong> <span id="previewCategory"></span></p>
+                    <p class="preview-meta"><strong>Ukuran:</strong> <span id="previewSize"></span></p>
+                    <p class="preview-meta"><strong>Warna:</strong> <span id="previewColor"></span></p>
+                    <p class="preview-meta"><strong>Stok:</strong> <span id="previewStock"></span></p>
+                    <p class="preview-description" id="previewDescription"></p>
+                    <a id="previewWhatsapp" class="btn btn-whatsapp preview-whatsapp" href="#" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">NF</div>
+                    <h3>Nurul Fashion</h3>
+                    <p>Katalog fashion modern dengan koleksi terbaik untuk style terbaikmu.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Menu Cepat</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#katalog">Katalog</a></li>
+                        <li><a href="#galeri">Galeri</a></li>
+                        <li><a href="#kontak">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Ikuti Kami</h4>
+                    <div class="social-icons">
+                        <a href="#" id="footerInstagram" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" id="footerFacebook" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" id="footerTiktok" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Nurul Fashion. All rights reserved.</p>
+            </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

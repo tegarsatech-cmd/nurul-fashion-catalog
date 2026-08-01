@@ -1,0 +1,12 @@
+node_modules/
+dist/
+server.js
+*.test
+*.sql
+*.md
+.vscode/
+.git/
+.vercel/
+nurul_fashion_store/
+UrbanStyle-Catalog/package-lock.json.tmp
+
