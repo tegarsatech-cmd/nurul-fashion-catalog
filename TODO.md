@@ -9,6 +9,14 @@
 - [x] Perbaiki `.vercelignore` → gunakan prefix `/` untuk root-only exclusions
 - [x] Perbaiki `vercel.json` → framework auto-detect, cleanUrls
 - [x] Deploy production: https://katalogmaul.vercel.app ✅ (alias lama: https://maulidah.vercel.app)
+- [x] **Nonaktifkan SSO Protection (Vercel Authentication)** di project `katalog-nurul` ✅
+- [x] Verifikasi akses publik tanpa login Vercel:
+  - [x] Home: `https://katalogmaul.vercel.app/` → 200, title "Nurul Fashion - Fashion Modern" ✅
+  - [x] Dashboard Admin: `https://katalogmaul.vercel.app/admin` → 200, title "Dashboard Admin - Nurul Fashion" ✅
+  - [x] Login Admin: `https://katalogmaul.vercel.app/login` → 200, title "Login Admin - Nurul Fashion" ✅
+  - [x] Seed: `https://katalogmaul.vercel.app/seed` → 200, title "Seed Data - Nurul Fashion" ✅
+  - [x] Assets CSS/JS: 200 OK ✅
+  - [x] Alias lama `https://maulidah.vercel.app` → 200, title "Nurul Fashion - Fashion Modern" ✅
 - [ ] **Pengujian:** Desktop (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
 - [ ] **Pengujian:** Android (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
 - [ ] **Pengujian:** iPhone (Safari) - Dashboard Admin, Sidebar, Menu, CRUD
