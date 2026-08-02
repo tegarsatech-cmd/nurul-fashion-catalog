@@ -1,52 +1,32 @@
-# ✅ YANG TELAH SELESAI
+# ✅ SELESAI - Perbaikan Navbar Mobile + Fix Deploy Vercel
 
-## ✅ Vercel Deployment (SELESAI)
-- [x] Perbaiki `admin.js` → sidebar auto-close di mobile setelah pilih menu
-- [x] Perbaiki `admin.js` → gunakan `safeStorageGet` di resize handler (anti crash di private/incognito)
-- [x] Hapus `UrbanStyle-Catalog/vercel.json` (konflik konfigurasi)
-- [x] Perbaiki `vite.config.js` → root pointing ke `UrbanStyle-Catalog/`, output ke `dist/`
-- [x] Perbaiki `package.json` → single root build (`npm run build` → `vite build`)
-- [x] Perbaiki `.vercelignore` → gunakan prefix `/` untuk root-only exclusions
-- [x] Perbaiki `vercel.json` → framework auto-detect, cleanUrls
-- [x] Deploy production: https://katalogmaul.vercel.app ✅ (alias lama: https://maulidah.vercel.app)
-- [x] **Nonaktifkan SSO Protection (Vercel Authentication)** di project `katalog-nurul` ✅
-- [x] Verifikasi akses publik tanpa login Vercel:
-  - [x] Home: `https://katalogmaul.vercel.app/` → 200, title "Nurul Fashion - Fashion Modern" ✅
-  - [x] Dashboard Admin: `https://katalogmaul.vercel.app/admin` → 200, title "Dashboard Admin - Nurul Fashion" ✅
-  - [x] Login Admin: `https://katalogmaul.vercel.app/login` → 200, title "Login Admin - Nurul Fashion" ✅
-  - [x] Seed: `https://katalogmaul.vercel.app/seed` → 200, title "Seed Data - Nurul Fashion" ✅
-  - [x] Assets CSS/JS: 200 OK ✅
-  - [x] Alias lama `https://maulidah.vercel.app` → 200, title "Nurul Fashion - Fashion Modern" ✅
-- [ ] **Pengujian:** Desktop (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
-- [ ] **Pengujian:** Android (Chrome) - Dashboard Admin, Sidebar, Menu, CRUD
-- [ ] **Pengujian:** iPhone (Safari) - Dashboard Admin, Sidebar, Menu, CRUD
+## ✅ Step 1: CSS - Responsive Navbar
+- [x] Tambah media query `@media (max-width: 992px)` untuk navbar di `UrbanStyle-Catalog/assets/css/style.css`
+- [x] Tombol hamburger (`.nav-toggle`) muncul di mobile/tablet
+- [x] `.nav-menu` tersembunyi default, tampil vertikal full-width saat `.active`
+- [x] Menu full-width, tanpa horizontal scroll
+- [x] Padding/margin proporsional untuk `.nav-link` dan `.btn-admin`
+- [x] Penyesuaian layar sangat kecil (`max-width: 480px`)
 
-## ✅ RLS Policy Error & Pemisahan Login
+## ✅ Step 2: JS - Perbaikan Toggle Menu
+- [x] Tutup menu saat semua link (`a`) diklik (termasuk `.btn-admin`)
+- [x] Tutup menu saat klik di luar navbar
+- [x] Tutup menu saat resize ke desktop (>992px)
 
-## ✅ Step 1: Buat SQL Migration Fix RLS Policies
-- [x] Buat file `fix_rls_policies.sql`
-- [x] Ubah `auth.role() = 'authenticated'` → `auth.uid() IS NOT NULL` (lebih reliable)
-- [x] Tambah Storage bucket policies untuk upload gambar
-- [x] Anon policies tetap ada untuk public read
+## ✅ Step 3: Fix Deploy Vercel
+- [x] Perbarui `vercel.json` root → `framework: "vite"`, `buildCommand: "npm run build"`, `outputDirectory: "dist"`
+- [x] Verifikasi import path `auth.js` / `storage.js` sudah benar (`../../`)
+- [x] Build lokal sukses tanpa error
 
-## ✅ Step 2: Perbaiki firestore.js
-- [x] Tambah error handling khusus untuk RLS errors (code 42501)
-- [x] Beri pesan error yang lebih informatif
+## 🔍 Akar Masalah "Tidak Bisa Hosting di Vercel"
+1. **`vercel.json` lama tidak punya `framework`/`buildCommand`** → Vercel deploy sebagai static tanpa build.
+2. **Tidak ada `index.html` di root repo** → Vercel tidak menemukan halaman utama → 404.
+3. **Konflik 2 project Vercel** (`.vercel/project.json` root = "katalog-nurul", `nurul_fashion_store/.vercel` = "nurul_fashion_store") membuat bingung.
 
-## ✅ Step 3: Buat Halaman Login Terpisah
-- [x] Buat `login.html` di `UrbanStyle-Catalog/` - halaman login standalone
-- [x] Style premium dengan efek glow, card slide-up, password toggle
-- [x] Setelah login sukses → redirect ke `admin.html`
-- [x] Jika sudah login (session aktif) → langsung redirect ke `admin.html`
+## 🚀 Langkah Deploy Ulang
+1. Commit & push semua perubahan ke GitHub (`main`).
+2. Di dashboard Vercel → Import project dari repo `nurul-fashion-catalog`.
+3. Set **Root Directory**: `/` dan **Framework Preset**: `Vite`.
+4. Vercel otomatis menjalankan `npm run build` → hasil `dist/` → deploy sukses.
+5. (Opsional) Hapus folder `.vercel` lokal untuk menghindari konflik project.
 
-## ✅ Step 4: Pisahkan Login dari admin.html
-- [x] Hapus login page section dari `admin.html`
-- [x] Update `admin.js` → redirect ke `login.html` jika belum login
-- [x] Update `admin.js` → redirect ke `login.html` setelah logout
-- [x] Hapus import `signInWithEmailAndPassword` dari admin.js
-
-## ✅ Cara Penggunaan:
-1. Buka `login.html` → Login dengan email & password admin
-2. Setelah login sukses → otomatis redirect ke `admin.html`
-3. Jika user belum login → otomatis redirect ke `login.html`
-4. **WAJIB:** Jalankan `fix_rls_policies.sql` di Supabase SQL Editor
