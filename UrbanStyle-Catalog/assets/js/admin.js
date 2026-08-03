@@ -184,14 +184,25 @@ async function fetchWithRetry(queryFn, label, maxRetries = 3, delayMs = 1200) {
 const sidebar = document.getElementById('sidebar');
 const mainContent = document.getElementById('mainContent');
 const adminToggle = document.getElementById('adminToggle');
-const sidebarOverlay = document.createElement('div');
-sidebarOverlay.id = 'sidebarOverlay';
-sidebarOverlay.className = 'sidebar-overlay';
+let sidebarOverlay = document.getElementById('sidebarOverlay');
+if (!sidebarOverlay) {
+    sidebarOverlay = document.createElement('div');
+    sidebarOverlay.id = 'sidebarOverlay';
+    sidebarOverlay.className = 'sidebar-overlay';
+    document.body.appendChild(sidebarOverlay);
+}
 sidebarOverlay.addEventListener('click', () => setSidebarOpen(false));
-document.body.appendChild(sidebarOverlay);
 
 function isMobileView() {
     return window.matchMedia('(max-width: 768px)').matches;
+}
+
+function lockBodyScroll(lock) {
+    if (lock) {
+        document.body.classList.add('body-lock');
+    } else {
+        document.body.classList.remove('body-lock');
+    }
 }
 
 // Akses localStorage yang aman (tidak crash di mode private/incognito)
@@ -212,11 +223,14 @@ function safeStorageSet(key, value) {
 }
 
 function getInitialSidebarState() {
-    const stored = safeStorageGet('adminSidebarOpen');
-    if (stored === null) {
-        return !isMobileView();
+    // Di mobile, drawer sidebar HARUS selalu tertutup saat halaman dimuat
+    // (jangan baca localStorage dari mode desktop yang bisa membuat
+    //  overlay drawer terbuka otomatis pada layar kecil).
+    if (isMobileView()) {
+        return false;
     }
-    return stored === 'true';
+    const stored = safeStorageGet('adminSidebarOpen');
+    return stored === null ? true : stored === 'true';
 }
 
 function isSidebarOpen() {
@@ -239,6 +253,7 @@ function setSidebarOpen(open) {
         mainContent.classList.remove('sidebar-collapsed');
         if (isMobileView()) {
             sidebarOverlay.classList.add('open');
+            document.body.classList.add('no-scroll');
         } else {
             sidebarOverlay.classList.remove('open');
         }
@@ -251,6 +266,7 @@ function setSidebarOpen(open) {
             mainContent.classList.add('sidebar-collapsed');
         }
         sidebarOverlay.classList.remove('open');
+        document.body.classList.remove('no-scroll');
     }
 }
 
@@ -266,10 +282,41 @@ if (adminToggle) {
     });
 }
 
+// Perbaiki event resize: debounce + hanya terapkan ulang saat breakpoint berubah,
+// agar drawer tidak "flicker" ketika toolbar browser mobile terbuka/tertutup.
+let lastSidebarViewport = isMobileView();
+let sidebarResizeTimer = null;
+
 window.addEventListener('resize', () => {
-    const stored = safeStorageGet('adminSidebarOpen');
-    const open = stored === null ? isSidebarOpen() : stored === 'true';
-    setSidebarOpen(open);
+    clearTimeout(sidebarResizeTimer);
+    sidebarResizeTimer = setTimeout(() => {
+        const mobileNow = isMobileView();
+        if (mobileNow === lastSidebarViewport) return;
+        lastSidebarViewport = mobileNow;
+
+        // Saat berpindah ke desktop, tutup drawer dan kembalikan margin
+        if (!mobileNow) {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('open');
+            document.body.classList.remove('no-scroll');
+            const stored = safeStorageGet('adminSidebarOpen');
+            const open = stored === null ? true : stored === 'true';
+            if (open) {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('sidebar-collapsed');
+            } else {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('sidebar-collapsed');
+            }
+        } else {
+            // Saat berpindah ke mobile, sidebar selalu sebagai drawer tertutup
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('sidebar-collapsed');
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('open');
+            document.body.classList.remove('no-scroll');
+        }
+    }, 200);
 });
 
 initializeSidebar();

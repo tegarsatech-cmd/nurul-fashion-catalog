@@ -124,16 +124,26 @@ if (navbar) {
 }
 
 if (navToggle && navMenu) {
+    // Kunci scroll body saat menu mobile terbuka
+    function setNavMenuOpen(open) {
+        navToggle.classList.toggle('active', open);
+        navMenu.classList.toggle('active', open);
+        if (open) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+    }
+
     navToggle.addEventListener('click', () => {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
+        const willOpen = !navMenu.classList.contains('active');
+        setNavMenuOpen(willOpen);
     });
 
     // Tutup menu saat link mana pun diklik (termasuk .btn-admin)
     navMenu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+            setNavMenuOpen(false);
         });
     });
 
@@ -141,17 +151,15 @@ if (navToggle && navMenu) {
     document.addEventListener('click', (event) => {
         const isInside = navbar && navbar.contains(event.target);
         if (!isInside && navMenu.classList.contains('active')) {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+            setNavMenuOpen(false);
         }
     });
 
     // Tutup menu saat layar melebar ke desktop (di atas 992px)
     const mobileQuery = window.matchMedia('(max-width: 992px)');
     const handleNavResize = () => {
-        if (!mobileQuery.matches && navMenu.classList.contains('active')) {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+        if (!mobileQuery.matches) {
+            setNavMenuOpen(false);
         }
     };
     if (typeof mobileQuery.addEventListener === 'function') {
@@ -510,6 +518,8 @@ function openPreviewModal(item, type = 'product', index = null) {
     // Setup simple lightbox on image click
     setupPreviewLightbox(type);
 
+    // Kunci scroll body agar halaman tidak ikut tergulir di belakang modal
+    document.body.classList.add('no-scroll');
     modal.classList.add('active');
 }
 
@@ -519,6 +529,7 @@ function closePreviewModal() {
     removePreviewLightbox();
     closeImageLightbox();
     modal.classList.remove('active');
+    document.body.classList.remove('no-scroll');
 }
 
 // ===== Lightbox (simple) & Gallery Controls =====
@@ -633,9 +644,15 @@ window.addEventListener('keydown', (event) => {
 });
 
 // ===== Init =====
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
     loadCategories();
     loadProducts();
     loadGallery();
     loadContact();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}

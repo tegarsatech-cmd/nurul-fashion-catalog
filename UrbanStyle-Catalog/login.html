@@ -2,20 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Login Admin - Nurul Fashion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/admin.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { width: 100%; overflow-x: hidden; }
         body {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0d0d0d 100%);
             position: relative;
             overflow: hidden;
             font-family: 'Times New Roman', Times, serif;
+            width: 100%;
+            max-width: 100%;
         }
         body::before {
             content: '';
@@ -45,7 +51,7 @@
         }
         .login-card {
             background: rgba(255, 255, 255, 0.98);
-            padding: 48px;
+            padding: 40px 32px;
             border-radius: 24px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
             width: 100%;
@@ -60,7 +66,7 @@
             from { opacity: 0; transform: translateY(30px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .login-logo { text-align: center; margin-bottom: 32px; }
+        .login-logo { text-align: center; margin-bottom: 28px; }
         .login-logo .logo {
             width: 70px; height: 70px;
             background: linear-gradient(135deg, #FF69B4, #FFB6C1, #FF1493);
@@ -76,9 +82,9 @@
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: #222; margin-bottom: 6px; }
         .form-group input {
-            width: 100%; padding: 12px 16px;
+            width: 100%; padding: 14px 16px;
             border: 2px solid #e5e7eb; border-radius: 10px;
-            font-family: 'Times New Roman', Times, serif; font-size: 14px;
+            font-family: 'Times New Roman', Times, serif; font-size: 16px;
             transition: all 0.3s ease; outline: none; background: #FFF;
             box-sizing: border-box;
         }
@@ -112,11 +118,11 @@
             border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px;
         }
         .btn {
-            display: inline-flex; align-items: center; gap: 8px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             padding: 14px 28px; border-radius: 12px;
             font-family: 'Times New Roman', Times, serif; font-size: 15px; font-weight: 600;
             text-decoration: none; cursor: pointer; transition: all 0.3s ease;
-            border: none; justify-content: center;
+            border: none; min-height: 48px;
         }
         .btn-primary {
             background: linear-gradient(135deg, #FF69B4, #FF1493);
@@ -126,12 +132,23 @@
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; }
         .btn-back-home {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 12px; padding: 12px; background: transparent; color: #666;
+            margin-top: 12px; padding: 14px 12px; background: transparent; color: #666;
             border: 2px solid #e5e7eb; border-radius: 12px;
             font-family: 'Times New Roman', Times, serif; font-size: 14px; font-weight: 500;
-            text-decoration: none; transition: all 0.3s ease;
+            text-decoration: none; transition: all 0.3s ease; min-height: 48px;
         }
         .btn-back-home:hover { border-color: #FF69B4; color: #FF69B4; }
+
+        /* Mobile: card tidak menempel tepi layar */
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .login-card { padding: 28px 20px; border-radius: 18px; }
+            .login-logo { margin-bottom: 24px; }
+            .login-logo .logo { width: 60px; height: 60px; font-size: 24px; }
+            .login-logo h2 { font-size: 22px; }
+            .form-group input { font-size: 15px; }
+            .btn-back-home { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -181,7 +198,7 @@
             const input = document.getElementById('loginPassword');
             const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
             input.setAttribute('type', type);
-            document.getElementById('passwordToggle').innerHTML = type === 'password' ? 
+            document.getElementById('passwordToggle').innerHTML = type === 'password' ?
                 '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
 
@@ -241,3 +258,4 @@
     </script>
 </body>
 </html>
+
