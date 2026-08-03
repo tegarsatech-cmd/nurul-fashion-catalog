@@ -13,3 +13,5 @@ Target: Perbaikan Frontend (HTML, CSS, JS) tanpa mengubah DB Supabase, CRUD, Aut
 - [x] 8. CSS: Navbar mobile (logo kiri, hamburger kanan, Dashboard Admin di drawer)
 - [x] 9. CSS: Audit overflow (container, grid, modal, no horizontal scroll)
 - [x] 10. Test: npm run build (BERHASIL, tidak ada error)
+- [x] 11. Deploy: vercel --prod --yes ke proyek katalog-maul -> https://katalog-maul.vercel.app (sama dengan katalogmaul.vercel.app) - BERHASIL, Ready
+- [x] 12. Sinkronisasi: katalog-maul.vercel.app kini memakai kode yang sama persis dengan maulidah.vercel.app (direktori c:/maulidah) - BERHASIL
