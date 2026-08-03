@@ -289,6 +289,8 @@ body.no-scroll {
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    max-width: 100%;
     z-index: 1100;
     min-height: 100vh;
     min-height: 100svh;
@@ -298,15 +300,15 @@ body.no-scroll {
     justify-content: center;
     gap: 4px;
     margin: 0;
-    padding: 90px 20px 40px;
+    padding: 60px 16px 40px;
+    box-sizing: border-box;
     background: rgba(17, 17, 17, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     list-style: none;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-12px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -314,17 +316,20 @@ body.no-scroll {
 .nav-menu.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
 }
 
 .nav-menu li {
     width: 100%;
+    max-width: 100%;
     text-align: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .nav-menu .nav-link {
-    display: block;
+    display: flex;
     width: 100%;
+    max-width: 100%;
     padding: 13px 16px;
     font-size: 18px;
     font-weight: 600;
@@ -332,9 +337,10 @@ body.no-scroll {
     border-radius: 10px;
     transition: var(--transition);
     min-height: 48px;
-    display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    white-space: nowrap;
 }
 
 .nav-menu .nav-link:hover,
@@ -356,6 +362,7 @@ body.no-scroll {
     font-size: 14px;
     min-height: 44px;
     white-space: nowrap;
+    box-sizing: border-box;
 }
 
 /* ===== HERO (Mobile First) ===== */
@@ -1725,5 +1732,142 @@ body.no-scroll {
     .footer {
         padding: 80px 0 0;
     }
+}
+
+/* ============================================
+   RESPONSIVE KHUSUS MOBILE (<= 768px)
+   Android Chrome & iPhone Safari
+   ============================================ */
+@media (max-width: 768px) {
+    /* Navbar full width, tanpa overflow */
+    .navbar {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        left: 0;
+        right: 0;
+        padding: 12px 0;
+    }
+
+    .navbar .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 12px;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    /* Logo tetap di kiri */
+    .nav-brand {
+        margin-right: auto;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .brand-name {
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Hamburger tetap di kanan, tidak pernah keluar layar */
+    .nav-toggle {
+        margin-left: 0;
+        flex-shrink: 0;
+        width: 42px;
+        height: 42px;
+        gap: 5px;
+    }
+
+    /* Drawer fullscreen (bukan layout desktop) */
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 70px 16px 32px;
+        min-height: 100vh;
+        min-height: 100svh;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: 6px;
+        background: rgba(17, 17, 17, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 1100;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .nav-menu.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Item menu memenuhi lebar drawer tanpa overflow */
+    .nav-menu li {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .nav-menu .nav-link {
+        width: 100%;
+        max-width: 100%;
+        font-size: 17px;
+        padding: 12px 14px;
+        white-space: normal;
+    }
+
+    /* Dashboard Admin: di dalam drawer, kompak, tidak keluar layar */
+    .nav-menu .btn-admin {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: auto;
+        min-width: 0;
+        max-width: 100%;
+        margin: 18px auto 0;
+        padding: 10px 16px;
+        font-size: 13px;
+        min-height: 42px;
+        border-radius: 50px;
+        white-space: nowrap;
+    }
+
+    /* html/body selalu 100% dan tanpa horizontal scroll */
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}
+
+/* ============================================
+   ANTI OVERFLOW GLOBAL (semua ukuran layar)
+   ============================================ */
+.navbar,
+.navbar .container,
+.nav-menu,
+.nav-menu li,
+.nav-menu .nav-link,
+.nav-menu .btn-admin {
+    box-sizing: border-box;
 }
 
