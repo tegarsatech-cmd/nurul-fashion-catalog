@@ -456,9 +456,23 @@ async function refreshContact() {
             storeWaNumber = normalizedNumber || storeWaNumber;
         }
 
-        const mapContainer = document.getElementById('mapContainer');
+const mapContainer = document.getElementById('mapContainer');
         if (mapContainer && settingsData.maps_url) {
-            mapContainer.innerHTML = '<iframe src="' + settingsData.maps_url + '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>';
+            const rawUrl = String(settingsData.maps_url || '').trim();
+            // Ekstrak URL src dari iframe / URL Google Maps embed agar aman,
+            // dan render sebagai <iframe> HTML yang bersih (tidak bocor sebagai teks).
+            let embedSrc = rawUrl;
+            if (/<iframe/i.test(rawUrl)) {
+                const srcMatch = rawUrl.match(/src\s*=\s*["']([^"']+)["']/i);
+                if (srcMatch && srcMatch[1]) embedSrc = srcMatch[1];
+            }
+            // Normalisasi URL embed Google Maps
+            embedSrc = embedSrc.trim();
+            if (embedSrc && !/^https?:\/\//i.test(embedSrc)) {
+                embedSrc = 'https://' + embedSrc;
+            }
+            mapContainer.innerHTML =
+                '<iframe src="' + embedSrc.replace(/"/g, '"') + '" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Google Maps - Nurul Fashion"></iframe>';
         }
     } catch (error) {
         console.error('Error loading contact info:', error);

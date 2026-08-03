@@ -1,22 +1,15 @@
-# TODO - Responsive Fix Navbar (Android Chrome & iPhone Safari)
+# TODO - Audit & Perbaikan UI/UX Nurul Fashion (UrbanStyle-Catalog)
 
-## PLAN
-1. Tambahkan rules mobile-first yang robust untuk navbar di `UrbanStyle-Catalog/assets/css/style.css`.
-2. Tambahkan blok `@media (max-width: 768px)` eksplisit yang menjamin:
-   - Logo di kiri, hamburger di kanan.
-   - `.nav-menu` menjadi drawer fullscreen (position:fixed, inset:0, flex column, centered).
-   - Tombol Dashboard Admin ada di dalam drawer, kompak (font 12-14px, padding kecil), tidak overflow.
-   - Tidak ada horizontal scroll (html, body overflow-x:hidden, max-width:100%).
-   - Tidak ada min-width tetap, margin-left besar, position absolute, atau transform translateX yang mendorong elemen keluar layar.
-3. Desktop (>=992px) TIDAK diubah.
+Target: Perbaikan Frontend (HTML, CSS, JS) tanpa mengubah DB Supabase, CRUD, Auth, Storage, Realtime.
 
-## STEPS
-- [x] Analisis file & konfirmasi rencana
-- [x] Edit `UrbanStyle-Catalog/assets/css/style.css` (tambah media query <=768px + robust base)
-- [x] Verifikasi build (`npm run build`) - sukses, tanpa error
-- [x] Jalankan preview server (http://localhost:4173) untuk pengujian
-- [ ] Uji manual di Chrome Android, Safari iPhone, Edge Desktop, Chrome Desktop
-
-## FOLLOW-UP
-- Jalankan `npm run build` untuk memastikan tidak ada error.
-- Buka dev/preview server untuk pengujian di berbagai perangkat.
+## Steps
+- [x] 1. Fix Google Maps iframe (assets/js/app.js - refreshContact) - ekstrak src dari iframe/URL, render <iframe> bersih
+- [x] 2. CSS: html/body/img anti-overflow global (width:100%; max-width:100%; overflow-x:hidden; img max-width:100%)
+- [x] 3. CSS: Hero & Navbar full-width (tanpa terpotong kanan)
+- [x] 4. CSS: Product grid mobile 1 kolom, image 220-280px, nama 2 baris, tombol tidak bertumpuk
+- [x] 5. CSS: Card alamat word-break/overflow-wrap
+- [x] 6. CSS: Tombol WhatsApp mobile full-width, min-height 44px
+- [x] 7. CSS: Preview modal (desktop horizontal 700-800px, mobile vertikal 90-95%, close top-right, scroll)
+- [x] 8. CSS: Navbar mobile (logo kiri, hamburger kanan, Dashboard Admin di drawer)
+- [x] 9. CSS: Audit overflow (container, grid, modal, no horizontal scroll)
+- [x] 10. Test: npm run build (BERHASIL, tidak ada error)

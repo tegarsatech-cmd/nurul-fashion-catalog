@@ -189,6 +189,9 @@ body.no-scroll {
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     z-index: 1000;
     padding: 14px 0;
     transition: var(--transition);
@@ -368,6 +371,9 @@ body.no-scroll {
 /* ===== HERO (Mobile First) ===== */
 .hero {
     position: relative;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
     min-height: 100vh;
     min-height: 100svh;
     display: flex;
@@ -1869,5 +1875,281 @@ body.no-scroll {
 .nav-menu .nav-link,
 .nav-menu .btn-admin {
     box-sizing: border-box;
+}
+
+/* ============================================
+   FINAL OVERRIDES - AUDIT UI/UX & RESPONSIVE
+   (Ditempatkan paling akhir agar menimpa aturan
+   sebelumnya tanpa mengubah warna/font/desain)
+   ============================================ */
+
+/* 1. Anti-overflow global & gambar responsif */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 2. Hero & Navbar full-width, tanpa terpotong di kanan */
+.navbar,
+.hero,
+.footer,
+.section {
+    width: 100%;
+    max-width: 100%;
+}
+
+.hero {
+    width: 100%;
+    max-width: none;
+    left: 0;
+    right: 0;
+}
+
+/* 3. Product grid: Desktop 4, Tablet 2-3, Mobile 1 (mendukung kartu besar) */
+.product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 24px;
+    width: 100%;
+    margin: 0;
+}
+
+@media (max-width: 1199px) {
+    .product-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+@media (max-width: 991px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 575px) {
+    .product-grid { grid-template-columns: 1fr !important; gap: 20px; }
+}
+
+/* 4. Kartu produk: gambar proporsional, tinggi sesuai ukuran layar */
+.product-card .product-image {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.product-card .product-image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Desktop: gambar 320px, Tablet 240px, Mobile 220-280px */
+.product-card .product-image { height: 320px; }
+@media (max-width: 1199px) { .product-card .product-image { height: 280px; } }
+@media (max-width: 991px) { .product-card .product-image { height: 240px; } }
+@media (max-width: 575px) {
+    .product-card .product-image { height: 280px; }
+}
+@media (max-width: 400px) {
+    .product-card .product-image { height: 220px; }
+}
+
+/* Nama produk maksimal 2 baris */
+.product-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 0;
+}
+
+/* 5. Tombol Preview & WhatsApp tidak bertumpuk, mudah ditekan */
+.product-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: auto;
+}
+
+.product-actions .btn-preview,
+.product-actions .btn-whatsapp {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 6. Card alamat: tidak terpotong, turun ke baris berikutnya */
+.info-content p {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+/* 7. Tombol WhatsApp (Hubungi) mobile: full-width, proporsional */
+@media (max-width: 575px) {
+    .btn-whatsapp {
+        width: 100%;
+        min-height: 52px;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* 8. Preview modal: desktop horizontal 700-800px, mobile vertikal */
+.modal-content.preview-modal-content {
+    max-width: 800px;
+    width: calc(100% - 40px);
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.preview-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.preview-image {
+    max-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f6f6f8;
+    padding: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.preview-image img {
+    max-width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    cursor: zoom-in;
+}
+
+.preview-whatsapp {
+    width: auto;
+    align-self: flex-start;
+}
+
+/* Mobile: modal vertikal, 90-95%, max-width 360-380px, tombol WhatsApp terlihat */
+@media (max-width: 768px) {
+    .modal-content.preview-modal-content {
+        width: 92%;
+        max-width: 380px;
+        max-height: 85vh;
+        padding: 16px 14px 14px;
+    }
+
+    .preview-body {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .preview-image {
+        max-height: 220px;
+        padding: 8px;
+    }
+
+    .preview-image img {
+        max-height: 220px;
+    }
+
+    .preview-whatsapp {
+        width: 100%;
+        min-height: 50px;
+        justify-content: center;
+    }
+
+    .modal-close {
+        right: 12px;
+        top: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content.preview-modal-content {
+        width: 95%;
+        max-width: 360px;
+    }
+}
+
+/* 9. Navbar mobile: logo kiri, hamburger kanan, tidak keluar layar */
+@media (max-width: 768px) {
+    .navbar,
+    .navbar .container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .nav-brand {
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .nav-toggle {
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+    /* Dashboard Admin di dalam drawer, tidak terdorong keluar */
+    .nav-menu .btn-admin {
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* 10. Kontrol katalog mobile: tidak ada overflow */
+.katalog-controls,
+.search-box,
+.filter-group,
+.filter-group select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Kontainer & grid tidak pernah melebihi viewport */
+.container,
+.product-grid,
+.gallery-grid,
+.kontak-wrapper,
+.kontak-map,
+.map-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.map-container {
+    overflow: hidden;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
 }
 
