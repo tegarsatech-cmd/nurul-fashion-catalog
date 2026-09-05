@@ -23,6 +23,17 @@ let productsUnsubscribe = null;
 let galleryUnsubscribe = null;
 let settingsUnsubscribe = null;
 
+function normalizeWhatsAppNumber(value) {
+    const digits = String(value || '').replace(/\D/g, '');
+    if (!digits) return '';
+    return digits.startsWith('0') ? '62' + digits.substring(1) : (digits.startsWith('62') ? digits : '62' + digits);
+}
+
+function refreshRenderedProductLinks() {
+    if (featuredProducts) renderFeaturedProducts(allProductsData.slice(0, 4));
+    if (allProducts) renderAllProducts(allProductsData);
+}
+
 function createRealtimeSubscription(table, callback) {
     const channel = supabase.channel('realtime-' + table + '-' + Date.now());
     channel.on('postgres_changes', { event: '*', schema: 'public', table }, async (payload) => {
@@ -445,16 +456,11 @@ async function refreshContact() {
 
         const waBtn = document.getElementById('waButton');
         if (waBtn) {
-            const cleanNumber = String(settingsData.wa_number || '').replace(/[^0-9]/g, '');
-            let normalizedNumber = cleanNumber;
-            if (normalizedNumber.startsWith('0')) {
-                normalizedNumber = '62' + normalizedNumber.substring(1);
-            } else if (normalizedNumber.startsWith('62') === false && normalizedNumber.length > 0) {
-                normalizedNumber = '62' + normalizedNumber;
-            }
-            waBtn.href = 'https://wa.me/' + normalizedNumber;
+            const normalizedNumber = normalizeWhatsAppNumber(settingsData.wa_number);
+            waBtn.href = normalizedNumber ? 'https://wa.me/' + normalizedNumber : '#';
             storeWaNumber = normalizedNumber || storeWaNumber;
         }
+        refreshRenderedProductLinks();
 
 const mapContainer = document.getElementById('mapContainer');
         if (mapContainer && settingsData.maps_url) {
