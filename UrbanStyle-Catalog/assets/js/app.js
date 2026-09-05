@@ -16,7 +16,7 @@ const searchInput = document.getElementById('searchInput');
 let allProductsData = [];
 let galleryData = [];
 let allCategories = [];
-let storeWaNumber = '6283121514320'; // Default WA Nurul Fashion
+let storeWaNumber = '';
 
 let categoriesUnsubscribe = null;
 let productsUnsubscribe = null;
@@ -29,7 +29,14 @@ function normalizeWhatsAppNumber(value) {
     return digits.startsWith('0') ? '62' + digits.substring(1) : (digits.startsWith('62') ? digits : '62' + digits);
 }
 
+function createWhatsAppUrl(message = '') {
+    if (!storeWaNumber) return '#';
+    const query = message ? '?text=' + encodeURIComponent(message) : '';
+    return 'https://wa.me/' + storeWaNumber + query;
+}
+
 function refreshRenderedProductLinks() {
+    if (allProductsData.length === 0) return;
     if (featuredProducts) renderFeaturedProducts(allProductsData.slice(0, 4));
     if (allProducts) renderAllProducts(allProductsData);
 }
@@ -82,6 +89,7 @@ async function fetchWithRetry(queryFn, label, maxRetries = 3, delayMs = 1200) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
             const result = await queryFn();
+            if (result && result.error) throw result.error;
             return result;
         } catch (error) {
             lastError = error;
@@ -209,11 +217,11 @@ async function loadCategories() {
 }
 
 // ===== Load Products =====
-async function refreshProducts() {
-    if (featuredProducts) {
+async function refreshProducts(showLoading = true) {
+    if (showLoading && featuredProducts) {
         featuredProducts.innerHTML = getProductSkeleton(4);
     }
-    if (allProducts) {
+    if (showLoading && allProducts) {
         allProducts.innerHTML = getProductSkeleton(4);
     }
 
@@ -222,7 +230,6 @@ async function refreshProducts() {
             () => supabase.from('products').select('*').order('created_at', { ascending: false }),
             'produk'
         );
-        if (error) throw error;
         allProductsData = (data || []).map(product => ({ id: product.id, ...product }));
         if (featuredProducts) renderFeaturedProducts(allProductsData.slice(0, 4));
         if (allProducts) renderAllProducts(allProductsData);
@@ -235,9 +242,9 @@ async function refreshProducts() {
 }
 
 async function loadProducts() {
-    await refreshProducts();
+    await refreshProducts(true);
     if (!productsUnsubscribe) {
-        productsUnsubscribe = createRealtimeSubscription('products', refreshProducts);
+        productsUnsubscribe = createRealtimeSubscription('products', () => refreshProducts(false));
     }
 }
 
@@ -288,8 +295,6 @@ function createProductCard(product) {
     const sizes = product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : [];
     const colors = product.warna ? product.warna.split(',').map(c => c.trim()) : [];
     const stockClass = product.stok === 'Tersedia' ? 'tersedia' : 'habis';
-    const waMessage = encodeURIComponent('Halo, saya tertarik dengan produk ' + product.nama);
-
     return '<div class="product-card" data-aos="fade-up">' +
         '<div class="product-image">' +
         '<img src="' + imageUrl + '" alt="' + product.nama + '" loading="lazy">' +
@@ -304,7 +309,7 @@ function createProductCard(product) {
         (colors.length > 0 ? '<div class="product-colors">' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
         '<button type="button" class="btn btn-preview" data-product-id="' + product.id + '"><i class="fas fa-eye"></i> Preview</button>' +
-        '<a href="https://wa.me/' + storeWaNumber + '?text=' + waMessage + '" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a>' +
+        '<a href="' + createWhatsAppUrl('Halo, saya tertarik dengan produk ' + (product.nama || '')) + '" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a>' +
         '</div>' +
         '</div>';
 }
@@ -458,7 +463,7 @@ async function refreshContact() {
         if (waBtn) {
             const normalizedNumber = normalizeWhatsAppNumber(settingsData.wa_number);
             waBtn.href = normalizedNumber ? 'https://wa.me/' + normalizedNumber : '#';
-            storeWaNumber = normalizedNumber || storeWaNumber;
+            storeWaNumber = normalizedNumber;
         }
         refreshRenderedProductLinks();
 
@@ -522,10 +527,9 @@ function openPreviewModal(item, type = 'product', index = null) {
 
     // Setup WhatsApp link
     if (whatsapp) {
-        const message = type === 'gallery'
-            ? encodeURIComponent('Halo, saya tertarik dengan foto galeri: ' + (item.judul || ''))
-            : encodeURIComponent('Halo, saya tertarik dengan produk: ' + (item.nama || ''));
-        whatsapp.href = 'https://wa.me/' + storeWaNumber + '?text=' + message;
+        whatsapp.href = createWhatsAppUrl(type === 'gallery'
+            ? 'Halo, saya tertarik dengan foto galeri: ' + (item.judul || '')
+            : 'Halo, saya tertarik dengan produk: ' + (item.nama || ''));
         whatsapp.style.display = 'inline-flex';
     }
 
@@ -639,8 +643,7 @@ function navigateGallery(direction) {
     if (name) name.textContent = item.judul || '-';
     if (description) description.textContent = item.deskripsi || item.judul || '';
     if (whatsapp) {
-        const message = encodeURIComponent('Halo, saya tertarik dengan foto galeri: ' + (item.judul || ''));
-        whatsapp.href = 'https://wa.me/' + storeWaNumber + '?text=' + message;
+        whatsapp.href = createWhatsAppUrl('Halo, saya tertarik dengan foto galeri: ' + (item.judul || ''));
     }
 }
 
