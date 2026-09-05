@@ -885,9 +885,14 @@ function loadProfilePage() {
 }
 
 document.getElementById('btnSaveKontak').addEventListener('click', async function() {
+    const rawWaNumber = document.getElementById('adminWaNumber').value;
+    const waDigits = String(rawWaNumber || '').replace(/\D/g, '');
+    const canonicalWaNumber = waDigits
+        ? (waDigits.startsWith('0') ? '62' + waDigits.substring(1) : (waDigits.startsWith('62') ? waDigits : '62' + waDigits))
+        : '';
     const data = {
         nama_toko: document.getElementById('adminStoreName').value,
-        wa_number: document.getElementById('adminWaNumber').value,
+        wa_number: canonicalWaNumber,
         email: document.getElementById('adminEmail').value,
         jam_operasional: document.getElementById('adminJam').value,
         alamat: document.getElementById('adminAlamat').value,
@@ -905,6 +910,16 @@ document.getElementById('btnSaveKontak').addEventListener('click', async functio
         } else {
             const { error: updateError } = await supabase.from('settings').update(data).eq('id', existing.id);
             if (updateError) throw updateError;
+        }
+        try {
+            localStorage.setItem('nurul-fashion-wa-number', data.wa_number || '');
+        } catch (storageError) {
+            console.warn('Gagal menyimpan sinkronisasi nomor WhatsApp lokal:', storageError);
+        }
+        if ('BroadcastChannel' in window) {
+            const channel = new BroadcastChannel('nurul-fashion-settings');
+            channel.postMessage({ wa_number: data.wa_number || '' });
+            channel.close();
         }
         showToast('Pengaturan kontak berhasil disimpan!', 'success');
     } catch (error) {

@@ -22,11 +22,37 @@ let categoriesUnsubscribe = null;
 let productsUnsubscribe = null;
 let galleryUnsubscribe = null;
 let settingsUnsubscribe = null;
+let settingsBroadcast = null;
+let settingsRefreshTimer = null;
 
 function normalizeWhatsAppNumber(value) {
     const digits = String(value || '').replace(/\D/g, '');
     if (!digits) return '';
     return digits.startsWith('0') ? '62' + digits.substring(1) : (digits.startsWith('62') ? digits : '62' + digits);
+}
+
+function applyWhatsAppNumber(value) {
+    const normalizedNumber = normalizeWhatsAppNumber(value);
+    if (normalizedNumber === storeWaNumber) return;
+    storeWaNumber = normalizedNumber;
+    const waBtn = document.getElementById('waButton');
+    if (waBtn) waBtn.href = createWhatsAppUrl();
+    refreshRenderedProductLinks();
+}
+
+function setupWhatsAppSync() {
+    const applyMessage = (event) => {
+        const number = event?.data?.wa_number || event?.detail?.wa_number;
+        if (number !== undefined) applyWhatsAppNumber(number);
+    };
+    if ('BroadcastChannel' in window) {
+        settingsBroadcast = new BroadcastChannel('nurul-fashion-settings');
+        settingsBroadcast.addEventListener('message', applyMessage);
+    }
+    window.addEventListener('storage', (event) => {
+        if (event.key !== 'nurul-fashion-wa-number' || event.newValue === null) return;
+        applyWhatsAppNumber(event.newValue);
+    });
 }
 
 function createWhatsAppUrl(message = '') {
@@ -112,6 +138,8 @@ function unsubscribeRealtimeChannels() {
 
 window.addEventListener('beforeunload', () => {
     unsubscribeRealtimeChannels();
+    if (settingsBroadcast) settingsBroadcast.close();
+    if (settingsRefreshTimer) clearInterval(settingsRefreshTimer);
 });
 
 // ===== AOS Init =====
@@ -461,9 +489,7 @@ async function refreshContact() {
 
         const waBtn = document.getElementById('waButton');
         if (waBtn) {
-            const normalizedNumber = normalizeWhatsAppNumber(settingsData.wa_number);
-            waBtn.href = normalizedNumber ? 'https://wa.me/' + normalizedNumber : '#';
-            storeWaNumber = normalizedNumber;
+            applyWhatsAppNumber(settingsData.wa_number);
         }
         refreshRenderedProductLinks();
 
@@ -495,6 +521,9 @@ async function loadContact() {
     await refreshContact();
     if (!settingsUnsubscribe) {
         settingsUnsubscribe = createRealtimeSubscription('settings', refreshContact);
+    }
+    if (!settingsRefreshTimer) {
+        settingsRefreshTimer = setInterval(refreshContact, 15000);
     }
 }
 
@@ -668,6 +697,7 @@ window.addEventListener('keydown', (event) => {
 
 // ===== Init =====
 function initApp() {
+    setupWhatsAppSync();
     loadCategories();
     loadProducts();
     loadGallery();
