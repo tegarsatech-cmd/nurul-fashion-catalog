@@ -482,14 +482,14 @@ async function loadKategoriOptions(selectedValue = '') {
         if (error) throw error;
         const sel = document.getElementById('produkKategori');
         if (!sel) return;
-        sel.innerHTML = '<option value="">Pilih Kategori</option>';
+        sel.innerHTML = '<option value="">Pilih Kelompok Usia</option>';
         (data || []).forEach(cat => {
             const nama = cat.nama || '';
             sel.innerHTML += '<option value="' + nama + '"' + (nama === selectedValue ? ' selected' : '') + '>' + nama + '</option>';
         });
     } catch (error) {
         console.error('Error loading categories:', error);
-        showToast('Gagal memuat kategori', 'error');
+        showToast('Gagal memuat kelompok usia', 'error');
     }
 }
 
@@ -643,8 +643,8 @@ async function refreshKategoriTable() {
         populateKategoriTable(data || []);
     } catch (error) {
         console.error('Kategori load error:', error);
-        if (tbody) tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:40px;">Gagal memuat kategori</td></tr>';
-        showToast('Gagal memuat kategori', 'error');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:40px;">Gagal memuat kelompok usia</td></tr>';
+        showToast('Gagal memuat kelompok usia', 'error');
     }
 }
 
@@ -675,7 +675,7 @@ function loadKategoriTable() {
 }
 
 window.showAddKategoriModal = function() {
-    document.getElementById('kategoriModalTitle').textContent = 'Tambah Kategori';
+    document.getElementById('kategoriModalTitle').textContent = 'Tambah Kelompok Usia';
     document.getElementById('kategoriEditId').value = '';
     document.getElementById('kategoriForm').reset();
     document.getElementById('kategoriModal').classList.add('active');
@@ -689,7 +689,7 @@ window.editKategori = async function(id) {
             if (error.details?.includes('Results contain 0 rows') || error.message?.includes('No rows')) return;
             throw error;
         }
-        document.getElementById('kategoriModalTitle').textContent = 'Edit Kategori';
+        document.getElementById('kategoriModalTitle').textContent = 'Edit Kelompok Usia';
         document.getElementById('kategoriEditId').value = id;
         document.getElementById('kategoriNama').value = kategori.nama || '';
         document.getElementById('kategoriIcon').value = kategori.icon || '';
@@ -737,7 +737,7 @@ document.getElementById('kategoriForm').addEventListener('submit', async (e) => 
         showToast('Gagal menyimpan kategori: ' + (error.message || 'Terjadi kesalahan'), 'error');
     } finally {
         if (btn) {
-            btn.innerHTML = '<i class="fas fa-save"></i> Simpan Kategori';
+            btn.innerHTML = '<i class="fas fa-save"></i> Simpan Kelompok Usia';
             btn.disabled = false;
         }
     }

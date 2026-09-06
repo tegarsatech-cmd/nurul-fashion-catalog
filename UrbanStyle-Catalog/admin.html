@@ -17,7 +17,7 @@
         <nav class="sidebar-nav">
             <a href="#dashboard" class="sidebar-link active" data-page="dashboard"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
             <a href="#produk" class="sidebar-link" data-page="produk"><i class="fas fa-box"></i> <span>Produk</span></a>
-            <a href="#kategori" class="sidebar-link" data-page="kategori"><i class="fas fa-tags"></i> <span>Kategori</span></a>
+            <a href="#kategori" class="sidebar-link" data-page="kategori"><i class="fas fa-tags"></i> <span>Kelompok Usia</span></a>
             <a href="#galeri" class="sidebar-link" data-page="galeri"><i class="fas fa-images"></i> <span>Galeri</span></a>
             <a href="#pengaturan" class="sidebar-link" data-page="pengaturan"><i class="fas fa-cog"></i> <span>Pengaturan</span></a>
             <a href="#" class="sidebar-link logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
@@ -33,7 +33,7 @@
             <div class="welcome-banner"><h2>Selamat datang, <span id="adminName">Admin</span></h2><p>Kelola website Nurul Fashion dengan mudah</p></div>
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-icon"><i class="fas fa-box"></i></div><div class="stat-info"><h3 id="totalProduk">0</h3><p>Total Produk</p></div></div>
-                <div class="stat-card"><div class="stat-icon"><i class="fas fa-tags"></i></div><div class="stat-info"><h3 id="totalKategori">0</h3><p>Total Kategori</p></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-tags"></i></div><div class="stat-info"><h3 id="totalKategori">0</h3><p>Kelompok Usia</p></div></div>
                 <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3 id="produkTersedia">0</h3><p>Produk Tersedia</p></div></div>
                 <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><h3 id="produkHabis">0</h3><p>Produk Habis</p></div></div>
             </div>
@@ -42,13 +42,13 @@
         <!-- ===== PRODUK PAGE ===== -->
         <div class="page" id="page-produk">
             <div class="page-header"><h1>Manajemen Produk</h1><button class="btn btn-primary" id="btnAddProduk"><i class="fas fa-plus"></i> Tambah Produk</button></div>
-            <div class="table-container"><table class="table"><thead><tr><th>Gambar</th><th>Nama</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody id="produkTableBody"></tbody></table></div>
+            <div class="table-container"><table class="table"><thead><tr><th>Gambar</th><th>Nama</th><th>Cocok untuk</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody id="produkTableBody"></tbody></table></div>
         </div>
 
         <!-- ===== KATEGORI PAGE ===== -->
         <div class="page" id="page-kategori">
-            <div class="page-header"><h1>Manajemen Kategori</h1><button class="btn btn-primary" id="btnAddKategori"><i class="fas fa-plus"></i> Tambah Kategori</button></div>
-            <div class="table-container"><table class="table"><thead><tr><th>Icon</th><th>Nama Kategori</th><th>Aksi</th></tr></thead><tbody id="kategoriTableBody"></tbody></table></div>
+            <div class="page-header"><h1>Manajemen Kelompok Usia</h1><button class="btn btn-primary" id="btnAddKategori"><i class="fas fa-plus"></i> Tambah Kelompok Usia</button></div>
+            <div class="table-container"><table class="table"><thead><tr><th>Icon</th><th>Kelompok Usia</th><th>Aksi</th></tr></thead><tbody id="kategoriTableBody"></tbody></table></div>
         </div>
 
         <!-- ===== GALERI PAGE ===== -->
@@ -94,7 +94,7 @@
             <div class="form-group"><label>Judul/Nama Postingan <small>(wajib diisi)</small></label><input type="text" id="produkJudul" placeholder="Contoh: Koleksi Baju Anak" required></div>
             <div class="form-group"><label>Keterangan Foto <small>(opsional)</small></label><textarea id="produkDeskripsi" rows="2" placeholder="Contoh: Koleksi 4 model baju anak"></textarea></div>
             <div class="form-row">
-                <div class="form-group"><label>Kategori <small>(wajib diisi)</small></label><select id="produkKategori" required><option value="">Pilih Kategori</option></select></div>
+                <div class="form-group"><label>Cocok untuk <small>(wajib diisi)</small></label><select id="produkKategori" required><option value="">Pilih Kelompok Usia</option></select></div>
                 <div class="form-group"><label>Ukuran Produk <small>(opsional)</small></label><input type="text" id="produkUkuran" placeholder="Contoh: S, M, L, XL"></div>
             </div>
             <div class="form-row">
@@ -116,14 +116,14 @@
 <!-- ===== MODAL KATEGORI ===== -->
 <div class="modal" id="kategoriModal">
     <div class="modal-content">
-        <div class="modal-header"><h2 id="kategoriModalTitle">Tambah Kategori</h2><span class="modal-close" id="closeKategoriModal">&times;</span></div>
+        <div class="modal-header"><h2 id="kategoriModalTitle">Tambah Kelompok Usia</h2><span class="modal-close" id="closeKategoriModal">&times;</span></div>
         <form id="kategoriForm" class="form-admin">
             <input type="hidden" id="kategoriEditId">
-            <div class="form-group"><label>Nama Kategori <small>(wajib diisi)</small></label><input type="text" id="kategoriNama" placeholder="Contoh: Hoodie" required></div>
+            <div class="form-group"><label>Kelompok Usia <small>(wajib diisi)</small></label><input type="text" id="kategoriNama" placeholder="Contoh: Anak 3-6 Tahun" required></div>
             <div class="form-group"><label>Icon (Font Awesome class) <small>(opsional)</small></label><input type="text" id="kategoriIcon" placeholder="fas fa-tshirt"></div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-cancel" onclick="closeModal('kategoriModal')"><i class="fas fa-times"></i> Batal</button>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Kategori</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Kelompok Usia</button>
             </div>
         </form>
     </div>

@@ -236,7 +236,7 @@ async function refreshCategories() {
         if (error) throw error;
         allCategories = (data || []).map(cat => ({ id: cat.id, ...cat }));
         if (categoryFilter) {
-            categoryFilter.innerHTML = '<option value="all">Semua Kategori</option>';
+            categoryFilter.innerHTML = '<option value="all">Semua Kelompok Usia</option>';
             allCategories.forEach(cat => {
                 categoryFilter.innerHTML += `<option value="${cat.nama}">${cat.nama}</option>`;
             });
@@ -333,7 +333,7 @@ function createProductCard(product, tier = null) {
     const items = normalizeProductItems(product);
     const title = product.judul_postingan || product.nama || 'Produk';
     const firstItem = items.find(item => item.nama) || {};
-    const sizes = product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : [];
+    const sizes = items.length > 0 ? [] : (product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : []);
     const colors = product.warna ? product.warna.split(',').map(c => c.trim()) : [];
     const firstStock = firstItem.stok || product.stok || 'Tersedia';
     const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
@@ -350,9 +350,9 @@ function createProductCard(product, tier = null) {
         (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
         '</div>' +
         '<div class="product-details">' +
-        '<div class="product-category">' + (product.kategori || 'Kategori') + '</div>' +
+        '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
         '<h3 class="product-name">' + title + '</h3>' +
-        (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price">Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
+        (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
         '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
         (colors.length > 0 ? '<div class="product-colors">' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
@@ -413,12 +413,16 @@ function getFeaturedProducts(products) {
             link.classList.toggle('disabled', isItemOutOfStock(product, index));
             const meta = select.closest('.product-whatsapp-group')?.querySelector('.product-selected-meta');
             const stockDisplay = select.closest('.product-card')?.querySelector('[data-product-stock]');
+            const priceDisplay = select.closest('.product-card')?.querySelector('[data-product-price]');
             const item = normalizeProductItems(product)[index] || {};
             if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
             if (stockDisplay) {
                 const stock = item.stok || 'Tersedia';
                 stockDisplay.className = 'product-stock ' + (stock === 'Tersedia' ? 'tersedia' : 'habis');
                 stockDisplay.innerHTML = '<i class="fas ' + (stock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + stock;
+            }
+            if (priceDisplay) {
+                priceDisplay.innerHTML = item.harga === '' || item.harga === undefined ? '' : 'Rp ' + formatPrice(item.harga || 0);
             }
         });
         container.addEventListener('click', event => {
@@ -651,6 +655,17 @@ function updatePreviewWhatsapp(item, type) {
     whatsapp.dataset.outOfStock = isOutOfStock ? '1' : '0';
 }
 
+function updatePreviewSelectionDetails() {
+    if (!currentPreviewProduct) return;
+    const selected = previewProductItems[selectedPreviewItemIndex] || {};
+    const price = document.getElementById('previewPrice');
+    const size = document.getElementById('previewSize');
+    const stock = document.getElementById('previewStock');
+    if (price) price.textContent = selected.harga === '' || selected.harga === undefined ? '' : 'Rp ' + formatPrice(selected.harga || 0);
+    if (size) size.textContent = selected.ukuran || '-';
+    if (stock) stock.textContent = selected.stok || 'Tersedia';
+}
+
 function openPreviewModal(item, type = 'product', index = null) {
     // index used for gallery navigation
     if (type === 'gallery' && typeof index === 'number') currentGalleryIndex = index; else currentGalleryIndex = null;
@@ -682,9 +697,7 @@ function openPreviewModal(item, type = 'product', index = null) {
         : (item.keterangan_foto || 'Klik tombol WhatsApp untuk menghubungi kami.');
     renderPreviewItems(item);
     if (type === 'product') {
-        const selected = previewProductItems[0] || {};
-        if (size) size.textContent = selected.ukuran || '-';
-        if (stock) stock.textContent = selected.stok || item.stok || '-';
+        updatePreviewSelectionDetails();
     }
 
     // Setup WhatsApp link
@@ -718,10 +731,7 @@ if (previewItems) {
         button.classList.add('selected');
         if (currentPreviewProduct) {
             const selected = previewProductItems[selectedPreviewItemIndex] || {};
-            const size = document.getElementById('previewSize');
-            const stock = document.getElementById('previewStock');
-            if (size) size.textContent = selected.ukuran || '-';
-            if (stock) stock.textContent = selected.stok || 'Tersedia';
+            updatePreviewSelectionDetails();
             updatePreviewWhatsapp(currentPreviewProduct, 'product');
         }
     });

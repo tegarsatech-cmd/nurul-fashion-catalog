@@ -111,7 +111,7 @@ body.no-scroll {
 
 .section-badge {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 8px 20px;
     background: rgba(255, 105, 180, 0.1);
     color: var(--secondary);
@@ -542,9 +542,8 @@ body.no-scroll {
     font-weight: 600;
     border-radius: 50px;
     max-width: 75%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.35;
 }
 
 .product-card .product-tier {
@@ -1279,6 +1278,8 @@ body.no-scroll {
 
 .preview-items h4 {
     margin-bottom: 8px;
+    color: var(--primary);
+    font-size: 15px;
 }
 
 .preview-item {
@@ -1294,6 +1295,22 @@ body.no-scroll {
     background: var(--white);
     color: var(--text);
     text-align: left;
+    min-height: 62px;
+    flex-wrap: wrap;
+}
+
+.preview-item span {
+    flex: 1 1 45%;
+    min-width: 120px;
+    font-weight: 600;
+}
+
+.preview-item small {
+    flex: 1 1 100%;
+    order: 3;
+    color: var(--text-light);
+    font-size: 12px;
+    line-height: 1.35;
 }
 
 .preview-item.selected {
