@@ -248,7 +248,7 @@ async function loadCategories() {
 // ===== Load Products =====
 async function refreshProducts(showLoading = true) {
     if (showLoading && featuredProducts) {
-        featuredProducts.innerHTML = getProductSkeleton(4);
+        featuredProducts.innerHTML = getProductSkeleton(3);
     }
     if (showLoading && allProducts) {
         allProducts.innerHTML = getProductSkeleton(4);
@@ -283,7 +283,7 @@ function renderFeaturedProducts(products) {
         featuredProducts.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Belum ada produk</div>';
         return;
     }
-    featuredProducts.innerHTML = products.map(product => createProductCard(product)).join('');
+    featuredProducts.innerHTML = products.slice(0, 3).map((product, index) => createProductCard(product, index + 1)).join('');
 }
 
 // ===== Render All Products =====
@@ -319,7 +319,7 @@ function renderAllProducts(products) {
 }
 
 // ===== Create Product Card =====
-function createProductCard(product) {
+function createProductCard(product, tier = null) {
     const imageUrl = product.gambar || 'https://via.placeholder.com/400x500?text=No+Image';
     const items = normalizeProductItems(product);
     const title = product.judul_postingan || product.nama || 'Produk';
@@ -332,10 +332,11 @@ function createProductCard(product) {
         ? '<label class="product-item-select-label" for="product-item-' + product.id + '">Pilih barang:</label><select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '">' +
           itemOptions.map((item, index) => '<option value="' + index + '">' + (item.nama || 'Barang ' + (index + 1)) + (item.harga === '' ? '' : ' - Rp ' + formatPrice(item.harga)) + '</option>').join('') + '</select>'
         : '';
+    const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
     return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
         '<div class="product-image">' +
         '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
-        '<span class="product-badge">' + (product.kategori || 'Produk') + '</span>' +
+        '<span class="product-badge">' + (product.kategori || 'Produk') + '</span>' + tierBadge +
         (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
         '</div>' +
         '<div class="product-details">' +
@@ -364,8 +365,8 @@ function normalizeProductItems(product) {
 
 function getFeaturedProducts(products) {
         return [...products]
-            .sort((a, b) => (Number(b.wa_clicks) || 0) - (Number(a.wa_clicks) || 0))
-            .slice(0, 4);
+            .sort((a, b) => (Number(b.wa_clicks_monthly) || 0) - (Number(a.wa_clicks_monthly) || 0))
+            .slice(0, 3);
     }
 
     function getWhatsAppMessage(product, itemIndex) {
