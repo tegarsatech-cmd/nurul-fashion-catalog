@@ -545,6 +545,12 @@ window.hapusProduk = async function(id) {
 document.getElementById('produkForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const editId = document.getElementById('produkEditId').value;
+    const imageInput = document.getElementById('produkGambar');
+    const existingPreview = document.getElementById('produkFilePreview')?.classList.contains('show');
+    if (!editId && (!imageInput || imageInput.files.length === 0) && !existingPreview) {
+        showToast('Gambar Produk wajib diisi saat menambah produk.', 'warning');
+        return;
+    }
     const btn = e.target.querySelector('button[type="submit"]');
     const items = collectProductItems();
     const title = document.getElementById('produkJudul').value.trim();
@@ -837,6 +843,12 @@ window.hapusGaleri = async function(id) {
 document.getElementById('galeriForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const editId = document.getElementById('galeriEditId').value;
+    const imageInput = document.getElementById('galeriGambar');
+    const existingPreview = document.getElementById('galeriFilePreview')?.classList.contains('show');
+    if (!editId && (!imageInput || imageInput.files.length === 0) && !existingPreview) {
+        showToast('Upload Foto wajib diisi saat menambah foto galeri.', 'warning');
+        return;
+    }
     const btn = e.target.querySelector('button[type="submit"]');
     const data = { judul: document.getElementById('galeriJudul').value };
     if (!editId) {
@@ -944,6 +956,12 @@ function loadProfilePage() {
 }
 
 document.getElementById('btnSaveKontak').addEventListener('click', async function() {
+    const kontakForm = document.getElementById('kontakForm');
+    if (kontakForm && !kontakForm.checkValidity()) {
+        kontakForm.reportValidity();
+        showToast('Lengkapi semua field pengaturan yang wajib diisi.', 'warning');
+        return;
+    }
     const rawWaNumber = document.getElementById('adminWaNumber').value;
     const waDigits = String(rawWaNumber || '').replace(/\D/g, '');
     const canonicalWaNumber = waDigits

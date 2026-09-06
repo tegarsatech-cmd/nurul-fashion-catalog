@@ -63,21 +63,21 @@
             <div class="page-header"><h1>Pengaturan</h1><button class="btn btn-primary" id="btnSaveKontak"><i class="fas fa-save"></i> Simpan</button></div>
             <form id="kontakForm" class="form-admin">
                 <div class="form-row">
-                    <div class="form-group"><label>Nama Toko</label><input type="text" id="adminStoreName" placeholder="Nurul Fashion"></div>
-                    <div class="form-group"><label>Nomor WhatsApp</label><input type="text" id="adminWaNumber" placeholder="6283121514320"></div>
+                    <div class="form-group"><label>Nama Toko <small>(wajib diisi)</small></label><input type="text" id="adminStoreName" placeholder="Nurul Fashion" required></div>
+                    <div class="form-group"><label>Nomor WhatsApp <small>(wajib diisi)</small></label><input type="text" id="adminWaNumber" placeholder="6283121514320" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Email</label><input type="email" id="adminEmail" placeholder="email@nurulfashion.com"></div>
-                    <div class="form-group"><label>Jam Operasional</label><input type="text" id="adminJam" placeholder="Senin - Sabtu, 09:00 - 21:00"></div>
+                    <div class="form-group"><label>Email <small>(wajib diisi)</small></label><input type="email" id="adminEmail" placeholder="email@nurulfashion.com" required></div>
+                    <div class="form-group"><label>Jam Operasional <small>(wajib diisi)</small></label><input type="text" id="adminJam" placeholder="Senin - Sabtu, 09:00 - 21:00" required></div>
                 </div>
-                <div class="form-group"><label>Alamat</label><textarea id="adminAlamat" rows="2" placeholder="Alamat lengkap toko"></textarea></div>
+                <div class="form-group"><label>Alamat <small>(wajib diisi)</small></label><textarea id="adminAlamat" rows="2" placeholder="Alamat lengkap toko" required></textarea></div>
                 <div class="form-row">
-                    <div class="form-group"><label>Instagram</label><input type="text" id="adminInstagram" placeholder="https://instagram.com/nurulfashion"></div>
-                    <div class="form-group"><label>Facebook</label><input type="text" id="adminFacebook" placeholder="https://facebook.com/nurulfashion"></div>
+                    <div class="form-group"><label>Instagram <small>(opsional)</small></label><input type="text" id="adminInstagram" placeholder="https://instagram.com/nurulfashion"></div>
+                    <div class="form-group"><label>Facebook <small>(opsional)</small></label><input type="text" id="adminFacebook" placeholder="https://facebook.com/nurulfashion"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>TikTok</label><input type="text" id="adminTiktok" placeholder="https://tiktok.com/@nurulfashion"></div>
-                    <div class="form-group"><label>Google Maps Embed URL</label><input type="text" id="adminMapsUrl" placeholder="URL embed Google Maps"></div>
+                    <div class="form-group"><label>TikTok <small>(opsional)</small></label><input type="text" id="adminTiktok" placeholder="https://tiktok.com/@nurulfashion"></div>
+                    <div class="form-group"><label>Google Maps Embed URL <small>(opsional)</small></label><input type="text" id="adminMapsUrl" placeholder="URL embed Google Maps"></div>
                 </div>
             </form>
         </div>
@@ -91,10 +91,10 @@
         <div class="modal-header"><h2 id="produkModalTitle">Tambah Produk</h2><span class="modal-close" id="closeProdukModal">&times;</span></div>
         <form id="produkForm" class="form-admin">
             <input type="hidden" id="produkEditId">
-            <div class="form-group"><label>Judul/Nama Postingan</label><input type="text" id="produkJudul" placeholder="Contoh: Koleksi Baju Anak" required></div>
+            <div class="form-group"><label>Judul/Nama Postingan <small>(wajib diisi)</small></label><input type="text" id="produkJudul" placeholder="Contoh: Koleksi Baju Anak" required></div>
             <div class="form-group"><label>Keterangan Foto <small>(opsional)</small></label><textarea id="produkDeskripsi" rows="2" placeholder="Contoh: Koleksi 4 model baju anak"></textarea></div>
             <div class="form-row">
-                <div class="form-group"><label>Kategori</label><select id="produkKategori" required><option value="">Pilih Kategori</option></select></div>
+                <div class="form-group"><label>Kategori <small>(wajib diisi)</small></label><select id="produkKategori" required><option value="">Pilih Kategori</option></select></div>
                 <div class="form-group"><label>Ukuran Produk <small>(wajib diisi)</small></label><input type="text" id="produkUkuran" placeholder="Contoh: S, M, L, XL" required></div>
             </div>
             <div class="form-row">
@@ -104,7 +104,7 @@
                 <legend>Barang &amp; Harga <small>(opsional, maksimal 10 barang)</small></legend>
                 <div id="produkItems"></div>
             </fieldset>
-            <div class="form-group"><label>Gambar Produk</label><input type="file" id="produkGambar" accept="image/*"><div class="file-preview" id="produkFilePreview"><img id="produkPreviewImg" src="" alt="preview"> <span id="produkFileName"></span></div></div>
+            <div class="form-group"><label>Gambar Produk <small>(wajib saat tambah, opsional saat edit)</small></label><input type="file" id="produkGambar" accept="image/*"><div class="file-preview" id="produkFilePreview"><img id="produkPreviewImg" src="" alt="preview"> <span id="produkFileName"></span></div></div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-cancel" onclick="closeModal('produkModal')"><i class="fas fa-times"></i> Batal</button>
                 <button type="submit" class="btn btn-primary" id="btnSimpanProduk"><i class="fas fa-save"></i> Simpan Produk</button>
@@ -119,8 +119,8 @@
         <div class="modal-header"><h2 id="kategoriModalTitle">Tambah Kategori</h2><span class="modal-close" id="closeKategoriModal">&times;</span></div>
         <form id="kategoriForm" class="form-admin">
             <input type="hidden" id="kategoriEditId">
-            <div class="form-group"><label>Nama Kategori</label><input type="text" id="kategoriNama" placeholder="Contoh: Hoodie" required></div>
-            <div class="form-group"><label>Icon (Font Awesome class)</label><input type="text" id="kategoriIcon" placeholder="fas fa-tshirt"></div>
+            <div class="form-group"><label>Nama Kategori <small>(wajib diisi)</small></label><input type="text" id="kategoriNama" placeholder="Contoh: Hoodie" required></div>
+            <div class="form-group"><label>Icon (Font Awesome class) <small>(opsional)</small></label><input type="text" id="kategoriIcon" placeholder="fas fa-tshirt"></div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-cancel" onclick="closeModal('kategoriModal')"><i class="fas fa-times"></i> Batal</button>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Kategori</button>
@@ -135,8 +135,8 @@
         <div class="modal-header"><h2 id="galeriModalTitle">Tambah Foto Galeri</h2><span class="modal-close" id="closeGaleriModal">&times;</span></div>
         <form id="galeriForm" class="form-admin">
             <input type="hidden" id="galeriEditId">
-            <div class="form-group"><label>Judul Foto</label><input type="text" id="galeriJudul" placeholder="Judul foto" required></div>
-            <div class="form-group"><label>Upload Foto</label><input type="file" id="galeriGambar" accept="image/*"><div class="file-preview" id="galeriFilePreview"><img id="galeriPreviewImg" src="" alt="preview"> <span id="galeriFileName"></span></div></div>
+            <div class="form-group"><label>Judul Foto <small>(wajib diisi)</small></label><input type="text" id="galeriJudul" placeholder="Judul foto" required></div>
+            <div class="form-group"><label>Upload Foto <small>(wajib saat tambah, opsional saat edit)</small></label><input type="file" id="galeriGambar" accept="image/*"><div class="file-preview" id="galeriFilePreview"><img id="galeriPreviewImg" src="" alt="preview"> <span id="galeriFileName"></span></div></div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-cancel" onclick="closeModal('galeriModal')"><i class="fas fa-times"></i> Batal</button>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Foto</button>
