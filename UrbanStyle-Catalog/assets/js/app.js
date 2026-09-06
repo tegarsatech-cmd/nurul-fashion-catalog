@@ -354,7 +354,7 @@ function createProductCard(product, tier = null) {
         '<h3 class="product-name">' + title + '</h3>' +
         (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
         '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
-        (colors.length > 0 ? '<div class="product-colors">' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
+        (colors.length > 0 ? '<div class="product-colors" data-product-colors>' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
         '<button type="button" class="btn btn-preview" data-product-id="' + product.id + '"><i class="fas fa-eye"></i> Preview</button>' +
         '<div class="product-whatsapp-group">' + itemSelect +
@@ -415,6 +415,7 @@ function getFeaturedProducts(products) {
             const meta = select.closest('.product-whatsapp-group')?.querySelector('.product-selected-meta');
             const stockDisplay = select.closest('.product-card')?.querySelector('[data-product-stock]');
             const priceDisplay = select.closest('.product-card')?.querySelector('[data-product-price]');
+            const colorsDisplay = select.closest('.product-card')?.querySelector('[data-product-colors]');
             const item = normalizeProductItems(product)[index] || {};
             if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + (item.warna ? 'Warna: ' + item.warna + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
             if (stockDisplay) {
@@ -424,6 +425,11 @@ function getFeaturedProducts(products) {
             }
             if (priceDisplay) {
                 priceDisplay.innerHTML = item.harga === '' || item.harga === undefined ? '' : 'Rp ' + formatPrice(item.harga || 0);
+            }
+            if (colorsDisplay) {
+                const colors = (item.warna || product.warna || '').split(',').map(color => color.trim()).filter(Boolean);
+                colorsDisplay.innerHTML = colors.map(color => '<span class="color-dot" style="background:' + getColorHex(color) + '" title="' + color + '"></span>').join('');
+                colorsDisplay.setAttribute('aria-label', colors.length ? 'Warna: ' + colors.join(', ') : 'Warna tidak tersedia');
             }
         });
         container.addEventListener('click', event => {
