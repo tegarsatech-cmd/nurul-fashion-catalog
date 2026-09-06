@@ -8,8 +8,8 @@ dist/
 server.js
 *.test
 *.sql
+!supabase_product_postings.sql
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-

@@ -62,6 +62,46 @@ function setupFilePreview(inputId, previewId, imgId, nameId) {
 setupFilePreview('produkGambar', 'produkFilePreview', 'produkPreviewImg', 'produkFileName');
 setupFilePreview('galeriGambar', 'galeriFilePreview', 'galeriPreviewImg', 'galeriFileName');
 
+function normalizeProductItems(product) {
+    if (Array.isArray(product?.items) && product.items.length > 0) {
+        return product.items.slice(0, 10).map(item => ({
+            nama: String(item?.nama || '').trim(),
+            harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga)
+        }));
+    }
+    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '' }] : [];
+}
+
+function renderProductItemInputs(items = []) {
+    const container = document.getElementById('produkItems');
+    if (!container) return;
+    container.innerHTML = Array.from({ length: 10 }, (_, index) => {
+        const item = items[index] || {};
+        return '<div class="product-item-row">' +
+            '<label for="produkItemNama' + index + '">Barang ' + (index + 1) + '</label>' +
+            '<input type="text" id="produkItemNama' + index + '" data-item-name placeholder="Nama barang">' +
+            '<input type="number" id="produkItemHarga' + index + '" data-item-price min="0" step="1" placeholder="Harga (Rp)">' +
+            '</div>';
+    }).join('');
+    items.slice(0, 10).forEach((item, index) => {
+        const name = document.getElementById('produkItemNama' + index);
+        const price = document.getElementById('produkItemHarga' + index);
+        if (name) name.value = item.nama || '';
+        if (price) price.value = item.harga === '' ? '' : item.harga;
+    });
+}
+
+function collectProductItems() {
+    return Array.from(document.querySelectorAll('#produkItems .product-item-row')).map(row => {
+        const name = row.querySelector('[data-item-name]')?.value.trim() || '';
+        const priceValue = row.querySelector('[data-item-price]')?.value.trim() || '';
+        if (!name && !priceValue) return null;
+        return { nama: name, harga: priceValue === '' ? '' : parseInt(priceValue, 10) || 0 };
+    }).filter(Boolean);
+}
+
+renderProductItemInputs();
+
 // ===== Auth State =====
 onAuthStateChanged((user) => {
     if (user) {
@@ -368,7 +408,10 @@ function populateProdukTable(products) {
         return;
     }
     tbody.innerHTML = products.map(p => {
-        return '<tr data-id="' + p.id + '"><td><img src="' + (p.gambar || 'https://via.placeholder.com/50') + '" style="width:50px;height:50px;object-fit:cover;border-radius:8px;"></td><td><strong>' + (p.nama || '-') + '</strong></td><td>' + (p.kategori || '-') + '</td><td>Rp ' + formatPrice(p.harga || 0) + '</td><td><span style="color:' + (p.stok === 'Tersedia' ? '#22c55e' : '#ef4444') + ';font-weight:600;">' + (p.stok || '-') + '</span></td><td><button class="btn-sm btn-edit" data-action="edit"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-delete" data-action="delete"><i class="fas fa-trash"></i></button></td></tr>';
+        const title = p.judul_postingan || p.nama || '-';
+        const items = normalizeProductItems(p);
+        const firstPrice = items.find(item => item.harga !== '')?.harga;
+        return '<tr data-id="' + p.id + '"><td><img src="' + (p.gambar || 'https://via.placeholder.com/50') + '" style="width:50px;height:50px;object-fit:cover;border-radius:8px;"></td><td><strong>' + title + '</strong><small class="admin-item-count">' + items.filter(item => item.nama).length + ' barang</small></td><td>' + (p.kategori || '-') + '</td><td>' + (firstPrice === undefined ? '-' : 'Rp ' + formatPrice(firstPrice)) + '</td><td><span style="color:' + (p.stok === 'Tersedia' ? '#22c55e' : '#ef4444') + ';font-weight:600;">' + (p.stok || '-') + '</span></td><td><button class="btn-sm btn-edit" data-action="edit"><i class="fas fa-edit"></i></button> <button class="btn-sm btn-delete" data-action="delete"><i class="fas fa-trash"></i></button></td></tr>';
     }).join('');
 }
 
@@ -433,6 +476,7 @@ window.showAddProdukModal = async function() {
     document.getElementById('produkModalTitle').textContent = 'Tambah Produk';
     document.getElementById('produkEditId').value = '';
     document.getElementById('produkForm').reset();
+    renderProductItemInputs();
     const produkFilePreview = document.getElementById('produkFilePreview');
     if (produkFilePreview) produkFilePreview.classList.remove('show');
     await loadKategoriOptions();
@@ -452,11 +496,12 @@ window.editProduk = async function(id) {
         }
         document.getElementById('produkModalTitle').textContent = 'Edit Produk';
         document.getElementById('produkEditId').value = id;
-        document.getElementById('produkNama').value = product.nama || '';
-        document.getElementById('produkHarga').value = product.harga || '';
+        document.getElementById('produkJudul').value = product.judul_postingan || product.nama || '';
+        document.getElementById('produkDeskripsi').value = product.keterangan_foto || '';
         document.getElementById('produkStok').value = product.stok || 'Tersedia';
         document.getElementById('produkUkuran').value = product.ukuran || '';
         document.getElementById('produkWarna').value = product.warna || '';
+        renderProductItemInputs(normalizeProductItems(product));
         await loadKategoriOptions(product.kategori || '');
         const produkFilePreview = document.getElementById('produkFilePreview');
         const produkPreviewImg = document.getElementById('produkPreviewImg');
@@ -492,10 +537,15 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const editId = document.getElementById('produkEditId').value;
     const btn = e.target.querySelector('button[type="submit"]');
+    const items = collectProductItems();
+    const title = document.getElementById('produkJudul').value.trim();
     const data = {
-        nama: document.getElementById('produkNama').value,
+        nama: title || items[0]?.nama || 'Koleksi Produk',
+        judul_postingan: title || items[0]?.nama || 'Koleksi Produk',
+        keterangan_foto: document.getElementById('produkDeskripsi').value.trim(),
+        items,
         kategori: document.getElementById('produkKategori').value,
-        harga: parseInt(document.getElementById('produkHarga').value, 10) || 0,
+        harga: items[0]?.harga === '' || items[0]?.harga === undefined ? 0 : items[0].harga,
         stok: document.getElementById('produkStok').value,
         ukuran: document.getElementById('produkUkuran').value,
         warna: document.getElementById('produkWarna').value

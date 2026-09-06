@@ -91,16 +91,20 @@
         <div class="modal-header"><h2 id="produkModalTitle">Tambah Produk</h2><span class="modal-close" id="closeProdukModal">&times;</span></div>
         <form id="produkForm" class="form-admin">
             <input type="hidden" id="produkEditId">
-            <div class="form-group"><label>Nama Produk</label><input type="text" id="produkNama" placeholder="Nama produk" required></div>
+            <div class="form-group"><label>Judul/Nama Postingan</label><input type="text" id="produkJudul" placeholder="Contoh: Koleksi Baju Anak" required></div>
+            <div class="form-group"><label>Keterangan Foto</label><textarea id="produkDeskripsi" rows="2" placeholder="Contoh: Koleksi 4 model baju anak"></textarea></div>
             <div class="form-row">
                 <div class="form-group"><label>Kategori</label><select id="produkKategori" required><option value="">Pilih Kategori</option></select></div>
-                <div class="form-group"><label>Harga (Rp)</label><input type="number" id="produkHarga" placeholder="100000" required></div>
+                <div class="form-group"><label>Stok</label><select id="produkStok"><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>Stok</label><select id="produkStok"><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select></div>
                 <div class="form-group"><label>Ukuran</label><input type="text" id="produkUkuran" placeholder="S, M, L, XL"></div>
+                <div class="form-group"><label>Warna</label><input type="text" id="produkWarna" placeholder="Hitam, Putih, Abu-abu"></div>
             </div>
-            <div class="form-group"><label>Warna</label><input type="text" id="produkWarna" placeholder="Hitam, Putih, Abu-abu"></div>
+            <fieldset class="product-items-fieldset">
+                <legend>Barang &amp; Harga <small>(opsional, maksimal 10 barang)</small></legend>
+                <div id="produkItems"></div>
+            </fieldset>
             <div class="form-group"><label>Gambar Produk</label><input type="file" id="produkGambar" accept="image/*"><div class="file-preview" id="produkFilePreview"><img id="produkPreviewImg" src="" alt="preview"> <span id="produkFileName"></span></div></div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-cancel" onclick="closeModal('produkModal')"><i class="fas fa-times"></i> Batal</button>
@@ -145,4 +149,3 @@
 <script type="module" src="assets/js/admin.js"></script>
 </body>
 </html>
-
