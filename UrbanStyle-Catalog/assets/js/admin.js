@@ -68,7 +68,7 @@ function normalizeProductItems(product) {
             nama: String(item?.nama || '').trim(),
             harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga),
             ukuran: String(item?.ukuran || '').trim(),
-            warna: String(item?.warna || '').trim(),
+            warna: String(item?.warna || item?.color || '').trim(),
             stok: item?.stok === 'Habis' ? 'Habis' : 'Tersedia'
         }));
     }

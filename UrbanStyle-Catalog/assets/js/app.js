@@ -370,7 +370,7 @@ function normalizeProductItems(product) {
             nama: String(item?.nama || '').trim(),
             harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga),
             ukuran: String(item?.ukuran || '').trim(),
-            warna: String(item?.warna || '').trim(),
+            warna: String(item?.warna || item?.color || '').trim(),
             stok: item?.stok === 'Habis' ? 'Habis' : 'Tersedia'
         })).filter(item => item.nama || item.harga !== '');
     }
@@ -631,12 +631,13 @@ function renderPreviewItems(product) {
     previewProductItems = normalizeProductItems(product);
     selectedPreviewItemIndex = 0;
     if (!container) return;
-    const pricedItems = previewProductItems.filter(item => item.nama || item.harga !== '');
-    container.innerHTML = pricedItems.length === 0 ? '' : '<h4>Pilih barang</h4>' + pricedItems.map((item, index) =>
-        '<button type="button" class="preview-item' + (index === 0 ? ' selected' : '') + '" data-item-index="' + index + '">' +
-        '<span>' + (item.nama || 'Barang ' + (index + 1)) + '</span>' +
-        '<small>' + (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + (item.warna ? 'Warna: ' + item.warna + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia') + '</small>' +
-        (item.harga === '' ? '' : '<strong>Rp ' + formatPrice(item.harga || 0) + '</strong>') +
+    const pricedItems = previewProductItems.map((item, index) => ({ item, index }))
+        .filter(entry => entry.item.nama || entry.item.harga !== '');
+    container.innerHTML = pricedItems.length === 0 ? '' : '<h4>Pilih barang</h4>' + pricedItems.map((entry, buttonIndex) =>
+        '<button type="button" class="preview-item' + (buttonIndex === 0 ? ' selected' : '') + '" data-item-index="' + entry.index + '">' +
+        '<span>' + (entry.item.nama || 'Barang ' + (entry.index + 1)) + '</span>' +
+        '<small>' + (entry.item.ukuran ? 'Ukuran: ' + entry.item.ukuran + ' · ' : '') + (entry.item.warna ? 'Warna: ' + entry.item.warna + ' · ' : '') + 'Stok: ' + (entry.item.stok || 'Tersedia') + '</small>' +
+        (entry.item.harga === '' ? '' : '<strong>Rp ' + formatPrice(entry.item.harga || 0) + '</strong>') +
         '</button>'
     ).join('');
 }
