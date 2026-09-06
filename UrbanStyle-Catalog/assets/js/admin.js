@@ -81,10 +81,10 @@ function renderProductItemInputs(items = []) {
         const item = items[index] || {};
         return '<div class="product-item-row">' +
             '<label for="produkItemNama' + index + '">Barang ' + (index + 1) + '</label>' +
-            '<input type="text" id="produkItemNama' + index + '" data-item-name placeholder="Nama barang">' +
-            '<input type="number" id="produkItemHarga' + index + '" data-item-price min="0" step="1" placeholder="Harga (Rp)">' +
-            '<input type="text" id="produkItemUkuran' + index + '" data-item-size placeholder="Ukuran">' +
-            '<select id="produkItemStok' + index + '" data-item-stock><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select>' +
+            '<input type="text" id="produkItemNama' + index + '" data-item-name placeholder="Nama barang (wajib)">' +
+            '<input type="number" id="produkItemHarga' + index + '" data-item-price min="0" step="1" placeholder="Harga (wajib)">' +
+            '<input type="text" id="produkItemUkuran' + index + '" data-item-size placeholder="Ukuran (opsional)">' +
+            '<select id="produkItemStok' + index + '" data-item-stock aria-label="Stok Barang ' + (index + 1) + ' (wajib)"><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select>' +
             '</div>';
     }).join('');
     items.slice(0, 10).forEach((item, index) => {
@@ -100,13 +100,24 @@ function renderProductItemInputs(items = []) {
 }
 
 function collectProductItems() {
-    return Array.from(document.querySelectorAll('#produkItems .product-item-row')).map(row => {
+    const rows = Array.from(document.querySelectorAll('#produkItems .product-item-row'));
+    const invalidRow = rows.find(row => {
+        const name = row.querySelector('[data-item-name]')?.value.trim() || '';
+        const priceValue = row.querySelector('[data-item-price]')?.value.trim() || '';
+        const size = row.querySelector('[data-item-size]')?.value.trim() || '';
+        return (name || priceValue || size) && (!name || !priceValue);
+    });
+    if (invalidRow) {
+        showToast('Setiap barang yang diisi wajib memiliki nama dan harga.', 'warning');
+        return null;
+    }
+    return rows.map(row => {
         const name = row.querySelector('[data-item-name]')?.value.trim() || '';
         const priceValue = row.querySelector('[data-item-price]')?.value.trim() || '';
         const size = row.querySelector('[data-item-size]')?.value.trim() || '';
         const stock = row.querySelector('[data-item-stock]')?.value || 'Tersedia';
         if (!name && !priceValue && !size) return null;
-        return { nama: name, harga: priceValue === '' ? '' : parseInt(priceValue, 10) || 0, ukuran: size, stok: stock };
+        return { nama: name, harga: priceValue === '' ? '' : parseInt(priceValue, 10) || 0, ukuran: size, stok: stock || 'Tersedia' };
     }).filter(Boolean);
 }
 
@@ -553,6 +564,7 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
     }
     const btn = e.target.querySelector('button[type="submit"]');
     const items = collectProductItems();
+    if (items === null) return;
     const title = document.getElementById('produkJudul').value.trim();
     const data = {
         nama: title || items[0]?.nama || 'Koleksi Produk',
