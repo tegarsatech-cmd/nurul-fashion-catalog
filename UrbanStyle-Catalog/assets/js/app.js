@@ -334,7 +334,7 @@ function createProductCard(product, tier = null) {
     const title = product.judul_postingan || product.nama || 'Produk';
     const firstItem = items.find(item => item.nama) || {};
     const sizes = items.length > 0 ? [] : (product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : []);
-    const colors = firstItem.warna ? firstItem.warna.split(',').map(c => c.trim()) : (product.warna ? product.warna.split(',').map(c => c.trim()) : []);
+    const colors = (product.warna || '').split(',').map(c => c.trim()).filter(Boolean);
     const firstStock = firstItem.stok || product.stok || 'Tersedia';
     const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
     const itemOptions = items.filter(item => item.nama || item.harga !== '');
@@ -415,7 +415,6 @@ function getFeaturedProducts(products) {
             const meta = select.closest('.product-whatsapp-group')?.querySelector('.product-selected-meta');
             const stockDisplay = select.closest('.product-card')?.querySelector('[data-product-stock]');
             const priceDisplay = select.closest('.product-card')?.querySelector('[data-product-price]');
-            const colorsDisplay = select.closest('.product-card')?.querySelector('[data-product-colors]');
             const item = normalizeProductItems(product)[index] || {};
             if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + (item.warna ? 'Warna: ' + item.warna + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
             if (stockDisplay) {
@@ -425,11 +424,6 @@ function getFeaturedProducts(products) {
             }
             if (priceDisplay) {
                 priceDisplay.innerHTML = item.harga === '' || item.harga === undefined ? '' : 'Rp ' + formatPrice(item.harga || 0);
-            }
-            if (colorsDisplay) {
-                const colors = (item.warna || product.warna || '').split(',').map(color => color.trim()).filter(Boolean);
-                colorsDisplay.innerHTML = colors.map(color => '<span class="color-dot" style="background:' + getColorHex(color) + '" title="' + color + '"></span>').join('');
-                colorsDisplay.setAttribute('aria-label', colors.length ? 'Warna: ' + colors.join(', ') : 'Warna tidak tersedia');
             }
         });
         container.addEventListener('click', event => {
