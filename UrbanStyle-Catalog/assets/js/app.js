@@ -334,7 +334,7 @@ function createProductCard(product, tier = null) {
     const title = product.judul_postingan || product.nama || 'Produk';
     const firstItem = items.find(item => item.nama) || {};
     const sizes = items.length > 0 ? [] : (product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : []);
-    const colors = product.warna ? product.warna.split(',').map(c => c.trim()) : [];
+    const colors = firstItem.warna ? firstItem.warna.split(',').map(c => c.trim()) : (product.warna ? product.warna.split(',').map(c => c.trim()) : []);
     const firstStock = firstItem.stok || product.stok || 'Tersedia';
     const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
     const itemOptions = items.filter(item => item.nama || item.harga !== '');
@@ -346,7 +346,7 @@ function createProductCard(product, tier = null) {
     return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
         '<div class="product-image">' +
         '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
-        '<span class="product-badge">' + (product.kategori || 'Produk') + '</span>' + tierBadge +
+        tierBadge +
         (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
         '</div>' +
         '<div class="product-details">' +
@@ -358,7 +358,7 @@ function createProductCard(product, tier = null) {
         '<div class="product-actions">' +
         '<button type="button" class="btn btn-preview" data-product-id="' + product.id + '"><i class="fas fa-eye"></i> Preview</button>' +
         '<div class="product-whatsapp-group">' + itemSelect +
-        '<small class="product-selected-meta">' + (firstItem.ukuran ? 'Ukuran: ' + firstItem.ukuran + ' · ' : '') + 'Stok: ' + (firstItem.stok || 'Tersedia') + '</small>' +
+        '<small class="product-selected-meta">' + (firstItem.ukuran ? 'Ukuran: ' + firstItem.ukuran + ' · ' : '') + (firstItem.warna ? 'Warna: ' + firstItem.warna + ' · ' : '') + 'Stok: ' + (firstItem.stok || 'Tersedia') + '</small>' +
         '<a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div>' +
         '</div>' +
         '</div>';
@@ -370,10 +370,11 @@ function normalizeProductItems(product) {
             nama: String(item?.nama || '').trim(),
             harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga),
             ukuran: String(item?.ukuran || '').trim(),
+            warna: String(item?.warna || '').trim(),
             stok: item?.stok === 'Habis' ? 'Habis' : 'Tersedia'
         })).filter(item => item.nama || item.harga !== '');
     }
-    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '', ukuran: product.ukuran || '', stok: product.stok || 'Tersedia' }] : [];
+    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '', ukuran: product.ukuran || '', warna: product.warna || '', stok: product.stok || 'Tersedia' }] : [];
 }
 
 function getFeaturedProducts(products) {
@@ -415,7 +416,7 @@ function getFeaturedProducts(products) {
             const stockDisplay = select.closest('.product-card')?.querySelector('[data-product-stock]');
             const priceDisplay = select.closest('.product-card')?.querySelector('[data-product-price]');
             const item = normalizeProductItems(product)[index] || {};
-            if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
+            if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + (item.warna ? 'Warna: ' + item.warna + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
             if (stockDisplay) {
                 const stock = item.stok || 'Tersedia';
                 stockDisplay.className = 'product-stock ' + (stock === 'Tersedia' ? 'tersedia' : 'habis');
@@ -634,7 +635,7 @@ function renderPreviewItems(product) {
     container.innerHTML = pricedItems.length === 0 ? '' : '<h4>Pilih barang</h4>' + pricedItems.map((item, index) =>
         '<button type="button" class="preview-item' + (index === 0 ? ' selected' : '') + '" data-item-index="' + index + '">' +
         '<span>' + (item.nama || 'Barang ' + (index + 1)) + '</span>' +
-        '<small>' + (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia') + '</small>' +
+        '<small>' + (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + (item.warna ? 'Warna: ' + item.warna + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia') + '</small>' +
         (item.harga === '' ? '' : '<strong>Rp ' + formatPrice(item.harga || 0) + '</strong>') +
         '</button>'
     ).join('');
@@ -661,9 +662,11 @@ function updatePreviewSelectionDetails() {
     const price = document.getElementById('previewPrice');
     const size = document.getElementById('previewSize');
     const stock = document.getElementById('previewStock');
+    const color = document.getElementById('previewColor');
     if (price) price.textContent = selected.harga === '' || selected.harga === undefined ? '' : 'Rp ' + formatPrice(selected.harga || 0);
     if (size) size.textContent = selected.ukuran || '-';
     if (stock) stock.textContent = selected.stok || 'Tersedia';
+    if (color) color.textContent = selected.warna || currentPreviewProduct.warna || '-';
 }
 
 function openPreviewModal(item, type = 'product', index = null) {
@@ -674,7 +677,6 @@ function openPreviewModal(item, type = 'product', index = null) {
     if (!modal) return;
     const title = document.getElementById('previewTitle');
     const image = document.getElementById('previewImage');
-    const name = document.getElementById('previewName');
     const price = document.getElementById('previewPrice');
     const category = document.getElementById('previewCategory');
     const size = document.getElementById('previewSize');
@@ -686,7 +688,6 @@ function openPreviewModal(item, type = 'product', index = null) {
     // Fill content
     if (title) title.textContent = type === 'gallery' ? (item.judul || 'Preview Galeri') : (item.judul_postingan || item.nama || 'Preview Produk');
     if (image) image.src = item.gambar || item.image || 'https://via.placeholder.com/800x800?text=No+Image';
-    if (name) name.textContent = type === 'gallery' ? (item.judul || '-') : (item.judul_postingan || item.nama || '-');
     if (price) price.textContent = type === 'gallery' ? '' : '';
     if (category) category.textContent = type === 'gallery' ? '-' : (item.kategori || '-');
     if (size) size.textContent = type === 'gallery' ? '-' : (item.ukuran || '-');
@@ -837,12 +838,10 @@ function navigateGallery(direction) {
     if (!item) return;
     const image = document.getElementById('previewImage');
     const title = document.getElementById('previewTitle');
-    const name = document.getElementById('previewName');
     const description = document.getElementById('previewDescription');
     const whatsapp = document.getElementById('previewWhatsapp');
     if (image) image.src = item.gambar || item.image || 'https://via.placeholder.com/800x800?text=No+Image';
     if (title) title.textContent = item.judul || 'Preview Galeri';
-    if (name) name.textContent = item.judul || '-';
     if (description) description.textContent = item.deskripsi || item.judul || '';
     if (whatsapp) {
         whatsapp.href = createWhatsAppUrl('Halo, saya tertarik dengan foto galeri: ' + (item.judul || ''));
