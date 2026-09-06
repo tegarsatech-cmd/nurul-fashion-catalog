@@ -508,7 +508,6 @@ window.editProduk = async function(id) {
         document.getElementById('produkEditId').value = id;
         document.getElementById('produkJudul').value = product.judul_postingan || product.nama || '';
         document.getElementById('produkDeskripsi').value = product.keterangan_foto || '';
-        document.getElementById('produkStok').value = product.stok || 'Tersedia';
         document.getElementById('produkUkuran').value = product.ukuran || '';
         document.getElementById('produkWarna').value = product.warna || '';
         renderProductItemInputs(normalizeProductItems(product));
@@ -556,7 +555,7 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
         items,
         kategori: document.getElementById('produkKategori').value,
         harga: items[0]?.harga === '' || items[0]?.harga === undefined ? 0 : items[0].harga,
-        stok: document.getElementById('produkStok').value,
+        stok: items[0]?.stok || 'Tersedia',
         ukuran: document.getElementById('produkUkuran').value,
         warna: document.getElementById('produkWarna').value
     };

@@ -335,7 +335,8 @@ function createProductCard(product, tier = null) {
     const firstItem = items.find(item => item.nama) || {};
     const sizes = product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : [];
     const colors = product.warna ? product.warna.split(',').map(c => c.trim()) : [];
-    const stockClass = product.stok === 'Tersedia' ? 'tersedia' : 'habis';
+    const firstStock = firstItem.stok || product.stok || 'Tersedia';
+    const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
     const itemOptions = items.filter(item => item.nama || item.harga !== '');
     const itemSelect = itemOptions.length > 1
         ? '<label class="product-item-select-label" for="product-item-' + product.id + '">Pilih barang:</label><select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '">' +
@@ -352,7 +353,7 @@ function createProductCard(product, tier = null) {
         '<div class="product-category">' + (product.kategori || 'Kategori') + '</div>' +
         '<h3 class="product-name">' + title + '</h3>' +
         (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price">Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
-        '<div class="product-stock ' + stockClass + '"><i class="fas ' + (product.stok === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + (product.stok || 'Tersedia') + '</div>' +
+        '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
         (colors.length > 0 ? '<div class="product-colors">' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
         '<button type="button" class="btn btn-preview" data-product-id="' + product.id + '"><i class="fas fa-eye"></i> Preview</button>' +
@@ -411,8 +412,14 @@ function getFeaturedProducts(products) {
             link.href = createWhatsAppUrl(getWhatsAppMessage(product, index));
             link.classList.toggle('disabled', isItemOutOfStock(product, index));
             const meta = select.closest('.product-whatsapp-group')?.querySelector('.product-selected-meta');
+            const stockDisplay = select.closest('.product-card')?.querySelector('[data-product-stock]');
             const item = normalizeProductItems(product)[index] || {};
             if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
+            if (stockDisplay) {
+                const stock = item.stok || 'Tersedia';
+                stockDisplay.className = 'product-stock ' + (stock === 'Tersedia' ? 'tersedia' : 'habis');
+                stockDisplay.innerHTML = '<i class="fas ' + (stock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + stock;
+            }
         });
         container.addEventListener('click', event => {
             const link = event.target.closest('.btn-whatsapp[data-product-id]');
