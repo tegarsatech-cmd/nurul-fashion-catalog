@@ -346,6 +346,7 @@ function createProductCard(product, tier = null) {
     return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
         '<div class="product-image">' +
         '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
+        '<span class="product-image-hint" aria-label="Buka detail produk"><i class="fas fa-expand-alt" aria-hidden="true"></i></span>' +
         tierBadge +
         (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
         '</div>' +
@@ -356,7 +357,6 @@ function createProductCard(product, tier = null) {
         '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
         (colors.length > 0 ? '<div class="product-colors" data-product-colors>' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
-        '<button type="button" class="btn btn-preview" data-product-id="' + product.id + '"><i class="fas fa-eye"></i> Preview</button>' +
         '<div class="product-whatsapp-group">' + itemSelect +
         '<small class="product-selected-meta">' + (firstItem.ukuran ? 'Ukuran: ' + firstItem.ukuran + ' · ' : '') + (firstItem.warna ? 'Warna: ' + firstItem.warna + ' · ' : '') + 'Stok: ' + (firstItem.stok || 'Tersedia') + '</small>' +
         '<a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div>' +
@@ -499,9 +499,10 @@ if (searchInput) searchInput.addEventListener('input', debounce(() => renderAllP
 if (featuredProducts) {
     setupProductWhatsAppInteractions(featuredProducts);
     featuredProducts.addEventListener('click', (event) => {
-        const previewButton = event.target.closest('.btn-preview');
-        if (!previewButton) return;
-        const productId = previewButton.dataset.productId;
+        const productImage = event.target.closest('.product-image');
+        if (!productImage) return;
+        const productCard = productImage.closest('[data-product-card-id]');
+        const productId = productCard?.dataset.productCardId;
         const product = allProductsData.find(p => p.id === productId);
         if (product) openPreviewModal(product, 'product');
     });
@@ -510,9 +511,10 @@ if (featuredProducts) {
 if (allProducts) {
     setupProductWhatsAppInteractions(allProducts);
     allProducts.addEventListener('click', (event) => {
-        const previewButton = event.target.closest('.btn-preview');
-        if (!previewButton) return;
-        const productId = previewButton.dataset.productId;
+        const productImage = event.target.closest('.product-image');
+        if (!productImage) return;
+        const productCard = productImage.closest('[data-product-card-id]');
+        const productId = productCard?.dataset.productCardId;
         const product = allProductsData.find(p => p.id === productId);
         if (product) openPreviewModal(product, 'product');
     });

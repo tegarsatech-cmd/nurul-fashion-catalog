@@ -526,6 +526,26 @@ body.no-scroll {
     transition: transform 0.5s ease;
 }
 
+.product-card .product-image {
+    cursor: pointer;
+}
+
+.product-image-hint {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(17, 17, 17, 0.28);
+    font-size: 11px;
+    pointer-events: none;
+}
+
 .product-card:hover .product-image img {
     transform: scale(1.06);
 }
@@ -675,35 +695,13 @@ body.no-scroll {
     flex-shrink: 0;
 }
 
-/* Action buttons: Preview & WhatsApp side-by-side (never stacked) */
+/* Product actions */
 .product-actions {
     display: flex;
     gap: 8px;
     margin-top: auto;
     padding-top: 8px;
     width: 100%;
-}
-
-.product-actions .btn-preview {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 44px;
-    padding: 10px 8px;
-    font-size: 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(17, 17, 17, 0.08);
-    background: rgba(255, 255, 255, 0.95);
-    color: var(--primary);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: background 0.25s ease, transform 0.25s ease;
-}
-
-.product-actions .btn-preview:hover {
-    background: rgba(250, 250, 250, 1);
-    transform: translateY(-1px);
 }
 
 .product-actions .btn-whatsapp {
@@ -2085,7 +2083,7 @@ img {
     min-height: 0;
 }
 
-/* 5. Tombol Preview & WhatsApp tidak bertumpuk, mudah ditekan */
+/* 5. Tombol WhatsApp mudah ditekan */
 .product-actions {
     display: flex;
     gap: 10px;
@@ -2093,7 +2091,6 @@ img {
     margin-top: auto;
 }
 
-.product-actions .btn-preview,
 .product-actions .btn-whatsapp {
     flex: 1 1 0;
     min-width: 0;
