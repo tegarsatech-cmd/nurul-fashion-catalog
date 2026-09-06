@@ -66,10 +66,12 @@ function normalizeProductItems(product) {
     if (Array.isArray(product?.items) && product.items.length > 0) {
         return product.items.slice(0, 10).map(item => ({
             nama: String(item?.nama || '').trim(),
-            harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga)
+            harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga),
+            ukuran: String(item?.ukuran || '').trim(),
+            stok: item?.stok === 'Habis' ? 'Habis' : 'Tersedia'
         }));
     }
-    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '' }] : [];
+    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '', ukuran: product.ukuran || '', stok: product.stok || 'Tersedia' }] : [];
 }
 
 function renderProductItemInputs(items = []) {
@@ -81,13 +83,19 @@ function renderProductItemInputs(items = []) {
             '<label for="produkItemNama' + index + '">Barang ' + (index + 1) + '</label>' +
             '<input type="text" id="produkItemNama' + index + '" data-item-name placeholder="Nama barang">' +
             '<input type="number" id="produkItemHarga' + index + '" data-item-price min="0" step="1" placeholder="Harga (Rp)">' +
+            '<input type="text" id="produkItemUkuran' + index + '" data-item-size placeholder="Ukuran">' +
+            '<select id="produkItemStok' + index + '" data-item-stock><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select>' +
             '</div>';
     }).join('');
     items.slice(0, 10).forEach((item, index) => {
         const name = document.getElementById('produkItemNama' + index);
         const price = document.getElementById('produkItemHarga' + index);
+        const size = document.getElementById('produkItemUkuran' + index);
+        const stock = document.getElementById('produkItemStok' + index);
         if (name) name.value = item.nama || '';
         if (price) price.value = item.harga === '' ? '' : item.harga;
+        if (size) size.value = item.ukuran || '';
+        if (stock) stock.value = item.stok || 'Tersedia';
     });
 }
 
@@ -95,8 +103,10 @@ function collectProductItems() {
     return Array.from(document.querySelectorAll('#produkItems .product-item-row')).map(row => {
         const name = row.querySelector('[data-item-name]')?.value.trim() || '';
         const priceValue = row.querySelector('[data-item-price]')?.value.trim() || '';
-        if (!name && !priceValue) return null;
-        return { nama: name, harga: priceValue === '' ? '' : parseInt(priceValue, 10) || 0 };
+        const size = row.querySelector('[data-item-size]')?.value.trim() || '';
+        const stock = row.querySelector('[data-item-stock]')?.value || 'Tersedia';
+        if (!name && !priceValue && !size) return null;
+        return { nama: name, harga: priceValue === '' ? '' : parseInt(priceValue, 10) || 0, ukuran: size, stok: stock };
     }).filter(Boolean);
 }
 

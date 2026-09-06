@@ -1333,6 +1333,16 @@ body.no-scroll {
     width: 100%;
 }
 
+.product-selected-meta {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+.product-whatsapp-group .btn-whatsapp.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 .preview-description {
     margin-top: 6px;
     color: var(--text);

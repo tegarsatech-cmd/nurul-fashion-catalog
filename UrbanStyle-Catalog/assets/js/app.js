@@ -33,6 +33,15 @@ function normalizeWhatsAppNumber(value) {
     return digits.startsWith('0') ? '62' + digits.substring(1) : (digits.startsWith('62') ? digits : '62' + digits);
 }
 
+function isItemOutOfStock(product, itemIndex) {
+    const item = normalizeProductItems(product)[itemIndex] || {};
+    return item.stok === 'Habis';
+}
+
+function notifyOutOfStock() {
+    showToast('Barang yang dipilih sedang habis dan tidak dapat dilanjutkan ke WhatsApp.', 'warning');
+}
+
 function applyWhatsAppNumber(value) {
     const normalizedNumber = normalizeWhatsAppNumber(value);
     if (normalizedNumber === storeWaNumber) return;
@@ -330,7 +339,7 @@ function createProductCard(product, tier = null) {
     const itemOptions = items.filter(item => item.nama || item.harga !== '');
     const itemSelect = itemOptions.length > 1
         ? '<label class="product-item-select-label" for="product-item-' + product.id + '">Pilih barang:</label><select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '">' +
-          itemOptions.map((item, index) => '<option value="' + index + '">' + (item.nama || 'Barang ' + (index + 1)) + (item.harga === '' ? '' : ' - Rp ' + formatPrice(item.harga)) + '</option>').join('') + '</select>'
+          itemOptions.map((item, index) => '<option value="' + index + '"' + (item.stok === 'Habis' ? ' data-stock="Habis"' : '') + '>' + (item.nama || 'Barang ' + (index + 1)) + (item.harga === '' ? '' : ' - Rp ' + formatPrice(item.harga)) + (item.stok === 'Habis' ? ' (Habis)' : '') + '</option>').join('') + '</select>'
         : '';
     const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
     return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
@@ -348,7 +357,8 @@ function createProductCard(product, tier = null) {
         '<div class="product-actions">' +
         '<button type="button" class="btn btn-preview" data-product-id="' + product.id + '"><i class="fas fa-eye"></i> Preview</button>' +
         '<div class="product-whatsapp-group">' + itemSelect +
-        '<a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div>' +
+        '<small class="product-selected-meta">' + (firstItem.ukuran ? 'Ukuran: ' + firstItem.ukuran + ' · ' : '') + 'Stok: ' + (firstItem.stok || 'Tersedia') + '</small>' +
+        '<a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div>' +
         '</div>' +
         '</div>';
 }
@@ -357,10 +367,12 @@ function normalizeProductItems(product) {
     if (Array.isArray(product?.items) && product.items.length > 0) {
         return product.items.slice(0, 10).map(item => ({
             nama: String(item?.nama || '').trim(),
-            harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga)
+            harga: item?.harga === '' || item?.harga === null || item?.harga === undefined ? '' : Number(item.harga),
+            ukuran: String(item?.ukuran || '').trim(),
+            stok: item?.stok === 'Habis' ? 'Habis' : 'Tersedia'
         })).filter(item => item.nama || item.harga !== '');
     }
-    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '' }] : [];
+    return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '', ukuran: product.ukuran || '', stok: product.stok || 'Tersedia' }] : [];
 }
 
 function getFeaturedProducts(products) {
@@ -397,12 +409,21 @@ function getFeaturedProducts(products) {
             const index = Number(select.value) || 0;
             link.dataset.itemIndex = String(index);
             link.href = createWhatsAppUrl(getWhatsAppMessage(product, index));
+            link.classList.toggle('disabled', isItemOutOfStock(product, index));
+            const meta = select.closest('.product-whatsapp-group')?.querySelector('.product-selected-meta');
+            const item = normalizeProductItems(product)[index] || {};
+            if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
         });
         container.addEventListener('click', event => {
             const link = event.target.closest('.btn-whatsapp[data-product-id]');
             if (!link) return;
             const product = allProductsData.find(item => item.id === link.dataset.productId);
             if (!product) return;
+            if (isItemOutOfStock(product, Number(link.dataset.itemIndex) || 0)) {
+                event.preventDefault();
+                notifyOutOfStock();
+                return;
+            }
             link.href = createWhatsAppUrl(getWhatsAppMessage(product, Number(link.dataset.itemIndex) || 0));
             trackWhatsAppClick(product.id);
         });
@@ -602,6 +623,7 @@ function renderPreviewItems(product) {
     container.innerHTML = pricedItems.length === 0 ? '' : '<h4>Pilih barang</h4>' + pricedItems.map((item, index) =>
         '<button type="button" class="preview-item' + (index === 0 ? ' selected' : '') + '" data-item-index="' + index + '">' +
         '<span>' + (item.nama || 'Barang ' + (index + 1)) + '</span>' +
+        '<small>' + (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia') + '</small>' +
         (item.harga === '' ? '' : '<strong>Rp ' + formatPrice(item.harga || 0) + '</strong>') +
         '</button>'
     ).join('');
@@ -617,6 +639,9 @@ function updatePreviewWhatsapp(item, type) {
     whatsapp.href = createWhatsAppUrl(type === 'gallery'
         ? 'Halo, saya tertarik dengan foto galeri: ' + (item.judul || '')
         : 'Halo, saya tertarik dengan ' + title + itemText + priceText);
+    const isOutOfStock = type === 'product' && selected?.stok === 'Habis';
+    whatsapp.classList.toggle('disabled', isOutOfStock);
+    whatsapp.dataset.outOfStock = isOutOfStock ? '1' : '0';
 }
 
 function openPreviewModal(item, type = 'product', index = null) {
@@ -649,6 +674,11 @@ function openPreviewModal(item, type = 'product', index = null) {
         ? (item.deskripsi || item.judul || 'Klik tombol WhatsApp untuk menghubungi kami.')
         : (item.keterangan_foto || 'Klik tombol WhatsApp untuk menghubungi kami.');
     renderPreviewItems(item);
+    if (type === 'product') {
+        const selected = previewProductItems[0] || {};
+        if (size) size.textContent = selected.ukuran || '-';
+        if (stock) stock.textContent = selected.stok || item.stok || '-';
+    }
 
     // Setup WhatsApp link
     if (whatsapp) {
@@ -679,13 +709,25 @@ if (previewItems) {
         selectedPreviewItemIndex = Number(button.dataset.itemIndex);
         previewItems.querySelectorAll('.preview-item').forEach(item => item.classList.remove('selected'));
         button.classList.add('selected');
-        if (currentPreviewProduct) updatePreviewWhatsapp(currentPreviewProduct, 'product');
+        if (currentPreviewProduct) {
+            const selected = previewProductItems[selectedPreviewItemIndex] || {};
+            const size = document.getElementById('previewSize');
+            const stock = document.getElementById('previewStock');
+            if (size) size.textContent = selected.ukuran || '-';
+            if (stock) stock.textContent = selected.stok || 'Tersedia';
+            updatePreviewWhatsapp(currentPreviewProduct, 'product');
+        }
     });
 }
 
 const previewWhatsapp = document.getElementById('previewWhatsapp');
 if (previewWhatsapp) {
-    previewWhatsapp.addEventListener('click', () => {
+    previewWhatsapp.addEventListener('click', event => {
+        if (previewWhatsapp.dataset.outOfStock === '1') {
+            event.preventDefault();
+            notifyOutOfStock();
+            return;
+        }
         if (previewWhatsapp.dataset.productId) trackWhatsAppClick(previewWhatsapp.dataset.productId);
     });
 }
