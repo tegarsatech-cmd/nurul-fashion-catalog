@@ -580,7 +580,7 @@ function createProductCard(product, tier = null) {
         '<h3 class="product-name">' + title + '</h3>' +
         (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
         '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
-        (colors.length > 0 ? '<div class="product-colors" data-product-colors>' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
+        (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
         '<div class="product-whatsapp-group">' + itemSelect +
         '<div class="product-selected-meta" aria-live="polite"><span><strong>Ukuran</strong><em>' + (firstItem.ukuran || '-') + '</em></span><span><strong>Warna</strong><em>' + (firstItem.warna || '-') + '</em></span><span><strong>Stok</strong><em>' + (firstItem.stok || 'Tersedia') + '</em></span></div>' +
@@ -661,6 +661,14 @@ function getFeaturedProducts(products) {
             }
         });
         container.addEventListener('click', event => {
+            const colorButton = event.target.closest('.color-dot[data-color-name]');
+            if (!colorButton) return;
+            const colors = colorButton.closest('[data-product-colors]')?.querySelectorAll('.color-dot');
+            colors?.forEach(dot => dot.classList.remove('active'));
+            colorButton.classList.add('active');
+            showToast('WARNA: ' + colorButton.dataset.colorName, 'info');
+        });
+        container.addEventListener('click', event => {
             const cartButton = event.target.closest('.btn-cart[data-cart-product-id]');
             if (cartButton) {
                 const product = allProductsData.find(item => item.id === cartButton.dataset.cartProductId);
@@ -712,14 +720,32 @@ function getGallerySkeleton(count) {
 
 // ===== Get Color Hex =====
 function getColorHex(color) {
+    const key = String(color || '').trim().toLowerCase().replace(/\s+/g, ' ');
     const colorMap = {
-        'hitam': '#000000', 'putih': '#FFFFFF', 'abu-abu': '#808080',
-        'merah': '#FF0000', 'biru': '#0000FF', 'hijau': '#00FF00',
-        'kuning': '#FFFF00', 'coklat': '#8B4513', 'navy': '#000080',
-        'maroon': '#800000', 'cream': '#FFFDD0', 'abu': '#808080',
-        'gold': '#D4AF37', 'army': '#4B5320'
+        'merah': '#ef4444', 'merah marun': '#800000', 'maroon': '#800000', 'merah bata': '#b55239',
+        'merah muda': '#f472b6', 'pink': '#ec4899', 'dusty pink': '#d8a0a6', 'baby pink': '#f8c8dc',
+        'salem': '#f3a683', 'peach': '#ffcba4', 'magenta': '#d946ef', 'fuchsia': '#c026d3',
+        'ungu': '#7e22ce', 'lilac': '#c8a2c8', 'lavender': '#b57edc', 'dusty purple': '#93708c', 'violet': '#8b5cf6',
+        'biru': '#2563eb', 'navy': '#000080', 'baby blue': '#89cff0', 'sky blue': '#38bdf8',
+        'denim': '#3f5f8f', 'royal blue': '#4169e1', 'dusty blue': '#7b9bb2', 'tosca': '#2dd4bf', 'turquoise': '#14b8a6',
+        'mint': '#98ff98', 'hijau': '#22c55e', 'hijau army': '#4b5320', 'army': '#4b5320', 'olive': '#808000',
+        'sage': '#9caf88', 'emerald': '#059669', 'lime': '#84cc16', 'hijau botol': '#006a4e',
+        'kuning': '#facc15', 'mustard': '#d4a017', 'kuning lemon': '#fff44f', 'orange': '#f97316',
+        'terracotta': '#c65d42', 'coklat': '#92400e', 'mocca': '#967969', 'khaki': '#c3b091',
+        'caramel': '#c68e53', 'tan': '#d2b48c', 'beige': '#f5f5dc', 'cream': '#fffdd0',
+        'broken white': '#f8f7f2', 'putih': '#ffffff', 'abu-abu': '#808080', 'abu': '#808080',
+        'silver': '#c0c0c0', 'charcoal': '#36454f', 'hitam': '#000000'
     };
-    return colorMap[(color || '').toLowerCase()] || '#cccccc';
+    return colorMap[key] || '#cccccc';
+}
+
+function getColorVisual(color) {
+    const name = String(color || '').trim();
+    const key = name.toLowerCase();
+    if (/rainbow|motif|mix color|multi/i.test(key)) {
+        return 'linear-gradient(135deg, #ef4444 0%, #facc15 25%, #22c55e 50%, #38bdf8 75%, #a855f7 100%)';
+    }
+    return getColorHex(name);
 }
 
 // ===== Utility =====
