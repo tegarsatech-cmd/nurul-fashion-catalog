@@ -165,6 +165,8 @@ function setupDraggableCartButton(button) {
     let moved = false;
     let offsetX = 0;
     let offsetY = 0;
+    let startX = 0;
+    let startY = 0;
 
     button.addEventListener('pointerdown', event => {
         if (event.button !== undefined && event.button !== 0) return;
@@ -173,13 +175,16 @@ function setupDraggableCartButton(button) {
         const rect = button.getBoundingClientRect();
         offsetX = event.clientX - rect.left;
         offsetY = event.clientY - rect.top;
+        startX = event.clientX;
+        startY = event.clientY;
         button.setPointerCapture?.(event.pointerId);
-        button.classList.add('is-dragging');
     });
 
     button.addEventListener('pointermove', event => {
         if (!dragging) return;
+        if (!moved && Math.hypot(event.clientX - startX, event.clientY - startY) < 8) return;
         moved = true;
+        button.classList.add('is-dragging');
         const width = button.offsetWidth;
         const height = button.offsetHeight;
         const left = Math.min(Math.max(0, event.clientX - offsetX), window.innerWidth - width);

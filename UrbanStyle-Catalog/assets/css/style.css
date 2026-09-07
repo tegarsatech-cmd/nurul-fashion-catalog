@@ -1043,8 +1043,8 @@ body.no-scroll {
 }
 
 .footer-brand .logo {
-    width: 50px;
-    height: 50px;
+    width: 58px;
+    height: 58px;
     font-size: 20px;
     margin: 0 auto 12px;
 }
@@ -1517,8 +1517,8 @@ body.no-scroll {
 @media (max-width: 575px) {
     .cart-button {
         right: 10px;
-        width: 46px;
-        height: 46px;
+        width: 54px;
+        height: 54px;
         font-size: 21px;
     }
 }
