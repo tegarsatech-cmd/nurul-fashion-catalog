@@ -720,23 +720,27 @@ function getGallerySkeleton(count) {
 
 // ===== Get Color Hex =====
 function getColorHex(color) {
-    const key = String(color || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    const key = String(color || '').trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
     const colorMap = {
-        'merah': '#ef4444', 'merah marun': '#800000', 'maroon': '#800000', 'merah bata': '#b55239',
-        'merah muda': '#f472b6', 'pink': '#ec4899', 'dusty pink': '#d8a0a6', 'baby pink': '#f8c8dc',
-        'salem': '#f3a683', 'peach': '#ffcba4', 'magenta': '#d946ef', 'fuchsia': '#c026d3',
-        'ungu': '#7e22ce', 'lilac': '#c8a2c8', 'lavender': '#b57edc', 'dusty purple': '#93708c', 'violet': '#8b5cf6',
-        'biru': '#2563eb', 'navy': '#000080', 'baby blue': '#89cff0', 'sky blue': '#38bdf8',
-        'denim': '#3f5f8f', 'royal blue': '#4169e1', 'dusty blue': '#7b9bb2', 'tosca': '#2dd4bf', 'turquoise': '#14b8a6',
+        'merah': '#ef4444', 'merah marun': '#800000', 'marun': '#800000', 'maroon': '#800000', 'merah bata': '#b55239',
+        'merah muda': '#f472b6', 'pink': '#ec4899', 'dusty pink': '#d8a0a6', 'baby pink': '#f8c8dc', 'rose': '#e11d48',
+        'salem': '#f3a683', 'peach': '#ffcba4', 'coral': '#ff7f50', 'salmon': '#fa8072', 'magenta': '#d946ef', 'fuchsia': '#c026d3',
+        'ungu': '#7e22ce', 'ungu muda': '#c8a2c8', 'lilac': '#c8a2c8', 'lavender': '#b57edc', 'dusty purple': '#93708c', 'violet': '#8b5cf6', 'mauve': '#e0b0ff', 'plum': '#8e4585',
+        'biru': '#2563eb', 'biru muda': '#60a5fa', 'navy': '#000080', 'dark navy': '#001f3f', 'baby blue': '#89cff0', 'sky blue': '#38bdf8', 'powder blue': '#b0e0e6', 'ice blue': '#d9f3ff',
+        'denim': '#3f5f8f', 'royal blue': '#4169e1', 'dusty blue': '#7b9bb2', 'tosca': '#2dd4bf', 'turquoise': '#14b8a6', 'teal': '#0f766e',
         'mint': '#98ff98', 'hijau': '#22c55e', 'hijau army': '#4b5320', 'army': '#4b5320', 'olive': '#808000',
         'sage': '#9caf88', 'emerald': '#059669', 'lime': '#84cc16', 'hijau botol': '#006a4e',
-        'kuning': '#facc15', 'mustard': '#d4a017', 'kuning lemon': '#fff44f', 'orange': '#f97316',
-        'terracotta': '#c65d42', 'coklat': '#92400e', 'mocca': '#967969', 'khaki': '#c3b091',
-        'caramel': '#c68e53', 'tan': '#d2b48c', 'beige': '#f5f5dc', 'cream': '#fffdd0',
-        'broken white': '#f8f7f2', 'putih': '#ffffff', 'abu-abu': '#808080', 'abu': '#808080',
-        'silver': '#c0c0c0', 'charcoal': '#36454f', 'hitam': '#000000'
+        'kuning': '#facc15', 'mustard': '#d4a017', 'kuning lemon': '#fff44f', 'lemon': '#fff44f', 'orange': '#f97316',
+        'terracotta': '#c65d42', 'coklat': '#92400e', 'mocca': '#967969', 'coklat susu': '#a67b5b', 'coklat tua': '#4a2c2a', 'khaki': '#c3b091',
+        'caramel': '#c68e53', 'tan': '#d2b48c', 'beige': '#f5f5dc', 'cream': '#fffdd0', 'ivory': '#fffff0',
+        'broken white': '#f8f7f2', 'putih': '#ffffff', 'abu-abu': '#808080', 'abu': '#808080', 'abu-abu muda': '#d3d3d3',
+        'abu-abu tua': '#555555', 'silver': '#c0c0c0', 'charcoal': '#36454f', 'hitam': '#000000'
     };
-    return colorMap[key] || '#cccccc';
+    if (colorMap[key]) return colorMap[key];
+    const cssColor = String(color || '').trim();
+    if (/^#([\da-f]{3}|[\da-f]{6})$/i.test(cssColor) || /^rgba?\(/i.test(cssColor) || /^hsla?\(/i.test(cssColor)) return cssColor;
+    const hue = Array.from(key).reduce((sum, character) => sum + character.charCodeAt(0), 0) % 360;
+    return 'hsl(' + hue + ' 42% 62%)';
 }
 
 function getColorVisual(color) {

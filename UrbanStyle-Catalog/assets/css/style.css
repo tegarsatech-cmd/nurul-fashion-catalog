@@ -1878,23 +1878,6 @@ body.no-scroll {
         padding: 0 24px;
     }
 
-    @media (min-width: 992px) {
-        .container {
-            max-width: 1540px;
-            width: 100%;
-        }
-
-        .product-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .product-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        }
-    }
-
     .section {
         padding: 90px 0;
     }
@@ -1984,7 +1967,7 @@ body.no-scroll {
     }
 
     .product-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 20px;
         margin-top: 16px;
     }
