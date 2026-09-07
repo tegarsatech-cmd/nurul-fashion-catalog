@@ -27,6 +27,7 @@ let previewProductItems = [];
 let selectedPreviewItemIndex = 0;
 let currentPreviewProduct = null;
 const cartStorageKey = 'nurul-fashion-cart';
+const cartPositionStorageKey = 'nurul-fashion-cart-position';
 let cartItems = loadCartItems();
 
 function loadCartItems() {
@@ -124,6 +125,7 @@ function setupCart() {
     const clear = document.getElementById('cartClear');
     const items = document.getElementById('cartItems');
     if (!modal || !button || !items) return;
+    setupDraggableCartButton(button);
     const toggle = (open) => {
         modal.classList.toggle('active', open);
         modal.setAttribute('aria-hidden', String(!open));
@@ -153,6 +155,95 @@ function setupCart() {
         cartItems.forEach(item => trackWhatsAppClick(item.productId));
     });
     renderCart();
+}
+
+function setupDraggableCartButton(button) {
+    const savedPosition = loadCartButtonPosition();
+    if (savedPosition) applyCartButtonPosition(button, savedPosition);
+
+    let dragging = false;
+    let moved = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    button.addEventListener('pointerdown', event => {
+        if (event.button !== undefined && event.button !== 0) return;
+        dragging = true;
+        moved = false;
+        const rect = button.getBoundingClientRect();
+        offsetX = event.clientX - rect.left;
+        offsetY = event.clientY - rect.top;
+        button.setPointerCapture?.(event.pointerId);
+        button.classList.add('is-dragging');
+    });
+
+    button.addEventListener('pointermove', event => {
+        if (!dragging) return;
+        moved = true;
+        const width = button.offsetWidth;
+        const height = button.offsetHeight;
+        const left = Math.min(Math.max(0, event.clientX - offsetX), window.innerWidth - width);
+        const top = Math.min(Math.max(0, event.clientY - offsetY), window.innerHeight - height);
+        applyCartButtonPosition(button, { left, top });
+    });
+
+    button.addEventListener('pointerup', event => {
+        if (!dragging) return;
+        dragging = false;
+        button.releasePointerCapture?.(event.pointerId);
+        button.classList.remove('is-dragging');
+        if (moved) {
+            saveCartButtonPosition(button);
+            button.dataset.draggedUntil = String(Date.now() + 300);
+        }
+    });
+
+    button.addEventListener('click', event => {
+        if (Number(button.dataset.draggedUntil) > Date.now()) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+    }, true);
+
+    window.addEventListener('resize', () => {
+        if (button.style.left) {
+            applyCartButtonPosition(button, {
+                left: parseFloat(button.style.left) || 0,
+                top: parseFloat(button.style.top) || 0
+            });
+            saveCartButtonPosition(button);
+        }
+    });
+}
+
+function loadCartButtonPosition() {
+    try {
+        const position = JSON.parse(localStorage.getItem(cartPositionStorageKey) || 'null');
+        return position && Number.isFinite(position.left) && Number.isFinite(position.top) ? position : null;
+    } catch (error) {
+        console.error('Gagal membaca posisi keranjang:', error);
+        return null;
+    }
+}
+
+function applyCartButtonPosition(button, position) {
+    const left = Math.min(Math.max(0, position.left), Math.max(0, window.innerWidth - button.offsetWidth));
+    const top = Math.min(Math.max(0, position.top), Math.max(0, window.innerHeight - button.offsetHeight));
+    button.style.left = left + 'px';
+    button.style.top = top + 'px';
+    button.style.right = 'auto';
+    button.style.transform = 'none';
+}
+
+function saveCartButtonPosition(button) {
+    try {
+        localStorage.setItem(cartPositionStorageKey, JSON.stringify({
+            left: button.offsetLeft,
+            top: button.offsetTop
+        }));
+    } catch (error) {
+        console.error('Gagal menyimpan posisi keranjang:', error);
+    }
 }
 
 function normalizeWhatsAppNumber(value) {
