@@ -1331,7 +1331,29 @@ body.no-scroll {
 
 .product-item-select-label {
     font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.product-item-picker {
+    padding: 8px;
+    border: 1px solid rgba(255, 105, 180, 0.22);
+    border-radius: 10px;
+    background: rgba(255, 245, 250, 0.65);
+}
+
+.product-picker-hint {
+    display: block;
     color: var(--text-light);
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.product-picker-hint.single {
+    margin-top: 0;
 }
 
 .product-item-select {

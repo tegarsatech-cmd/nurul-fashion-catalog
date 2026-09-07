@@ -174,6 +174,7 @@
             </div>
             <div id="loginError" class="login-error"></div>
             <div id="loginSuccess" class="login-success"></div>
+            <div id="loginCountdown" class="login-error" aria-live="polite"></div>
             <button type="submit" class="btn btn-primary" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i> Login
             </button>
@@ -185,6 +186,35 @@
 
     <script type="module">
         import { signInWithEmailAndPassword, onAuthStateChanged } from "./auth.js";
+
+        let failedAttempts = 0;
+        let lockoutUntil = 0;
+        let countdownTimer = null;
+        const lockoutDuration = 60;
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const countdownEl = document.getElementById('loginCountdown');
+
+        function startLockout() {
+            lockoutUntil = Date.now() + lockoutDuration * 1000;
+            failedAttempts = 0;
+            if (countdownTimer) clearInterval(countdownTimer);
+            const updateCountdown = () => {
+                const remaining = Math.max(0, Math.ceil((lockoutUntil - Date.now()) / 1000));
+                if (remaining === 0) {
+                    clearInterval(countdownTimer);
+                    countdownTimer = null;
+                    countdownEl.style.display = 'none';
+                    loginBtn.disabled = false;
+                    return;
+                }
+                countdownEl.textContent = 'Terlalu banyak percobaan. Coba lagi dalam ' + remaining + ' detik.';
+                countdownEl.style.display = 'flex';
+                loginBtn.disabled = true;
+            };
+            updateCountdown();
+            countdownTimer = setInterval(updateCountdown, 1000);
+        }
 
         // Jika sudah login, redirect ke admin
         onAuthStateChanged((user) => {
@@ -203,8 +233,9 @@
         });
 
         // Login form submit
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (Date.now() < lockoutUntil) return;
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const btn = document.getElementById('loginBtn');
@@ -225,6 +256,7 @@
                 successEl.style.display = 'none';
 
                 await signInWithEmailAndPassword(email, password);
+                failedAttempts = 0;
 
                 successEl.innerHTML = '✅ Login berhasil! Mengarahkan ke dashboard...';
                 successEl.style.display = 'flex';
@@ -234,6 +266,12 @@
                 }, 1500);
 
             } catch (error) {
+                failedAttempts += 1;
+                if (failedAttempts >= 3) {
+                    startLockout();
+                    errorEl.style.display = 'none';
+                    return;
+                }
                 let msg = 'Login gagal! ';
                 const errMsg = error.message || '';
                 if (errMsg.includes('Invalid login credentials') || errMsg.includes('invalid_credentials')) {
@@ -252,10 +290,9 @@
                 successEl.style.display = 'none';
             } finally {
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-                btn.disabled = false;
+                btn.disabled = Date.now() < lockoutUntil;
             }
         });
     </script>
 </body>
 </html>
-

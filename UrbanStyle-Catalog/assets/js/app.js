@@ -338,10 +338,11 @@ function createProductCard(product, tier = null) {
     const firstStock = firstItem.stok || product.stok || 'Tersedia';
     const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
     const itemOptions = items.filter(item => item.nama || item.harga !== '');
-    const itemSelect = itemOptions.length > 1
-        ? '<label class="product-item-select-label" for="product-item-' + product.id + '">Pilih barang:</label><select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '">' +
+    const itemSelect = itemOptions.length > 0
+        ? '<div class="product-item-picker"><label class="product-item-select-label" for="product-item-' + product.id + '"><i class="fas fa-hand-pointer"></i> Pilih barang yang diminati</label><select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '" aria-label="Pilih barang untuk produk ' + title + '">' +
           itemOptions.map((item, index) => '<option value="' + index + '"' + (item.stok === 'Habis' ? ' data-stock="Habis"' : '') + '>' + (item.nama || 'Barang ' + (index + 1)) + (item.harga === '' ? '' : ' - Rp ' + formatPrice(item.harga)) + (item.stok === 'Habis' ? ' (Habis)' : '') + '</option>').join('') + '</select>'
-        : '';
+        + '<small class="product-picker-hint">Pilih salah satu barang untuk melihat detailnya</small></div>'
+        : '<small class="product-picker-hint single">Detail barang</small>';
     const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
     return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
         '<div class="product-image">' +

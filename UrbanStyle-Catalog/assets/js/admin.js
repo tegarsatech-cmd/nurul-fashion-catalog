@@ -3,7 +3,7 @@
 // Supabase CRUD Operations
 // ============================================
 
-import supabase, { signOut, onAuthStateChanged } from '../../auth.js';
+import supabase, { signInWithEmailAndPassword, updatePassword, signOut, onAuthStateChanged } from '../../auth.js';
 import { ref, uploadBytes, getDownloadURL } from '../../storage.js';
 
 
@@ -84,7 +84,7 @@ function renderProductItemInputs(items = []) {
             '<label for="produkItemNama' + index + '">Barang ' + (index + 1) + '</label>' +
             '<input type="text" id="produkItemNama' + index + '" data-item-name placeholder="Nama barang (wajib)">' +
             '<input type="number" id="produkItemHarga' + index + '" data-item-price min="0" step="1" placeholder="Harga (wajib)">' +
-            '<input type="text" id="produkItemUkuran' + index + '" data-item-size placeholder="Ukuran (opsional)">' +
+            '<input type="text" id="produkItemUkuran' + index + '" data-item-size placeholder="Ukuran (wajib)">' +
             '<input type="text" id="produkItemWarna' + index + '" data-item-color placeholder="Warna (wajib)">' +
             '<select id="produkItemStok' + index + '" data-item-stock aria-label="Stok Barang ' + (index + 1) + ' (wajib)"><option value="Tersedia">Tersedia</option><option value="Habis">Habis</option></select>' +
             '</div>';
@@ -110,10 +110,10 @@ function collectProductItems() {
         const priceValue = row.querySelector('[data-item-price]')?.value.trim() || '';
         const size = row.querySelector('[data-item-size]')?.value.trim() || '';
         const color = row.querySelector('[data-item-color]')?.value.trim() || '';
-        return (name || priceValue || size || color) && (!name || !priceValue || !color);
+        return (name || priceValue || size || color) && (!name || !priceValue || !size || !color);
     });
     if (invalidRow) {
-        showToast('Setiap barang yang diisi wajib memiliki nama, harga, dan warna.', 'warning');
+        showToast('Setiap barang yang diisi wajib memiliki nama, harga, ukuran, dan warna.', 'warning');
         return null;
     }
     return rows.map(row => {
@@ -135,6 +135,8 @@ onAuthStateChanged((user) => {
         currentUser = user;
         const nameEl = document.getElementById('adminName');
         if (nameEl) nameEl.textContent = user.email || 'Admin';
+        const accountEmail = document.getElementById('accountEmail');
+        if (accountEmail) accountEmail.value = user.email || '';
         const requestedPage = window.location.hash.replace('#', '') || 'dashboard';
         showPage(requestedPage);
         loadDashboardData();
@@ -155,6 +157,48 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
         window.location.href = 'login.html';
     }
 });
+
+const accountPasswordForm = document.getElementById('accountPasswordForm');
+if (accountPasswordForm) {
+    accountPasswordForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const currentPassword = document.getElementById('accountCurrentPassword').value;
+        const newPassword = document.getElementById('accountNewPassword').value;
+        const confirmPassword = document.getElementById('accountConfirmPassword').value;
+        if (newPassword.length < 6) {
+            showToast('Password baru minimal 6 karakter.', 'warning');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            showToast('Konfirmasi password baru tidak sama.', 'warning');
+            return;
+        }
+        if (!currentUser?.email) {
+            showToast('Sesi login tidak ditemukan. Silakan login kembali.', 'error');
+            return;
+        }
+        const submitButton = accountPasswordForm.querySelector('button[type="submit"]');
+        try {
+            if (submitButton) submitButton.disabled = true;
+            await signInWithEmailAndPassword(currentUser.email, currentPassword);
+            await updatePassword(newPassword);
+            accountPasswordForm.reset();
+            const accountEmail = document.getElementById('accountEmail');
+            if (accountEmail) accountEmail.value = currentUser.email;
+            showToast('Password berhasil diubah', 'success');
+        } catch (error) {
+            const message = String(error?.message || '');
+            if (message.includes('Invalid login credentials')) {
+                showToast('Password lama salah.', 'error');
+            } else {
+                console.error('Gagal mengubah password:', error);
+                showToast('Password gagal diubah. Silakan coba lagi.', 'error');
+            }
+        } finally {
+            if (submitButton) submitButton.disabled = false;
+        }
+    });
+}
 
 // ===== Sidebar Navigation =====
 document.querySelectorAll('.sidebar-link[data-page]').forEach(link => {

@@ -20,6 +20,7 @@
             <a href="#kategori" class="sidebar-link" data-page="kategori"><i class="fas fa-tags"></i> <span>Kelompok Usia</span></a>
             <a href="#galeri" class="sidebar-link" data-page="galeri"><i class="fas fa-images"></i> <span>Galeri</span></a>
             <a href="#pengaturan" class="sidebar-link" data-page="pengaturan"><i class="fas fa-cog"></i> <span>Pengaturan</span></a>
+            <a href="#pengaturan-akun" class="sidebar-link" data-page="pengaturan-akun"><i class="fas fa-user-cog"></i> <span>Pengaturan Akun</span></a>
             <a href="#" class="sidebar-link logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
         </nav>
     </aside>
@@ -66,6 +67,17 @@
                     <div class="form-group"><label>Nama Toko <small>(wajib diisi)</small></label><input type="text" id="adminStoreName" placeholder="Nurul Fashion" required></div>
                     <div class="form-group"><label>Nomor WhatsApp <small>(wajib diisi)</small></label><input type="text" id="adminWaNumber" placeholder="6283121514320" required></div>
                 </div>
+
+                <div class="page" id="page-pengaturan-akun">
+                    <div class="page-header"><h1>Pengaturan Akun</h1></div>
+                    <form id="accountPasswordForm" class="form-admin">
+                        <div class="form-group"><label>Email Akun</label><input type="email" id="accountEmail" readonly></div>
+                        <div class="form-group"><label>Password Lama <small>(wajib diisi)</small></label><input type="password" id="accountCurrentPassword" required autocomplete="current-password"></div>
+                        <div class="form-group"><label>Password Baru <small>(wajib, minimal 6 karakter)</small></label><input type="password" id="accountNewPassword" minlength="6" required autocomplete="new-password"></div>
+                        <div class="form-group"><label>Konfirmasi Password Baru <small>(wajib diisi)</small></label><input type="password" id="accountConfirmPassword" required autocomplete="new-password"></div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Ubah Password</button>
+                    </form>
+                </div>
                 <div class="form-row">
                     <div class="form-group"><label>Email <small>(wajib diisi)</small></label><input type="email" id="adminEmail" placeholder="email@nurulfashion.com" required></div>
                     <div class="form-group"><label>Jam Operasional <small>(wajib diisi)</small></label><input type="text" id="adminJam" placeholder="Senin - Sabtu, 09:00 - 21:00" required></div>
@@ -95,7 +107,7 @@
             <div class="form-group"><label>Keterangan Foto <small>(opsional)</small></label><textarea id="produkDeskripsi" rows="2" placeholder="Contoh: Koleksi 4 model baju anak"></textarea></div>
             <div class="form-row">
                 <div class="form-group"><label>Cocok untuk <small>(wajib diisi)</small></label><select id="produkKategori" required><option value="">Pilih Kelompok Usia</option></select></div>
-                <div class="form-group"><label>Ukuran Produk <small>(opsional)</small></label><input type="text" id="produkUkuran" placeholder="Contoh: S, M, L, XL"></div>
+                <div class="form-group"><label>Ukuran pada Foto <small>(opsional)</small></label><input type="text" id="produkUkuran" placeholder="Contoh: S, M, L, XL"><small class="form-hint">Ukuran umum yang terlihat atau tersedia pada foto. Ukuran tiap barang wajib diisi pada kolom Barang.</small></div>
             </div>
             <div class="form-row">
                 <div class="form-group"><label>Warna pada Foto <small>(wajib diisi)</small></label><input type="text" id="produkWarna" placeholder="Abu-abu, Merah, Hitam" required><small class="form-hint">Isi warna yang terlihat pada foto. Untuk warna setiap barang, isi pada kolom Barang masing-masing.</small></div>

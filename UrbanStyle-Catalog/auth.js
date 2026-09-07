@@ -30,6 +30,12 @@ export async function signOut() {
     if (error) throw error;
 }
 
+export async function updatePassword(password) {
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    return data;
+}
+
 export function onAuthStateChanged(callback) {
     if (typeof callback !== 'function') return;
     supabase.auth.onAuthStateChange((event, session) => {
