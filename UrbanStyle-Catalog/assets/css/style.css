@@ -1370,9 +1370,168 @@ body.no-scroll {
     width: 100%;
 }
 
-.product-selected-meta {
+.product-card-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.btn-cart {
+    min-width: 44px;
+    border: 0;
+    border-radius: 9px;
+    background: #fff1f7;
+    color: var(--primary);
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.cart-button {
+    position: relative;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 23px;
+    padding: 4px 8px;
+}
+
+#cartBadge {
+    position: absolute;
+    top: -2px;
+    right: 0;
+    min-width: 18px;
+    padding: 2px 4px;
+    border-radius: 99px;
+    background: var(--secondary);
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+.cart-modal-content {
+    width: min(560px, calc(100% - 24px));
+    max-height: min(720px, calc(100vh - 32px));
+    overflow: auto;
+    background: var(--white);
+    border-radius: 18px;
+    padding: 18px;
+}
+
+.cart-items {
+    display: grid;
+    gap: 8px;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.cart-item small {
+    display: block;
     color: var(--text-light);
-    font-size: 12px;
+    margin-top: 3px;
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cart-item-controls button {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.cart-summary {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+.cart-checkout {
+    width: 100%;
+}
+
+.cart-clear {
+    width: 100%;
+    margin-bottom: 8px;
+    background: #f3f4f6;
+    color: var(--text);
+}
+
+.preview-cart {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.preview-cart:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.cart-empty {
+    padding: 24px 8px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+.product-selected-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    color: var(--text);
+    font-size: 11px;
+}
+
+.product-selected-meta span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 5px 6px;
+    border-radius: 7px;
+    background: #f8fafc;
+}
+
+.product-selected-meta strong {
+    color: var(--text-light);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.product-selected-meta em {
+    overflow-wrap: anywhere;
+    font-style: normal;
+    font-weight: 600;
+}
+
+@media (max-width: 575px) {
+    .product-selected-meta {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .product-selected-meta span {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
 }
 
 .product-whatsapp-group .btn-whatsapp.disabled {

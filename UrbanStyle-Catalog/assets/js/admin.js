@@ -460,10 +460,14 @@ async function loadDashboardData() {
         if (productError) throw productError;
         const { data: categories, error: categoryError } = await supabase.from('categories').select('*');
         if (categoryError) throw categoryError;
+        const { count: galleryCount, error: galleryError } = await supabase.from('gallery').select('*', { count: 'exact', head: true });
+        if (galleryError) throw galleryError;
         document.getElementById('totalProduk').textContent = (products || []).length;
         document.getElementById('produkTersedia').textContent = (products || []).filter(p => p.stok === 'Tersedia').length;
         document.getElementById('produkHabis').textContent = (products || []).filter(p => p.stok === 'Habis').length;
         document.getElementById('totalKategori').textContent = (categories || []).length;
+        const totalGaleri = document.getElementById('totalGaleri');
+        if (totalGaleri) totalGaleri.textContent = galleryCount || 0;
     } catch (error) {
         console.error('Dashboard load error:', error);
         showToast('Gagal memuat data dashboard', 'error');

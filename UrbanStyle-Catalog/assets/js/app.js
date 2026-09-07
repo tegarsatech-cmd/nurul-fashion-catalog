@@ -26,6 +26,134 @@ let settingsBroadcast = null;
 let previewProductItems = [];
 let selectedPreviewItemIndex = 0;
 let currentPreviewProduct = null;
+const cartStorageKey = 'nurul-fashion-cart';
+let cartItems = loadCartItems();
+
+function loadCartItems() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(cartStorageKey) || '[]');
+        return Array.isArray(saved) ? saved : [];
+    } catch (error) {
+        console.error('Gagal membaca keranjang:', error);
+        return [];
+    }
+}
+
+function saveCartItems() {
+    try {
+        localStorage.setItem(cartStorageKey, JSON.stringify(cartItems));
+    } catch (error) {
+        console.error('Gagal menyimpan keranjang:', error);
+    }
+    renderCart();
+}
+
+function getSelectedCartItem(product, itemIndex) {
+    const item = normalizeProductItems(product)[itemIndex] || normalizeProductItems(product)[0] || {};
+    return {
+        key: String(product.id) + ':' + String(itemIndex),
+        productId: product.id,
+        itemIndex,
+        title: product.judul_postingan || product.nama || 'Produk',
+        name: item.nama || product.nama || 'Produk',
+        price: Number(item.harga) || 0,
+        size: item.ukuran || product.ukuran || '',
+        color: item.warna || product.warna || '',
+        description: product.keterangan_foto || '',
+        image: product.gambar || ''
+    };
+}
+
+function addToCart(product, itemIndex) {
+    if (isItemOutOfStock(product, itemIndex)) {
+        notifyOutOfStock();
+        return;
+    }
+    const selected = getSelectedCartItem(product, itemIndex);
+    const existing = cartItems.find(item => item.key === selected.key);
+    if (existing) existing.quantity += 1;
+    else cartItems.push({ ...selected, quantity: 1 });
+    saveCartItems();
+    showToast(selected.name + ' ditambahkan ke keranjang.', 'success');
+}
+
+function updateCartQuantity(key, change) {
+    const item = cartItems.find(entry => entry.key === key);
+    if (!item) return;
+    item.quantity += change;
+    if (item.quantity <= 0) cartItems = cartItems.filter(entry => entry.key !== key);
+    saveCartItems();
+}
+
+function cartTotalValue() {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+}
+
+function getCartCheckoutMessage() {
+    const lines = cartItems.map((item, index) =>
+        (index + 1) + '. 📸 Postingan: ' + item.title +
+        '\n   👕 Produk: ' + item.name +
+        '\n   💰 Harga: Rp' + formatPrice(item.price) + ' x' + item.quantity + ' = Rp' + formatPrice(item.price * item.quantity) +
+        '\n   📝 Keterangan: *Ukuran:* ' + (item.size || '-') + ' *Warna:* ' + (item.color || '-') + ' ' + (item.description || '-') +
+        (item.image ? '\n   🖼️ Foto: ' + item.image : '')
+    );
+    return 'Halo, saya ingin membeli produk dari katalog.\n\n' + lines.join('\n\n') + '\n\nTotal: Rp' + formatPrice(cartTotalValue());
+}
+
+function renderCart() {
+    const container = document.getElementById('cartItems');
+    const badge = document.getElementById('cartBadge');
+    const total = document.getElementById('cartTotal');
+    const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    if (badge) badge.textContent = String(count);
+    if (total) total.textContent = 'Rp ' + formatPrice(cartTotalValue());
+    if (!container) return;
+    container.innerHTML = cartItems.length === 0
+        ? '<p class="cart-empty">Keranjang masih kosong.</p>'
+        : cartItems.map(item => '<div class="cart-item" data-cart-key="' + item.key + '">' +
+            '<div><strong>' + item.name + '</strong><small>' + item.title + ' · Rp ' + formatPrice(item.price) + '</small></div>' +
+            '<div class="cart-item-controls"><button type="button" data-cart-action="decrease" aria-label="Kurangi">−</button><span>' + item.quantity + '</span><button type="button" data-cart-action="increase" aria-label="Tambah">+</button></div>' +
+            '<strong>Rp ' + formatPrice(item.price * item.quantity) + '</strong></div>').join('');
+}
+
+function setupCart() {
+    const modal = document.getElementById('cartModal');
+    const button = document.getElementById('cartButton');
+    const close = document.getElementById('closeCartModal');
+    const checkout = document.getElementById('cartCheckout');
+    const clear = document.getElementById('cartClear');
+    const items = document.getElementById('cartItems');
+    if (!modal || !button || !items) return;
+    const toggle = (open) => {
+        modal.classList.toggle('active', open);
+        modal.setAttribute('aria-hidden', String(!open));
+        document.body.classList.toggle('no-scroll', open);
+    };
+    button.addEventListener('click', () => toggle(true));
+    close?.addEventListener('click', () => toggle(false));
+    clear?.addEventListener('click', () => {
+        if (cartItems.length === 0) return;
+        cartItems = [];
+        saveCartItems();
+        showToast('Keranjang berhasil dikosongkan.', 'success');
+    });
+    modal.addEventListener('click', event => { if (event.target === modal) toggle(false); });
+    items.addEventListener('click', event => {
+        const control = event.target.closest('[data-cart-action]');
+        if (!control) return;
+        updateCartQuantity(control.closest('[data-cart-key]').dataset.cartKey, control.dataset.cartAction === 'increase' ? 1 : -1);
+    });
+    checkout?.addEventListener('click', event => {
+        if (cartItems.length === 0) {
+            event.preventDefault();
+            showToast('Keranjang masih kosong.', 'warning');
+            return;
+        }
+        window.open(createWhatsAppUrl(getCartCheckoutMessage()), '_blank', 'noopener,noreferrer');
+        cartItems.forEach(item => trackWhatsAppClick(item.productId));
+    });
+    renderCart();
+}
 
 function normalizeWhatsAppNumber(value) {
     const digits = String(value || '').replace(/\D/g, '');
@@ -359,8 +487,8 @@ function createProductCard(product, tier = null) {
         (colors.length > 0 ? '<div class="product-colors" data-product-colors>' + colors.map(c => '<span class="color-dot" style="background:' + getColorHex(c) + '" title="' + c + '"></span>').join('') + '</div>' : '') +
         '<div class="product-actions">' +
         '<div class="product-whatsapp-group">' + itemSelect +
-        '<small class="product-selected-meta">' + (firstItem.ukuran ? 'Ukuran: ' + firstItem.ukuran + ' · ' : '') + (firstItem.warna ? 'Warna: ' + firstItem.warna + ' · ' : '') + 'Stok: ' + (firstItem.stok || 'Tersedia') + '</small>' +
-        '<a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div>' +
+        '<div class="product-selected-meta" aria-live="polite"><span><strong>Ukuran</strong><em>' + (firstItem.ukuran || '-') + '</em></span><span><strong>Warna</strong><em>' + (firstItem.warna || '-') + '</em></span><span><strong>Stok</strong><em>' + (firstItem.stok || 'Tersedia') + '</em></span></div>' +
+        '<div class="product-card-buttons"><button type="button" class="btn-cart" data-cart-product-id="' + product.id + '" data-cart-item-index="0" aria-label="Tambah ke keranjang">🛒</button><a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div></div>' +
         '</div>' +
         '</div>';
 }
@@ -388,8 +516,15 @@ function getFeaturedProducts(products) {
         const items = normalizeProductItems(product);
         const item = items[itemIndex] || items[0] || {};
         const title = product.judul_postingan || product.nama || 'produk';
-        const price = item.harga === '' || item.harga === undefined ? '' : ' seharga Rp ' + formatPrice(item.harga || 0);
-        return 'Halo, saya tertarik dengan ' + title + (item.nama ? ' - ' + item.nama : '') + price;
+        const price = item.harga === '' || item.harga === undefined ? '-' : 'Rp' + formatPrice(item.harga || 0);
+        const photo = product.gambar || '';
+        return 'Halo, saya ingin membeli produk dari katalog.\n\n📸 Postingan: ' + title +
+            '\n👕 Produk: ' + (item.nama || title) +
+            '\n💰 Harga: ' + price +
+            '\n📝 Keterangan: ' + (product.keterangan_foto || '-') +
+            '\n*Ukuran:* ' + (item.ukuran || product.ukuran || '-') +
+            ' *Warna:* ' + (item.warna || product.warna || '-') +
+            (photo ? '\n🖼️ Foto: ' + photo : '');
     }
 
     function trackWhatsAppClick(productId) {
@@ -408,16 +543,18 @@ function getFeaturedProducts(products) {
             if (!select) return;
             const product = allProductsData.find(item => item.id === select.dataset.productId);
             const link = select.closest('.product-whatsapp-group')?.querySelector('.btn-whatsapp');
+            const cartButton = select.closest('.product-whatsapp-group')?.querySelector('.btn-cart');
             if (!product || !link) return;
             const index = Number(select.value) || 0;
             link.dataset.itemIndex = String(index);
+            if (cartButton) cartButton.dataset.cartItemIndex = String(index);
             link.href = createWhatsAppUrl(getWhatsAppMessage(product, index));
             link.classList.toggle('disabled', isItemOutOfStock(product, index));
             const meta = select.closest('.product-whatsapp-group')?.querySelector('.product-selected-meta');
             const stockDisplay = select.closest('.product-card')?.querySelector('[data-product-stock]');
             const priceDisplay = select.closest('.product-card')?.querySelector('[data-product-price]');
             const item = normalizeProductItems(product)[index] || {};
-            if (meta) meta.textContent = (item.ukuran ? 'Ukuran: ' + item.ukuran + ' · ' : '') + (item.warna ? 'Warna: ' + item.warna + ' · ' : '') + 'Stok: ' + (item.stok || 'Tersedia');
+            if (meta) meta.innerHTML = '<span><strong>Ukuran</strong><em>' + (item.ukuran || '-') + '</em></span><span><strong>Warna</strong><em>' + (item.warna || '-') + '</em></span><span><strong>Stok</strong><em>' + (item.stok || 'Tersedia') + '</em></span>';
             if (stockDisplay) {
                 const stock = item.stok || 'Tersedia';
                 stockDisplay.className = 'product-stock ' + (stock === 'Tersedia' ? 'tersedia' : 'habis');
@@ -428,6 +565,12 @@ function getFeaturedProducts(products) {
             }
         });
         container.addEventListener('click', event => {
+            const cartButton = event.target.closest('.btn-cart[data-cart-product-id]');
+            if (cartButton) {
+                const product = allProductsData.find(item => item.id === cartButton.dataset.cartProductId);
+                if (product) addToCart(product, Number(cartButton.dataset.cartItemIndex) || 0);
+                return;
+            }
             const link = event.target.closest('.btn-whatsapp[data-product-id]');
             if (!link) return;
             const product = allProductsData.find(item => item.id === link.dataset.productId);
@@ -650,11 +793,9 @@ function updatePreviewWhatsapp(item, type) {
     if (!whatsapp) return;
     const title = item.judul_postingan || item.nama || '';
     const selected = type === 'product' ? (previewProductItems[selectedPreviewItemIndex] || {}) : null;
-    const itemText = selected?.nama ? ' - ' + selected.nama : '';
-    const priceText = selected?.harga === '' || selected?.harga === undefined ? '' : ' seharga Rp ' + formatPrice(selected.harga || 0);
     whatsapp.href = createWhatsAppUrl(type === 'gallery'
         ? 'Halo, saya tertarik dengan foto galeri: ' + (item.judul || '')
-        : 'Halo, saya tertarik dengan ' + title + itemText + priceText);
+        : getWhatsAppMessage(item, selectedPreviewItemIndex));
     const isOutOfStock = type === 'product' && selected?.stok === 'Habis';
     whatsapp.classList.toggle('disabled', isOutOfStock);
     whatsapp.dataset.outOfStock = isOutOfStock ? '1' : '0';
@@ -671,6 +812,12 @@ function updatePreviewSelectionDetails() {
     if (size) size.textContent = selected.ukuran || '-';
     if (stock) stock.textContent = selected.stok || 'Tersedia';
     if (color) color.textContent = selected.warna || currentPreviewProduct.warna || '-';
+    const cartButton = document.getElementById('previewCart');
+    if (cartButton) {
+        cartButton.dataset.itemIndex = String(selectedPreviewItemIndex);
+        cartButton.disabled = selected.stok === 'Habis';
+        cartButton.setAttribute('aria-label', selected.stok === 'Habis' ? 'Barang habis' : 'Tambah ' + (selected.nama || 'produk') + ' ke keranjang');
+    }
 }
 
 function openPreviewModal(item, type = 'product', index = null) {
@@ -789,6 +936,13 @@ function removePreviewLightbox() {
     }
 }
 
+const previewCart = document.getElementById('previewCart');
+if (previewCart) {
+    previewCart.addEventListener('click', () => {
+        if (currentPreviewProduct) addToCart(currentPreviewProduct, Number(previewCart.dataset.itemIndex) || 0);
+    });
+}
+
 function openImageLightbox(src) {
     if (!src) return;
     if (document.getElementById('imageLightbox')) return;
@@ -874,6 +1028,7 @@ window.addEventListener('keydown', (event) => {
 // ===== Init =====
 function initApp() {
     setupWhatsAppSync();
+    setupCart();
     loadCategories();
     loadProducts();
     loadGallery();

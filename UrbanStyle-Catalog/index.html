@@ -28,10 +28,20 @@
                 <li><a href="#galeri" class="nav-link">Galeri</a></li>
                 <li><a href="#kontak" class="nav-link">Kontak</a></li>
                 <li><a href="admin.html" class="btn-admin"><i class="fas fa-crown"></i> Dashboard Admin</a></li>
+                <li><button type="button" class="cart-button" id="cartButton" aria-label="Buka keranjang">🛒<span id="cartBadge">0</span></button></li>
             </ul>
         </div>
     </nav>
     <div id="toastContainer" class="toast-container"></div>
+    <div class="cart-modal modal" id="cartModal" aria-hidden="true">
+        <div class="cart-modal-content">
+            <div class="modal-header"><h2>Keranjang Belanja</h2><button type="button" class="modal-close" id="closeCartModal" aria-label="Tutup keranjang">&times;</button></div>
+            <div id="cartItems" class="cart-items"></div>
+            <div class="cart-summary"><strong>Total</strong><strong id="cartTotal">Rp 0</strong></div>
+            <button type="button" class="btn cart-clear" id="cartClear">Hapus Semua</button>
+            <button type="button" class="btn btn-whatsapp cart-checkout" id="cartCheckout">Checkout via WhatsApp</button>
+        </div>
+    </div>
 
     <!-- HERO -->
     <section class="hero" id="home">
@@ -167,6 +177,7 @@
                     <p class="preview-meta"><strong>Warna:</strong> <span id="previewColor"></span></p>
                     <p class="preview-meta"><strong>Stok:</strong> <span id="previewStock"></span></p>
                     <p class="preview-description" id="previewDescription"></p>
+                    <button type="button" class="btn btn-cart preview-cart" id="previewCart" aria-label="Tambah produk terpilih ke keranjang">🛒 Tambah ke Keranjang</button>
                     <a id="previewWhatsapp" class="btn btn-whatsapp preview-whatsapp" href="#" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi WhatsApp</a>
                 </div>
             </div>
