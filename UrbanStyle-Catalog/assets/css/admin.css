@@ -698,10 +698,12 @@ img {
 
 .product-item-row {
     display: grid;
-    grid-template-columns: 70px minmax(0, 1fr) repeat(5, minmax(100px, 0.7fr));
+    grid-template-columns: 70px minmax(180px, 1.4fr) repeat(4, minmax(100px, 0.7fr));
     align-items: center;
     gap: 8px;
     margin-top: 8px;
+    position: relative;
+    z-index: 1;
 }
 
 .product-item-row label {
@@ -711,6 +713,15 @@ img {
 
 .product-item-row input {
     min-width: 0;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+    cursor: text;
+}
+
+.product-item-row input[data-item-name] {
+    display: block;
+    width: 100%;
 }
 
 .admin-item-count {
