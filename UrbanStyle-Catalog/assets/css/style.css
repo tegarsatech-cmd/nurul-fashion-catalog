@@ -1821,49 +1821,59 @@ body.no-scroll {
     gap: 8px;
 }
 
-.product-item-select-label {
-    font-size: 12px;
-    color: var(--meta-ink-deep);
-    font-weight: 700;
+.product-item-picker {
+    padding: 0;
+    border: none;
+    background: transparent;
     display: flex;
-    align-items: center;
-    gap: 6px;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 2px;
 }
 
-.product-item-picker {
-    padding: 10px;
-    border: 1px solid var(--meta-hairline-soft);
-    border-radius: var(--meta-rounded-lg);
-    background: var(--meta-surface-soft);
+.product-item-select-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--meta-steel);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .product-picker-hint {
-    display: block;
-    color: var(--meta-steel);
-    font-size: 11px;
-    margin-top: 4px;
-}
-
-.product-picker-hint.single {
-    margin-top: 0;
+    display: none;
 }
 
 .product-item-select {
     width: 100%;
     min-height: 38px;
-    padding: 6px 12px;
+    padding: 8px 34px 8px 12px;
     border: 1px solid var(--meta-hairline);
-    border-radius: var(--meta-rounded-lg);
-    background: var(--meta-canvas);
+    border-radius: var(--meta-rounded-md);
+    background: var(--meta-surface-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2365676b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     color: var(--meta-ink);
     font-family: var(--font-meta);
     font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-item-select:hover {
+    border-color: var(--meta-charcoal);
+    background-color: var(--meta-canvas);
 }
 
 .product-item-select:focus {
-    border-color: var(--meta-fb-blue);
+    border-color: var(--meta-primary);
     outline: none;
+    background-color: var(--meta-canvas);
+    box-shadow: 0 0 0 3px rgba(0, 100, 224, 0.12);
 }
 
 .product-whatsapp-group .btn-whatsapp {
@@ -2811,43 +2821,80 @@ img {
     right: 0;
 }
 
-/* 3. Product grid: Desktop layar lebar memenuhi seluruh layar (tanpa menumpuk 1 kolom di kiri) */
+/* 3. Product grid: Desktop layar lebar memenuhi seluruh layar dengan proporsi fashion premium */
 .product-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 28px;
     width: 100%;
     margin: 0 auto;
-    justify-content: center;
+}
+
+/* Khusus Produk Unggulan: 3 kolom merata di desktop memenuhi lebar container */
+#featuredProducts {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+}
+
+@media (min-width: 992px) {
+    #featuredProducts {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 32px;
+    }
+    
+    #allProducts {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 30px;
+    }
 }
 
 @media (min-width: 1400px) {
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
-        gap: 28px;
+    #featuredProducts {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 36px;
+    }
+
+    #allProducts {
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important;
+        gap: 32px;
     }
 }
 
 @media (max-width: 991px) {
-    .product-grid { 
+    .product-grid,
+    #featuredProducts,
+    #allProducts { 
         grid-template-columns: repeat(2, 1fr) !important; 
-        gap: 16px;
+        gap: 20px;
     }
 }
 
-@media (max-width: 575px) {
-    .product-grid { 
+@media (max-width: 600px) {
+    .product-grid,
+    #featuredProducts,
+    #allProducts { 
         grid-template-columns: 1fr !important; 
         gap: 20px; 
     }
 }
 
-/* 4. Kartu produk: gambar proporsional, tinggi sesuai ukuran layar */
+/* 4. Kartu produk: gambar pakaian proporsional fashion (aspect-ratio 4:5), tidak terpotong */
+.product-card {
+    border-radius: var(--meta-rounded-xxl);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
 .product-card .product-image {
     width: 100%;
     position: relative;
     overflow: hidden;
-    background: #f0f0f0;
+    background: var(--meta-surface-soft);
+    aspect-ratio: 4 / 5 !important;
+    height: auto !important;
 }
 
 .product-card .product-image img {
@@ -2856,17 +2903,27 @@ img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top center;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Desktop: gambar 320px, Tablet 240px, Mobile 220-280px */
-.product-card .product-image { height: 320px; }
-@media (max-width: 1199px) { .product-card .product-image { height: 280px; } }
-@media (max-width: 991px) { .product-card .product-image { height: 240px; } }
-@media (max-width: 575px) {
-    .product-card .product-image { height: 280px; }
+.product-card:hover .product-image img {
+    transform: scale(1.05);
 }
-@media (max-width: 400px) {
-    .product-card .product-image { height: 220px; }
+
+@media (min-width: 992px) {
+    .product-card .product-details {
+        padding: 24px;
+        gap: 12px;
+    }
+
+    .product-card .product-name {
+        font-size: 19px;
+    }
+
+    .product-card .product-price {
+        font-size: 22px;
+    }
 }
 
 /* Nama produk maksimal 2 baris */
