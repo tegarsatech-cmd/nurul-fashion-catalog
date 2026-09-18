@@ -2858,33 +2858,37 @@ img {
 @media (min-width: 992px) {
     .section > .container,
     .navbar > .container {
-        width: 94% !important;
-        max-width: 1680px !important;
-        padding: 0 32px !important;
+        width: 92% !important;
+        max-width: 1400px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0 28px !important;
     }
 
-    /* Grid produk desktop: PERSIS 3 KOLOM MEMENUHI LAYAR */
+    /* Grid produk desktop: PERSIS 3 KOLOM SEIMBANG & ELEGAN */
     .product-grid,
     #featuredProducts,
     #allProducts {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 32px !important;
+        gap: 28px !important;
         width: 100% !important;
     }
 
     /* Kartu produk desktop: Desain editorial mewah */
     .product-card {
-        border-radius: 24px !important;
+        border-radius: 20px !important;
         border: 1px solid rgba(0, 0, 0, 0.08) !important;
         background: #ffffff !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+        overflow: hidden !important;
         transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
     }
 
     .product-card:hover {
-        transform: translateY(-8px) !important;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.09) !important;
-        border-color: rgba(0, 0, 0, 0.16) !important;
+        transform: translateY(-6px) !important;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1) !important;
+        border-color: rgba(0, 0, 0, 0.14) !important;
     }
 
     .product-card .product-image {
@@ -2893,8 +2897,8 @@ img {
         overflow: hidden;
         background: var(--meta-surface-soft);
         aspect-ratio: 4 / 5 !important;
+        max-height: 480px !important;
         height: auto !important;
-        min-height: 420px;
     }
 
     .product-card .product-image img {
@@ -3402,18 +3406,22 @@ img {
     display: block;
 }
 
-/* Desktop catalog uses the available viewport fully while preserving mobile layout. */
+/* Desktop catalog: Kontainer terpusat rapi dan proporsional (sweet spot 1400px) */
 @media (min-width: 992px) {
     .section > .container,
     .navbar > .container {
-        width: calc(100% - 48px);
-        max-width: 1720px;
+        width: 92% !important;
+        max-width: 1400px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 }
 
 @media (min-width: 1400px) {
     .section > .container {
-        width: calc(100% - 64px);
-        max-width: 1880px;
+        width: 92% !important;
+        max-width: 1440px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 }
