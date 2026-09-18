@@ -6,11 +6,23 @@
     <title>Nurul Fashion - Fashion Modern</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+
+    <!-- PROMO BANNER (Above Nav) -->
+    <div class="promo-banner" id="promoBanner">
+        <div class="container promo-banner-inner">
+            <span class="promo-banner-text">
+                <span class="promo-badge-tag">Koleksi 2026</span>
+                Eksplorasi fashion modern dengan kurasi bahan terbaik &amp; pemesanan instan via WhatsApp.
+            </span>
+            <a href="#katalog" class="promo-banner-link">Belanja Sekarang <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
 
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
@@ -49,9 +61,9 @@
         <div class="hero-bg-slider" id="heroBgSlider" aria-hidden="true"></div>
         <div class="hero-gradient-overlay"></div>
         <div class="hero-content container">
-            <span class="hero-badge" data-aos="fade-down" data-aos-delay="200"><i class="fas fa-star"></i> Katalog Fashion Eksklusif 2026</span>
+            <span class="hero-badge" data-aos="fade-down" data-aos-delay="200"><i class="fas fa-shield-halved"></i> Katalog Eksklusif 2026</span>
             <h1 data-aos="fade-up" data-aos-delay="400">Upgrade Style Kamu Dengan <span class="pink-text">Koleksi Terbaru</span></h1>
-            <p data-aos="fade-up" data-aos-delay="600">Tampilkan karakter terbaik melalui pilihan fashion modern berkualitas.</p>
+            <p data-aos="fade-up" data-aos-delay="600">Tampilkan karakter terbaik melalui kurasi fashion modern berkualitas dengan kenyamanan maksimal.</p>
             <div class="hero-buttons" data-aos="fade-up" data-aos-delay="800">
                 <a href="#katalog" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Lihat Koleksi</a>
                 <a href="#kontak" class="btn btn-secondary"><i class="fas fa-phone-alt"></i> Hubungi Kami</a>
@@ -60,13 +72,41 @@
         <div class="hero-slider-dots" id="heroSliderDots" aria-label="Navigasi banner hero"></div>
     </section>
 
+    <!-- REASSURANCE 4-UP TILES (Why Buy from Nurul Fashion) -->
+    <section class="reassurance-section" id="whyBuy">
+        <div class="container">
+            <div class="feature-icon-row">
+                <div class="card-icon-feature" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="fas fa-tshirt"></i></div>
+                    <h3>Konsultasi Style Gratis</h3>
+                    <p>Rekomendasi paduan busana yang tepat untuk berbagai aktivitas dan bentuk tubuh.</p>
+                </div>
+                <div class="card-icon-feature" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon"><i class="fas fa-check-double"></i></div>
+                    <h3>Kualitas Terverifikasi</h3>
+                    <p>Standar jahitan rapi dan material pilihan yang adem serta tahan lama dipakai.</p>
+                </div>
+                <div class="card-icon-feature" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon"><i class="fab fa-whatsapp"></i></div>
+                    <h3>Order Cepat WhatsApp</h3>
+                    <p>Format otomatis sekali klik tanpa repot mengisi formulir panjang checkout.</p>
+                </div>
+                <div class="card-icon-feature" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon"><i class="fas fa-truck-fast"></i></div>
+                    <h3>Pengiriman Terpercaya</h3>
+                    <p>Packing rapi dan pengiriman terkoordinasi langsung ke alamat tujuanmu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- PRODUK UNGGULAN -->
     <section class="produk-unggulan section" id="produk">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <span class="section-badge">Produk Unggulan</span>
                 <h2>Koleksi <span class="pink-text">Terpopuler</span></h2>
-                <p>Temukan produk fashion paling diminati bulan ini</p>
+                <p>Temukan produk fashion paling diminati dan paling banyak dipesan bulan ini</p>
             </div>
             <div class="product-grid" id="featuredProducts"></div>
         </div>
@@ -83,7 +123,7 @@
             <div class="katalog-controls" data-aos="fade-up">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Cari produk...">
+                    <input type="text" id="searchInput" placeholder="Cari busana, gamis, kemeja, setelan...">
                 </div>
                 <div class="filter-group">
                     <select id="categoryFilter"><option value="all">Semua Kelompok Usia</option></select>
@@ -96,6 +136,7 @@
                     </select>
                 </div>
             </div>
+            <div class="category-pill-tabs" id="categoryPillTabs" data-aos="fade-up"></div>
             <div class="product-grid" id="allProducts"></div>
         </div>
     </section>

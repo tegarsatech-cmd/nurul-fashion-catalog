@@ -465,6 +465,22 @@ async function refreshCategories() {
                 categoryFilter.innerHTML += `<option value="${cat.nama}">${cat.nama}</option>`;
             });
         }
+        const pillTabsContainer = document.getElementById('categoryPillTabs');
+        if (pillTabsContainer) {
+            const currentCat = categoryFilter ? categoryFilter.value : 'all';
+            pillTabsContainer.innerHTML = '<button type="button" class="btn-pill-tab' + (currentCat === 'all' ? ' active' : '') + '" data-category="all">Semua</button>' +
+                allCategories.map(cat => '<button type="button" class="btn-pill-tab' + (currentCat === cat.nama ? ' active' : '') + '" data-category="' + cat.nama.replace(/"/g, '&quot;') + '">' + cat.nama + '</button>').join('');
+            pillTabsContainer.querySelectorAll('.btn-pill-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    pillTabsContainer.querySelectorAll('.btn-pill-tab').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    if (categoryFilter) {
+                        categoryFilter.value = btn.dataset.category;
+                    }
+                    renderAllProducts(allProductsData);
+                });
+            });
+        }
     } catch (error) {
         console.error('Kategori load error:', error);
         showToast('Gagal memuat kategori', 'error');
@@ -762,7 +778,15 @@ function debounce(fn, delay = 250) {
 }
 
 // ===== Filter & Search Events =====
-if (categoryFilter) categoryFilter.addEventListener('change', () => renderAllProducts(allProductsData));
+if (categoryFilter) {
+    categoryFilter.addEventListener('change', () => {
+        const val = categoryFilter.value;
+        document.querySelectorAll('#categoryPillTabs .btn-pill-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.category === val);
+        });
+        renderAllProducts(allProductsData);
+    });
+}
 if (sortFilter) sortFilter.addEventListener('change', () => renderAllProducts(allProductsData));
 if (searchInput) searchInput.addEventListener('input', debounce(() => renderAllProducts(allProductsData), 300));
 
