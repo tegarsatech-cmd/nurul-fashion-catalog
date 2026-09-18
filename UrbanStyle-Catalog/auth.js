@@ -63,13 +63,49 @@ export async function listMfaFactors() {
 }
 
 export async function enrollMfa(issuer = 'Nurul Fashion') {
-    const { data, error } = await supabase.auth.mfa.enroll({
+    // Bersihkan faktor unverified sebelumnya agar tidak terjadi error duplicate factor name
+    try {
+        const factorsResult = await supabase.auth.mfa.listFactors();
+        const unverified = (factorsResult?.data?.all || factorsResult?.data?.totp || []).filter(f => f.status === 'unverified');
+        for (const uf of unverified) {
+            if (uf && uf.id) {
+                await supabase.auth.mfa.unenroll({ factorId: uf.id }).catch(() => {});
+            }
+        }
+    } catch (cleanErr) {
+        console.warn('Pembersihan faktor MFA lama:', cleanErr);
+    }
+
+    const uniqueId = Date.now().toString().slice(-6);
+    let enrollResult = await supabase.auth.mfa.enroll({
         factorType: 'totp',
         issuer: issuer,
-        friendlyName: 'Admin Authenticator'
+        friendlyName: `Admin Authenticator ${uniqueId}`
     });
-    if (error) throw error;
-    return data;
+
+    if (enrollResult.error) {
+        console.warn('Enroll MFA retry needed:', enrollResult.error);
+        // Jika ada konflik friendlyName atau unverified factor lama yang tersisa
+        try {
+            const factorsResult = await supabase.auth.mfa.listFactors();
+            const list = factorsResult?.data?.all || factorsResult?.data?.totp || [];
+            for (const f of list) {
+                if (f && f.id && f.status === 'unverified') {
+                    await supabase.auth.mfa.unenroll({ factorId: f.id }).catch(() => {});
+                }
+            }
+        } catch (e) {}
+
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        enrollResult = await supabase.auth.mfa.enroll({
+            factorType: 'totp',
+            issuer: issuer,
+            friendlyName: `Authenticator ${Date.now()}-${rand}`
+        });
+    }
+
+    if (enrollResult.error) throw enrollResult.error;
+    return enrollResult.data;
 }
 
 export async function challengeMfa(factorId) {

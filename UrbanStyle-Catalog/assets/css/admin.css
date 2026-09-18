@@ -4,9 +4,9 @@
    ============================================ */
 :root {
     --primary: #0a1317;
-    --secondary: #0064e0;
-    --secondary-light: #0091ff;
-    --secondary-dark: #0457cb;
+    --secondary: #FF1493;
+    --secondary-light: #FF69B4;
+    --secondary-dark: #d8117a;
     --bg: #f1f4f7;
     --sidebar-bg: #0a1317;
     --text: #1c1e21;

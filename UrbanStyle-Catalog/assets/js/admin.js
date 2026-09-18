@@ -1520,30 +1520,56 @@ document.getElementById('btnOpenMfaModal')?.addEventListener('click', async () =
     if (submitBtn) submitBtn.disabled = true;
 
     try {
+        // 1. Bersihkan faktor unverified yang menggantung sebelumnya
+        try {
+            const factors = await listMfaFactors();
+            const verified = (factors?.all || factors?.totp || []).find(f => f.status === 'verified');
+            if (verified) {
+                showToast('Verifikasi 2 Langkah (2FA) sudah aktif pada akun ini.', 'info');
+                closeModal('mfaSetupModal');
+                await refreshMfaStatus();
+                return;
+            }
+            const unverified = (factors?.all || factors?.totp || []).filter(f => f.status === 'unverified');
+            for (const uf of unverified) {
+                if (uf?.id) await unenrollMfa(uf.id).catch(() => {});
+            }
+        } catch (checkErr) {
+            console.warn('Pemeriksaan faktor MFA:', checkErr);
+        }
+
+        // 2. Daftarkan TOTP baru
         const enrollData = await enrollMfa('Nurul Fashion');
         pendingEnrolledFactorId = enrollData.id;
 
+        // 3. Render QR Code ukuran besar (260px) responsif untuk semua perangkat
         if (enrollData?.totp?.qr_code) {
             const qrData = enrollData.totp.qr_code;
             const isSvg = qrData.trim().startsWith('<svg');
             if (isSvg) {
                 qrContainer.innerHTML = `
-                    <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 100%; box-sizing: border-box;">
+                    <div style="background: #ffffff; padding: 12px; border-radius: 12px; border: 1.5px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.06); width: 100%; max-width: 280px; box-sizing: border-box; overflow: hidden;">
                         ${qrData}
                     </div>`;
                 const svg = qrContainer.querySelector('svg');
                 if (svg) {
-                    svg.setAttribute('width', '200');
-                    svg.setAttribute('height', '200');
-                    svg.style.width = '200px';
-                    svg.style.height = '200px';
+                    const origWidth = svg.getAttribute('width') || '200';
+                    const origHeight = svg.getAttribute('height') || '200';
+                    if (!svg.getAttribute('viewBox')) {
+                        svg.setAttribute('viewBox', `0 0 ${origWidth} ${origHeight}`);
+                    }
+                    svg.setAttribute('width', '260');
+                    svg.setAttribute('height', '260');
+                    svg.style.width = '100%';
+                    svg.style.maxWidth = '260px';
+                    svg.style.height = 'auto';
+                    svg.style.aspectRatio = '1 / 1';
                     svg.style.display = 'block';
-                    svg.style.maxWidth = '100%';
                 }
             } else {
                 qrContainer.innerHTML = `
-                    <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 100%; box-sizing: border-box;">
-                        <img src="${qrData}" alt="QR Code 2FA" style="width: 200px; height: 200px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; border-radius: 0;">
+                    <div style="background: #ffffff; padding: 12px; border-radius: 12px; border: 1.5px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.06); width: 100%; max-width: 280px; box-sizing: border-box;">
+                        <img src="${qrData}" alt="QR Code 2FA" style="width: 100%; max-width: 260px; height: auto; aspect-ratio: 1 / 1; object-fit: contain; display: block; margin: 0 auto; border-radius: 0;">
                     </div>`;
             }
         } else {
