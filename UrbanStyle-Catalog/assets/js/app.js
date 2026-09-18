@@ -504,18 +504,24 @@ async function refreshProducts(showLoading = true) {
     }
 
     try {
-        const { data, error } = await fetchWithRetry(
+        const { data } = await fetchWithRetry(
             () => supabase.from('products').select('*').order('created_at', { ascending: false }),
             'produk'
         );
         allProductsData = (data || []).map(product => ({ id: product.id, ...product }));
-        if (featuredProducts) renderFeaturedProducts(getFeaturedProducts(allProductsData));
-        if (allProducts) renderAllProducts(allProductsData);
     } catch (error) {
-        console.error('Error loading products:', error);
+        console.error('Error loading products from Supabase:', error);
         showToast('Gagal memuat produk', 'error');
         if (featuredProducts) featuredProducts.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Gagal memuat produk</div>';
         if (allProducts) allProducts.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Gagal memuat produk</div>';
+        return;
+    }
+
+    try {
+        if (featuredProducts) renderFeaturedProducts(getFeaturedProducts(allProductsData));
+        if (allProducts) renderAllProducts(allProductsData);
+    } catch (renderError) {
+        console.error('Error rendering product cards:', renderError);
     }
 }
 
@@ -548,20 +554,33 @@ function renderAllProducts(products) {
 
     const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
     if (searchValue) {
-        filtered = filtered.filter(p =>
-            (p.nama || '').toLowerCase().includes(searchValue) ||
-            (p.kategori || '').toLowerCase().includes(searchValue)
-        );
+        filtered = filtered.filter(p => {
+            const title = (p.judul_postingan || p.nama || '').toLowerCase();
+            const desc = (p.deskripsi || p.keterangan_foto || '').toLowerCase();
+            const cat = (p.kategori || '').toLowerCase();
+            const items = normalizeProductItems(p);
+            const itemMatch = items.some(item =>
+                (item.nama || '').toLowerCase().includes(searchValue) ||
+                (item.ukuran || '').toLowerCase().includes(searchValue) ||
+                (item.warna || '').toLowerCase().includes(searchValue)
+            );
+            return title.includes(searchValue) || desc.includes(searchValue) || cat.includes(searchValue) || itemMatch;
+        });
     }
 
     const sortValue = sortFilter ? sortFilter.value : 'default';
-    if (sortValue === 'termurah') filtered.sort((a, b) => (a.harga || 0) - (b.harga || 0));
-    else if (sortValue === 'termahal') filtered.sort((a, b) => (b.harga || 0) - (a.harga || 0));
-    else if (sortValue === 'az') filtered.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
-    else if (sortValue === 'za') filtered.sort((a, b) => (b.nama || '').localeCompare(a.nama || ''));
+    if (sortValue === 'termurah') {
+        filtered.sort((a, b) => (Number(a.harga) || 0) - (Number(b.harga) || 0));
+    } else if (sortValue === 'termahal') {
+        filtered.sort((a, b) => (Number(b.harga) || 0) - (Number(a.harga) || 0));
+    } else if (sortValue === 'az') {
+        filtered.sort((a, b) => (a.judul_postingan || a.nama || '').localeCompare(b.judul_postingan || b.nama || ''));
+    } else if (sortValue === 'za') {
+        filtered.sort((a, b) => (b.judul_postingan || b.nama || '').localeCompare(a.judul_postingan || a.nama || ''));
+    }
 
     if (filtered.length === 0) {
-        allProducts.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Produk tidak ditemukan</div>';
+        allProducts.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Tidak ada produk yang cocok</div>';
         return;
     }
     allProducts.innerHTML = filtered.map(product => createProductCard(product)).join('');
@@ -569,41 +588,47 @@ function renderAllProducts(products) {
 
 // ===== Create Product Card =====
 function createProductCard(product, tier = null) {
-    const imageUrl = product.gambar || 'https://via.placeholder.com/400x500?text=No+Image';
-    const items = normalizeProductItems(product);
-    const title = product.judul_postingan || product.nama || 'Produk';
-    const firstItem = items.find(item => item.nama) || {};
-    const sizes = items.length > 0 ? [] : (product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : []);
-    const colors = (product.warna || '').split(',').map(c => c.trim()).filter(Boolean);
-    const firstStock = firstItem.stok || product.stok || 'Tersedia';
-    const itemOptions = items.filter(item => item.nama || item.harga !== '');
-    const itemSelect = itemOptions.length > 1
-        ? '<div class="product-item-picker">' +
-          '<label class="product-item-select-label" for="product-item-' + product.id + '">Pilihan Model (' + itemOptions.length + ' varian)</label>' +
-          '<select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '" aria-label="Pilih varian untuk ' + title + '">' +
-          itemOptions.map((item, index) => '<option value="' + index + '"' + (item.stok === 'Habis' ? ' data-stock="Habis"' : '') + '>' + (item.nama || 'Model ' + (index + 1)) + (item.harga === '' ? '' : ' — Rp ' + formatPrice(item.harga)) + (item.stok === 'Habis' ? ' (Habis)' : '') + '</option>').join('') +
-          '</select></div>'
-        : '';
-    const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
-    return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
-        '<div class="product-image">' +
-        '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
-        '<span class="product-image-hint" aria-label="Buka detail produk"><i class="fas fa-expand-alt" aria-hidden="true"></i></span>' +
-        tierBadge +
-        (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
-        '</div>' +
-        '<div class="product-details">' +
-        '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
-        '<h3 class="product-name">' + title + '</h3>' +
-        (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
-        '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
-        (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
-        '<div class="product-actions">' +
-        '<div class="product-whatsapp-group">' + itemSelect +
-        '<div class="product-selected-meta" aria-live="polite"><span><strong>Ukuran</strong><em>' + (firstItem.ukuran || '-') + '</em></span><span><strong>Warna</strong><em>' + (firstItem.warna || '-') + '</em></span><span><strong>Stok</strong><em>' + (firstItem.stok || 'Tersedia') + '</em></span></div>' +
-        '<div class="product-card-buttons"><button type="button" class="btn-cart" data-cart-product-id="' + product.id + '" data-cart-item-index="0" aria-label="Tambah ke keranjang">🛒</button><a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div></div>' +
-        '</div>' +
-        '</div>';
+    try {
+        const imageUrl = product.gambar || 'https://via.placeholder.com/400x500?text=No+Image';
+        const items = normalizeProductItems(product);
+        const title = product.judul_postingan || product.nama || 'Produk';
+        const firstItem = items.find(item => item.nama) || {};
+        const sizes = items.length > 0 ? [] : (product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : []);
+        const colors = (product.warna || '').split(',').map(c => c.trim()).filter(Boolean);
+        const firstStock = firstItem.stok || product.stok || 'Tersedia';
+        const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
+        const itemOptions = items.filter(item => item.nama || item.harga !== '');
+        const itemSelect = itemOptions.length > 1
+            ? '<div class="product-item-picker">' +
+              '<label class="product-item-select-label" for="product-item-' + product.id + '">Pilihan Model (' + itemOptions.length + ' varian)</label>' +
+              '<select class="product-item-select" id="product-item-' + product.id + '" data-product-id="' + product.id + '" aria-label="Pilih varian untuk ' + title + '">' +
+              itemOptions.map((item, index) => '<option value="' + index + '"' + (item.stok === 'Habis' ? ' data-stock="Habis"' : '') + '>' + (item.nama || 'Model ' + (index + 1)) + (item.harga === '' ? '' : ' — Rp ' + formatPrice(item.harga)) + (item.stok === 'Habis' ? ' (Habis)' : '') + '</option>').join('') +
+              '</select></div>'
+            : '';
+        const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
+        return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
+            '<div class="product-image">' +
+            '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
+            '<span class="product-image-hint" aria-label="Buka detail produk"><i class="fas fa-expand-alt" aria-hidden="true"></i></span>' +
+            tierBadge +
+            (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
+            '</div>' +
+            '<div class="product-details">' +
+            '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
+            '<h3 class="product-name">' + title + '</h3>' +
+            (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
+            '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
+            (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
+            '<div class="product-actions">' +
+            '<div class="product-whatsapp-group">' + itemSelect +
+            '<div class="product-selected-meta" aria-live="polite"><span><strong>Ukuran</strong><em>' + (firstItem.ukuran || '-') + '</em></span><span><strong>Warna</strong><em>' + (firstItem.warna || '-') + '</em></span><span><strong>Stok</strong><em>' + (firstItem.stok || 'Tersedia') + '</em></span></div>' +
+            '<div class="product-card-buttons"><button type="button" class="btn-cart" data-cart-product-id="' + product.id + '" data-cart-item-index="0" aria-label="Tambah ke keranjang">🛒</button><a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div></div>' +
+            '</div>' +
+            '</div>';
+    } catch (cardError) {
+        console.error('Error creating card for product:', product, cardError);
+        return '';
+    }
 }
 
 function normalizeProductItems(product) {

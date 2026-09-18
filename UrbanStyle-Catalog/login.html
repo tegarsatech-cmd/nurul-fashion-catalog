@@ -115,68 +115,126 @@
         }
         .password-toggle:hover { color: #FF69B4; background: rgba(255, 105, 180, 0.08); }
 
-        /* CAPTCHA Styles */
-        .captcha-container {
-            background: #fafafa;
-            border: 1.5px solid #eaeaea;
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-bottom: 14px;
-        }
-        .captcha-box {
+        /* Robot Checkbox ('Saya bukan robot') Styles */
+        .robot-check-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 8px;
+            background: #f9fafb;
+            border: 1.5px solid #d1d5db;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            user-select: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
         }
-        .captcha-canvas-wrap {
-            flex: 1;
-            background: #18181b;
-            border-radius: 8px;
-            overflow: hidden;
+        .robot-check-container.error-highlight {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+        }
+        .robot-check-container.verified {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .robot-check-left {
             display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-            height: 48px;
-        }
-        .captcha-canvas {
-            width: 100%;
-            height: 48px;
+            gap: 12px;
             cursor: pointer;
-            user-select: none;
+        }
+        .robot-checkbox {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #9ca3af;
+            border-radius: 6px;
+            background: #ffffff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .robot-checkbox:hover {
+            border-color: #4b5563;
+        }
+        .robot-checkbox:focus-visible {
+            outline: 2px solid #0064e0;
+            outline-offset: 2px;
+        }
+        .robot-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2.5px solid #d1d5db;
+            border-top-color: #0064e0;
+            border-radius: 50%;
+            animation: robotSpin 0.7s linear infinite;
+        }
+        @keyframes robotSpin {
+            to { transform: rotate(360deg); }
+        }
+        .robot-check-icon {
+            display: none;
+            color: #10b981;
+            font-size: 16px;
+            animation: checkBounce 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes checkBounce {
+            0% { transform: scale(0.4); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .robot-checkbox.loading {
+            border-color: #0064e0;
+            background: #ffffff;
+        }
+        .robot-checkbox.loading .robot-spinner {
             display: block;
         }
-        .captcha-actions {
-            display: flex;
-            gap: 4px;
-        }
-        .btn-captcha-action {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
+        .robot-checkbox.checked {
+            border-color: #10b981;
             background: #ffffff;
-            color: #555;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+        .robot-checkbox.checked .robot-check-icon {
+            display: block;
+        }
+        .robot-label {
             font-size: 14px;
-            transition: all 0.2s ease;
+            font-weight: 600;
+            color: #1f2937;
+            cursor: pointer;
+            margin: 0;
         }
-        .btn-captcha-action:hover {
-            border-color: #FF69B4;
-            color: #FF1493;
-            background: rgba(255, 105, 180, 0.05);
+        .robot-check-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: #6b7280;
         }
-        .btn-captcha-action.spin i {
-            animation: spinAnim 0.5s linear;
+        .robot-brand-icon {
+            font-size: 18px;
+            color: #0064e0;
         }
-        @keyframes spinAnim {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .robot-brand-text {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #4b5563;
+        }
+        .robot-brand-links {
+            font-size: 9px;
+            color: #9ca3af;
+        }
+        .robot-brand-links a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+        .robot-brand-links a:hover {
+            text-decoration: underline;
         }
 
         /* 2FA Form Step */
@@ -357,23 +415,23 @@
                     </div>
                 </div>
 
-                <!-- CAPTCHA / Bot Protection -->
-                <div class="captcha-container">
-                    <div class="captcha-box">
-                        <div class="captcha-canvas-wrap" title="Klik untuk memuat ulang kode">
-                            <canvas id="captchaCanvas" class="captcha-canvas" width="220" height="48"></canvas>
-                        </div>
-                        <div class="captcha-actions">
-                            <button type="button" class="btn-captcha-action" id="btnReloadCaptcha" title="Muat ulang kode CAPTCHA">
-                                <i class="fas fa-rotate-right"></i>
-                            </button>
-                            <button type="button" class="btn-captcha-action" id="btnAudioCaptcha" title="Dengarkan kode CAPTCHA">
-                                <i class="fas fa-volume-high"></i>
-                            </button>
-                        </div>
+                <!-- Verifikasi 'Saya bukan robot' -->
+                <div class="robot-check-container" id="robotCheckContainer">
+                    <div class="robot-check-left" id="robotCheckTrigger">
+                        <button type="button" class="robot-checkbox" id="robotCheckbox" role="checkbox" aria-checked="false" aria-label="Saya bukan robot">
+                            <span class="robot-spinner"></span>
+                            <i class="fas fa-check robot-check-icon"></i>
+                        </button>
+                        <span class="robot-label" id="robotLabel">Saya bukan robot</span>
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <input type="text" id="captchaInput" placeholder="Ketik kode di atas (huruf & angka)" required autocomplete="off" spellcheck="false">
+                    <div class="robot-check-right">
+                        <div class="robot-brand-icon">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <span class="robot-brand-text">Proteksi</span>
+                        <div class="robot-brand-links">
+                            <a href="#" tabindex="-1" onclick="return false;">Privasi</a> &bull; <a href="#" tabindex="-1" onclick="return false;">Ketentuan</a>
+                        </div>
                     </div>
                 </div>
 
@@ -440,7 +498,7 @@
         // ===== 2. STATE & PERSISTENT BRUTE-FORCE RATE LIMITING =====
         const RATE_LIMIT_STORAGE_KEY = '_nf_auth_rate_guard_v2';
         const pageLoadTimestamp = Date.now();
-        let currentCaptchaCode = '';
+        let isRobotVerified = false;
         let pendingMfaFactorId = null;
         let countdownInterval = null;
 
@@ -448,10 +506,9 @@
         const loginBtn = document.getElementById('loginBtn');
         const loginEmail = document.getElementById('loginEmail');
         const loginPassword = document.getElementById('loginPassword');
-        const captchaInput = document.getElementById('captchaInput');
-        const captchaCanvas = document.getElementById('captchaCanvas');
-        const btnReloadCaptcha = document.getElementById('btnReloadCaptcha');
-        const btnAudioCaptcha = document.getElementById('btnAudioCaptcha');
+        const robotCheckbox = document.getElementById('robotCheckbox');
+        const robotCheckContainer = document.getElementById('robotCheckContainer');
+        const robotCheckTrigger = document.getElementById('robotCheckTrigger');
 
         const stepLogin = document.getElementById('stepLogin');
         const step2FA = document.getElementById('step2FA');
@@ -582,96 +639,53 @@
             return newAttempts;
         }
 
-        // ===== 3. INTERACTIVE CANVAS CAPTCHA =====
-        function generateCaptchaCode() {
-            // Hindari karakter ambigu: 0/O, 1/I/l
-            const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz';
-            let result = '';
-            for (let i = 0; i < 5; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
+        // ===== 3. VERIFIKASI "SAYA BUKAN ROBOT" =====
+        function verifyRobotClick() {
+            if (isRobotVerified) return;
+            if (robotCheckContainer) robotCheckContainer.classList.remove('error-highlight');
+            if (robotCheckbox) {
+                robotCheckbox.classList.add('loading');
+                robotCheckbox.setAttribute('aria-checked', 'mixed');
             }
-            return result;
+
+            setTimeout(() => {
+                if (robotCheckbox) {
+                    robotCheckbox.classList.remove('loading');
+                    robotCheckbox.classList.add('checked');
+                    robotCheckbox.setAttribute('aria-checked', 'true');
+                }
+                if (robotCheckContainer) robotCheckContainer.classList.add('verified');
+                isRobotVerified = true;
+                errorEl.style.display = 'none';
+            }, 600);
         }
 
-        function drawCaptcha() {
-            currentCaptchaCode = generateCaptchaCode();
-            const ctx = captchaCanvas.getContext('2d');
-            const w = captchaCanvas.width;
-            const h = captchaCanvas.height;
-
-            // Background
-            ctx.fillStyle = '#18181b';
-            ctx.fillRect(0, 0, w, h);
-
-            // Noise: dots
-            for (let i = 0; i < 40; i++) {
-                ctx.fillStyle = `rgba(255, 105, 180, ${Math.random() * 0.4 + 0.1})`;
-                ctx.beginPath();
-                ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2, 0, Math.PI * 2);
-                ctx.fill();
+        function resetRobotVerification() {
+            isRobotVerified = false;
+            if (robotCheckbox) {
+                robotCheckbox.classList.remove('loading', 'checked');
+                robotCheckbox.setAttribute('aria-checked', 'false');
             }
-
-            // Noise: wavy lines
-            for (let i = 0; i < 3; i++) {
-                ctx.strokeStyle = `rgba(255, 182, 193, ${Math.random() * 0.4 + 0.2})`;
-                ctx.lineWidth = 1.2;
-                ctx.beginPath();
-                ctx.moveTo(0, Math.random() * h);
-                ctx.bezierCurveTo(
-                    w * 0.25, Math.random() * h,
-                    w * 0.75, Math.random() * h,
-                    w, Math.random() * h
-                );
-                ctx.stroke();
+            if (robotCheckContainer) {
+                robotCheckContainer.classList.remove('verified', 'error-highlight');
             }
-
-            // Characters
-            const charCount = currentCaptchaCode.length;
-            const xStep = (w - 30) / charCount;
-            const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#f472b6', '#fda4af', '#fdf2f8'];
-
-            for (let i = 0; i < charCount; i++) {
-                const char = currentCaptchaCode[i];
-                ctx.save();
-                const x = 16 + i * xStep + (Math.random() * 6 - 3);
-                const y = h / 2 + (Math.random() * 8 - 4);
-                const angle = (Math.random() * 30 - 15) * Math.PI / 180;
-
-                ctx.translate(x, y);
-                ctx.rotate(angle);
-                ctx.font = `bold ${Math.floor(Math.random() * 4 + 24)}px 'Courier New', monospace`;
-                ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-                ctx.textBaseline = 'middle';
-                ctx.shadowColor = 'rgba(255, 20, 147, 0.5)';
-                ctx.shadowBlur = 6;
-                ctx.fillText(char, 0, 0);
-                ctx.restore();
-            }
-
-            if (captchaInput) captchaInput.value = '';
         }
 
-        btnReloadCaptcha.addEventListener('click', () => {
-            btnReloadCaptcha.classList.add('spin');
-            drawCaptcha();
-            setTimeout(() => btnReloadCaptcha.classList.remove('spin'), 500);
-        });
-
-        captchaCanvas.addEventListener('click', drawCaptcha);
-
-        btnAudioCaptcha.addEventListener('click', () => {
-            if ('speechSynthesis' in window && currentCaptchaCode) {
-                window.speechSynthesis.cancel();
-                // Baca huruf per huruf dengan jeda
-                const spoken = currentCaptchaCode.split('').join('. ');
-                const utterance = new SpeechSynthesisUtterance(spoken);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.8;
-                window.speechSynthesis.speak(utterance);
-            } else {
-                showError('Audio baca CAPTCHA tidak didukung di browser ini.');
-            }
-        });
+        if (robotCheckTrigger) {
+            robotCheckTrigger.addEventListener('click', verifyRobotClick);
+        }
+        if (robotCheckbox) {
+            robotCheckbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                verifyRobotClick();
+            });
+            robotCheckbox.addEventListener('keydown', (e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    verifyRobotClick();
+                }
+            });
+        }
 
         // ===== 4. SECURE ERROR MESSAGING HELPER =====
         function showError(message) {
@@ -736,7 +750,7 @@
                 step2FA.classList.add('step-hidden');
                 stepLogin.classList.remove('step-hidden');
                 pendingMfaFactorId = null;
-                drawCaptcha();
+                resetRobotVerification();
             }
         }
 
@@ -750,29 +764,20 @@
         // ===== 6. AUTH STATE CHECK ON LOAD =====
         onAuthStateChanged(async (user) => {
             if (user) {
-                try {
-                    // Periksa apakah user memiliki kewajiban AAL2 (2FA)
-                    const assurance = await getMfaAssuranceLevel();
-                    if (assurance && assurance.nextLevel === 'aal2' && assurance.currentLevel !== 'aal2') {
-                        // User membutuhkan verifikasi 2FA
-                        const factors = await listMfaFactors();
-                        const totpFactor = factors?.totp?.find(f => f.status === 'verified');
-                        if (totpFactor) {
-                            pendingMfaFactorId = totpFactor.id;
-                            switchToStep('2fa');
-                            return;
-                        }
-                    }
-                    // Jika sudah AAL2 atau tidak memiliki faktor 2FA aktif, redirect ke admin
-                    window.location.href = 'admin.html';
-                } catch (err) {
-                    console.error('Error mengecek level MFA user:', err);
-                    window.location.href = 'admin.html';
+                // Jangan auto-redirect jika sedang di tengah flow 2FA
+                const assurance = await getMfaAssuranceLevel().catch(() => null);
+                if (assurance?.nextLevel === 'aal2' && assurance?.currentLevel !== 'aal2') {
+                    // Masih butuh faktor 2
+                    return;
                 }
+                showSuccess('Sesi login terdeteksi. Mengarahkan...');
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 600);
             }
         });
 
-        // Password visibility toggle
+        // Password Visibility Toggle
         document.getElementById('passwordToggle').addEventListener('click', () => {
             const input = document.getElementById('loginPassword');
             const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -783,7 +788,6 @@
 
         // Initialize state
         checkAndApplyLockout();
-        drawCaptcha();
 
         // ===== 7. STEP 1 LOGIN SUBMIT HANDLER =====
         loginForm.addEventListener('submit', async (e) => {
@@ -801,27 +805,25 @@
                 return;
             }
 
-            // Submission speed check (Human takes at least 1.2 seconds)
-            if (Date.now() - pageLoadTimestamp < 1200) {
+            // Submission speed check (Human takes at least 0.8 seconds)
+            if (Date.now() - pageLoadTimestamp < 800) {
                 showError('Pengiriman form terlalu cepat terdeteksi. Silakan coba lagi.');
-                drawCaptcha();
+                resetRobotVerification();
                 return;
             }
 
             const email = loginEmail.value.trim();
             const password = loginPassword.value;
-            const userCaptcha = captchaInput.value.trim();
 
             if (!email || !password) {
                 showError('Email dan password wajib diisi.');
                 return;
             }
 
-            // Validasi CAPTCHA (case-insensitive for good UX)
-            if (!userCaptcha || userCaptcha.toLowerCase() !== currentCaptchaCode.toLowerCase()) {
-                showError('Kode CAPTCHA tidak cocok. Silakan ketik kode verifikasi baru.');
-                drawCaptcha();
-                registerFailedAttempt();
+            // Validasi 'Saya bukan robot'
+            if (!isRobotVerified) {
+                showError("Silakan centang 'Saya bukan robot' terlebih dahulu.");
+                if (robotCheckContainer) robotCheckContainer.classList.add('error-highlight');
                 return;
             }
 
@@ -860,7 +862,7 @@
             } catch (err) {
                 // Increment failed attempts and apply lockout if threshold reached
                 const attempts = registerFailedAttempt();
-                drawCaptcha();
+                resetRobotVerification();
 
                 // OWASP Secure Error Message: Never enumerate whether email or password was wrong
                 const maxAttemptsBeforeLock = 3;
