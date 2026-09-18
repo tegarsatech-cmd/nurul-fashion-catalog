@@ -1117,19 +1117,31 @@ a[href="#kontak"] i.fa-phone-alt {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: var(--meta-primary);
-    color: var(--meta-on-primary);
+    background: #25D366 !important;
+    color: #ffffff !important;
     border: none;
-    transition: background-color 0.2s ease, transform 0.15s ease;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.product-actions .btn-whatsapp i {
+    color: #ffffff !important;
+    font-size: 17px;
 }
 
 .product-actions .btn-whatsapp:hover {
-    background: var(--meta-primary-deep);
+    background: #20ba59 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
 }
 
 .product-actions .btn-whatsapp.disabled {
-    background: var(--meta-disabled-text);
+    background: var(--meta-disabled-text) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
     cursor: not-allowed;
+    transform: none;
 }
 
 .product-card-buttons {
@@ -1533,8 +1545,8 @@ a[href="#kontak"] i.fa-phone-alt {
     justify-content: center;
     gap: 10px;
     padding: 14px 28px;
-    background: var(--meta-primary);
-    color: var(--meta-on-primary);
+    background: #25D366 !important;
+    color: #ffffff !important;
     border-radius: var(--meta-rounded-full);
     font-family: var(--font-meta);
     font-size: 14px;
@@ -1542,17 +1554,22 @@ a[href="#kontak"] i.fa-phone-alt {
     line-height: 1.43;
     letter-spacing: -0.14px;
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.2s ease;
     min-height: 48px;
     border: none;
-    box-shadow: none;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28);
+}
+
+.btn-whatsapp i {
+    color: #ffffff !important;
+    font-size: 18px;
 }
 
 .btn-whatsapp:hover {
-    background: var(--meta-primary-deep);
-    color: #ffffff;
-    transform: none;
-    box-shadow: none;
+    background: #20ba59 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.38);
 }
 
 /* ============================================
@@ -3140,22 +3157,24 @@ img {
         font-size: 13.5px !important;
         font-weight: 700 !important;
         border-radius: 100px !important;
-        background: #111111 !important;
+        background: #25D366 !important;
         color: #ffffff !important;
         justify-content: center !important;
         white-space: nowrap !important;
         padding: 10px 16px !important;
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25) !important;
         transition: all 0.2s ease !important;
     }
 
     .product-card .btn-whatsapp i {
-        color: #25D366 !important;
+        color: #ffffff !important;
         font-size: 17px !important;
     }
 
     .product-card .btn-whatsapp:hover {
-        background: #25D366 !important;
+        background: #20ba59 !important;
         color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35) !important;
     }
 
     .product-card .btn-whatsapp:hover i {
