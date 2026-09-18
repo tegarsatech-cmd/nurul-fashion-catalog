@@ -51,103 +51,282 @@
         }
         .login-card {
             background: rgba(255, 255, 255, 0.98);
-            padding: 40px 32px;
+            padding: 36px 30px;
             border-radius: 24px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             position: relative;
             z-index: 2;
-            animation: cardSlideUp 0.5s ease;
+            animation: cardSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 105, 180, 0.1);
+            border: 1px solid rgba(255, 105, 180, 0.15);
         }
         @keyframes cardSlideUp {
-            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .login-logo { text-align: center; margin-bottom: 28px; }
+        .login-logo { text-align: center; margin-bottom: 22px; }
         .login-logo .logo {
-            width: 70px; height: 70px;
+            width: 66px; height: 66px;
             background: linear-gradient(135deg, #FF69B4, #FFB6C1, #FF1493);
-            color: #FFFFFF; font-size: 28px; font-weight: 800;
+            color: #FFFFFF; font-size: 26px; font-weight: 800;
             display: flex; align-items: center; justify-content: center;
-            border-radius: 18px; margin: 0 auto 16px;
+            border-radius: 18px; margin: 0 auto 12px;
             box-shadow: 0 8px 30px rgba(255, 105, 180, 0.3);
             transition: transform 0.3s ease;
         }
         .login-logo .logo:hover { transform: rotate(-5deg) scale(1.05); }
-        .login-logo h2 { font-size: 26px; font-weight: 700; color: #111; }
-        .login-logo p { color: #666; font-size: 14px; margin-top: 4px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #222; margin-bottom: 6px; }
+        .login-logo h2 { font-size: 24px; font-weight: 700; color: #111; }
+        .login-logo p { color: #666; font-size: 13px; margin-top: 4px; }
+        
+        .security-badge-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(255, 105, 180, 0.08);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            border-radius: 20px;
+            font-size: 11px;
+            color: #d11270;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #222; margin-bottom: 5px; }
         .form-group input {
-            width: 100%; padding: 14px 16px;
+            width: 100%; padding: 12px 14px;
             border: 2px solid #e5e7eb; border-radius: 10px;
-            font-family: 'Times New Roman', Times, serif; font-size: 16px;
+            font-family: 'Times New Roman', Times, serif; font-size: 15px;
             transition: all 0.3s ease; outline: none; background: #FFF;
             box-sizing: border-box;
         }
-        .form-group input:focus { border-color: #FF69B4; box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.1); }
+        .form-group input:focus { border-color: #FF69B4; box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.12); }
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { padding-right: 48px !important; }
         .password-toggle {
             position: absolute; right: 2px; top: 2px; bottom: 2px; width: 44px;
             background: transparent; border: none; border-radius: 8px;
-            color: #666; font-size: 18px; cursor: pointer;
+            color: #666; font-size: 17px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s ease;
         }
         .password-toggle:hover { color: #FF69B4; background: rgba(255, 105, 180, 0.08); }
+
+        /* CAPTCHA Styles */
+        .captcha-container {
+            background: #fafafa;
+            border: 1.5px solid #eaeaea;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+        }
+        .captcha-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .captcha-canvas-wrap {
+            flex: 1;
+            background: #18181b;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            height: 48px;
+        }
+        .captcha-canvas {
+            width: 100%;
+            height: 48px;
+            cursor: pointer;
+            user-select: none;
+            display: block;
+        }
+        .captcha-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .btn-captcha-action {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .btn-captcha-action:hover {
+            border-color: #FF69B4;
+            color: #FF1493;
+            background: rgba(255, 105, 180, 0.05);
+        }
+        .btn-captcha-action.spin i {
+            animation: spinAnim 0.5s linear;
+        }
+        @keyframes spinAnim {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 2FA Form Step */
+        .step-panel {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .step-hidden {
+            display: none !important;
+        }
+        .two-factor-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .two-factor-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(255, 20, 147, 0.25));
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            color: #FF1493;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 12px;
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.25);
+            animation: pulse2FA 2s infinite ease-in-out;
+        }
+        @keyframes pulse2FA {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 105, 180, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 105, 180, 0.4); }
+        }
+        .two-factor-header h3 {
+            font-size: 20px;
+            color: #111;
+            margin-bottom: 6px;
+        }
+        .two-factor-header p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 18px 0;
+        }
+        .otp-digit {
+            width: 48px;
+            height: 52px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fff;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: monospace;
+            color: #111;
+        }
+        .otp-digit:focus {
+            border-color: #FF69B4;
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Notice / Error / Info Messages */
         .login-error {
-            display: none; align-items: center; gap: 8px;
-            padding: 12px 16px; background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444;
+            display: none; align-items: flex-start; gap: 8px;
+            padding: 12px 14px; background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3); color: #dc2626;
             border-radius: 10px; font-size: 13px; font-weight: 500;
-            margin-bottom: 16px; animation: errorShake 0.4s ease;
+            margin-bottom: 14px; animation: errorShake 0.4s ease;
+            line-height: 1.4;
+        }
+        .login-info {
+            display: none; align-items: flex-start; gap: 8px;
+            padding: 12px 14px; background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.3); color: #2563eb;
+            border-radius: 10px; font-size: 13px; font-weight: 500;
+            margin-bottom: 14px; line-height: 1.4;
+        }
+        .login-countdown {
+            display: none; align-items: center; gap: 8px;
+            padding: 12px 14px; background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.35); color: #b45309;
+            border-radius: 10px; font-size: 13px; font-weight: 600;
+            margin-bottom: 14px; line-height: 1.4;
         }
         @keyframes errorShake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
         .login-success {
             display: none; align-items: center; gap: 8px;
-            padding: 12px 16px; background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e;
-            border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 16px;
+            padding: 12px 14px; background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3); color: #16a34a;
+            border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 14px;
         }
+
+        /* Buttons */
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 14px 28px; border-radius: 12px;
+            padding: 13px 24px; border-radius: 12px;
             font-family: 'Times New Roman', Times, serif; font-size: 15px; font-weight: 600;
             text-decoration: none; cursor: pointer; transition: all 0.3s ease;
-            border: none; min-height: 48px;
+            border: none; min-height: 46px;
         }
         .btn-primary {
             background: linear-gradient(135deg, #FF69B4, #FF1493);
             color: #FFFFFF; box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3); width: 100%;
         }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255, 105, 180, 0.5); }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; }
-        .btn-back-home {
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 105, 180, 0.45); }
+        .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; transform: none !important; }
+        
+        .btn-secondary-action {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 12px; padding: 14px 12px; background: transparent; color: #666;
+            margin-top: 10px; padding: 12px; background: transparent; color: #555;
             border: 2px solid #e5e7eb; border-radius: 12px;
-            font-family: 'Times New Roman', Times, serif; font-size: 14px; font-weight: 500;
-            text-decoration: none; transition: all 0.3s ease; min-height: 48px;
+            font-family: 'Times New Roman', Times, serif; font-size: 13.5px; font-weight: 500;
+            text-decoration: none; transition: all 0.3s ease; width: 100%; cursor: pointer;
         }
-        .btn-back-home:hover { border-color: #FF69B4; color: #FF69B4; }
+        .btn-secondary-action:hover { border-color: #FF69B4; color: #FF1493; background: rgba(255, 105, 180, 0.04); }
 
-        /* Mobile: card tidak menempel tepi layar */
+        .security-footer {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .security-footer i { color: #22c55e; }
+
+        /* Mobile Adjustments */
         @media (max-width: 480px) {
             body { padding: 12px; }
-            .login-card { padding: 28px 20px; border-radius: 18px; }
-            .login-logo { margin-bottom: 24px; }
-            .login-logo .logo { width: 60px; height: 60px; font-size: 24px; }
-            .login-logo h2 { font-size: 22px; }
-            .form-group input { font-size: 15px; }
-            .btn-back-home { font-size: 13px; }
+            .login-card { padding: 26px 18px; border-radius: 20px; }
+            .login-logo { margin-bottom: 18px; }
+            .login-logo .logo { width: 56px; height: 56px; font-size: 22px; }
+            .login-logo h2 { font-size: 21px; }
+            .otp-digit { width: 40px; height: 46px; font-size: 19px; }
+            .form-group input { font-size: 14.5px; }
         }
     </style>
 </head>
@@ -155,75 +334,463 @@
     <div class="login-card">
         <div class="login-logo">
             <div class="logo">NF</div>
-            <h2>Admin Login</h2>
-            <p>Masuk ke dashboard Nurul Fashion</p>
+            <h2>Admin Portal</h2>
+            <p>Sistem Manajemen Katalog Nurul Fashion</p>
+            <div class="security-badge-top">
+                <i class="fas fa-shield-alt"></i> Keamanan Terlindungi
+            </div>
         </div>
-        <form id="loginForm" class="login-form">
-            <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" placeholder="admin@nurulfashion.com" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="loginPassword" placeholder="••••••••" required>
-                    <button type="button" class="password-toggle" id="passwordToggle" tabindex="-1">
-                        <i class="fas fa-eye"></i>
-                    </button>
+
+        <!-- System / Session Timeout Notice -->
+        <div id="loginInfoBanner" class="login-info" role="status"></div>
+        <div id="loginCountdown" class="login-countdown" aria-live="polite"></div>
+        <div id="loginError" class="login-error" role="alert"></div>
+        <div id="loginSuccess" class="login-success" role="status"></div>
+
+        <!-- ================= STEP 1: KREDENSIAL + CAPTCHA ================= -->
+        <div id="stepLogin" class="step-panel">
+            <form id="loginForm" class="login-form" novalidate>
+                <!-- Honeypot Bot Traps (Invisible to real users, bots will auto-fill) -->
+                <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                    <input type="text" id="hp_user_website" name="hp_user_website" tabindex="-1" autocomplete="off">
+                    <input type="text" id="hp_secondary_phone" name="hp_secondary_phone" tabindex="-1" autocomplete="off">
                 </div>
+
+                <div class="form-group">
+                    <label for="loginEmail">Email Admin</label>
+                    <input type="email" id="loginEmail" placeholder="admin@nurulfashion.com" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="password-toggle" id="passwordToggle" tabindex="-1" title="Lihat/Sembunyikan Password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CAPTCHA / Bot Protection -->
+                <div class="captcha-container">
+                    <div class="captcha-box">
+                        <div class="captcha-canvas-wrap" title="Klik untuk memuat ulang kode">
+                            <canvas id="captchaCanvas" class="captcha-canvas" width="220" height="48"></canvas>
+                        </div>
+                        <div class="captcha-actions">
+                            <button type="button" class="btn-captcha-action" id="btnReloadCaptcha" title="Muat ulang kode CAPTCHA">
+                                <i class="fas fa-rotate-right"></i>
+                            </button>
+                            <button type="button" class="btn-captcha-action" id="btnAudioCaptcha" title="Dengarkan kode CAPTCHA">
+                                <i class="fas fa-volume-high"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input type="text" id="captchaInput" placeholder="Ketik kode di atas (huruf & angka)" required autocomplete="off" spellcheck="false">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-lock"></i> Masuk ke Dashboard
+                </button>
+
+                <a href="index.html" class="btn-secondary-action">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Halaman Katalog
+                </a>
+            </form>
+        </div>
+
+        <!-- ================= STEP 2: VERIFIKASI 2 LANGKAH (2FA) ================= -->
+        <div id="step2FA" class="step-panel step-hidden">
+            <div class="two-factor-header">
+                <div class="two-factor-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <h3>Verifikasi 2 Langkah</h3>
+                <p>Masukkan 6 digit kode keamanan dari aplikasi autentikasi Anda (Google Authenticator / Authy).</p>
             </div>
-            <div id="loginError" class="login-error"></div>
-            <div id="loginSuccess" class="login-success"></div>
-            <div id="loginCountdown" class="login-error" aria-live="polite"></div>
-            <button type="submit" class="btn btn-primary" id="loginBtn">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>
-            <a href="index.html" class="btn-back-home">
-                <i class="fas fa-arrow-left"></i> Kembali ke Halaman Utama
-            </a>
-        </form>
+
+            <form id="form2FA" novalidate>
+                <div class="otp-inputs" id="otpInputsContainer">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="0" autofocus>
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="1">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="2">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="3">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="4">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="5">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="btnVerify2FA">
+                    <i class="fas fa-check-shield"></i> Verifikasi &amp; Masuk
+                </button>
+
+                <button type="button" class="btn-secondary-action" id="btnCancel2FA">
+                    <i class="fas fa-arrow-left"></i> Gunakan Akun Lain
+                </button>
+            </form>
+        </div>
+
+        <div class="security-footer">
+            <i class="fas fa-check-circle"></i> Sesi Terenkripsi &bull; Anti Brute-Force &bull; 2FA Ready
+        </div>
     </div>
 
     <script type="module">
-        import { signInWithEmailAndPassword, onAuthStateChanged } from "./auth.js";
+        import supabase, {
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            getMfaAssuranceLevel,
+            listMfaFactors,
+            challengeAndVerifyMfa
+        } from "./auth.js";
 
-        let failedAttempts = 0;
-        let lockoutUntil = 0;
-        let countdownTimer = null;
-        const lockoutDuration = 60;
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const countdownEl = document.getElementById('loginCountdown');
-
-        function startLockout() {
-            lockoutUntil = Date.now() + lockoutDuration * 1000;
-            failedAttempts = 0;
-            if (countdownTimer) clearInterval(countdownTimer);
-            const updateCountdown = () => {
-                const remaining = Math.max(0, Math.ceil((lockoutUntil - Date.now()) / 1000));
-                if (remaining === 0) {
-                    clearInterval(countdownTimer);
-                    countdownTimer = null;
-                    countdownEl.style.display = 'none';
-                    loginBtn.disabled = false;
-                    return;
-                }
-                countdownEl.textContent = 'Terlalu banyak percobaan. Coba lagi dalam ' + remaining + ' detik.';
-                countdownEl.style.display = 'flex';
-                loginBtn.disabled = true;
-            };
-            updateCountdown();
-            countdownTimer = setInterval(updateCountdown, 1000);
+        // ===== 1. ANTI-CLICKJACKING FRAMEBUSTER =====
+        if (window.top !== window.self) {
+            try {
+                window.top.location = window.self.location;
+            } catch (e) {
+                document.body.innerHTML = 'Akses melalui iframe diblokir demi keamanan.';
+            }
         }
 
-        // Jika sudah login, redirect ke admin
-        onAuthStateChanged((user) => {
-            if (user) {
-                window.location.href = 'admin.html';
+        // ===== 2. STATE & PERSISTENT BRUTE-FORCE RATE LIMITING =====
+        const RATE_LIMIT_STORAGE_KEY = '_nf_auth_rate_guard_v2';
+        const pageLoadTimestamp = Date.now();
+        let currentCaptchaCode = '';
+        let pendingMfaFactorId = null;
+        let countdownInterval = null;
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const captchaInput = document.getElementById('captchaInput');
+        const captchaCanvas = document.getElementById('captchaCanvas');
+        const btnReloadCaptcha = document.getElementById('btnReloadCaptcha');
+        const btnAudioCaptcha = document.getElementById('btnAudioCaptcha');
+
+        const stepLogin = document.getElementById('stepLogin');
+        const step2FA = document.getElementById('step2FA');
+        const form2FA = document.getElementById('form2FA');
+        const btnVerify2FA = document.getElementById('btnVerify2FA');
+        const btnCancel2FA = document.getElementById('btnCancel2FA');
+        const otpInputs = Array.from(document.querySelectorAll('.otp-digit'));
+
+        const infoBannerEl = document.getElementById('loginInfoBanner');
+        const countdownEl = document.getElementById('loginCountdown');
+        const errorEl = document.getElementById('loginError');
+        const successEl = document.getElementById('loginSuccess');
+
+        // Check URL parameters for session notifications
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('reason') === 'session_timeout') {
+            infoBannerEl.innerHTML = '<i class="fas fa-info-circle"></i> Sesi Anda telah berakhir otomatis demi keamanan karena tidak ada aktivitas. Silakan login kembali.';
+            infoBannerEl.style.display = 'flex';
+        } else if (urlParams.get('reason') === 'unauthorized') {
+            infoBannerEl.innerHTML = '<i class="fas fa-shield-alt"></i> Anda harus login terlebih dahulu untuk mengakses dashboard admin.';
+            infoBannerEl.style.display = 'flex';
+        }
+
+        function getRateLimitState() {
+            try {
+                const data = localStorage.getItem(RATE_LIMIT_STORAGE_KEY);
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    if (parsed && typeof parsed.attempts === 'number') {
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn('Gagal membaca storage rate limit:', e);
+            }
+            return { attempts: 0, lockoutUntil: 0 };
+        }
+
+        function saveRateLimitState(attempts, lockoutUntil = 0) {
+            try {
+                localStorage.setItem(RATE_LIMIT_STORAGE_KEY, JSON.stringify({
+                    attempts,
+                    lockoutUntil,
+                    updatedAt: Date.now()
+                }));
+            } catch (e) {
+                console.warn('Gagal menyimpan storage rate limit:', e);
+            }
+        }
+
+        function clearRateLimitState() {
+            try {
+                localStorage.removeItem(RATE_LIMIT_STORAGE_KEY);
+            } catch (e) {}
+        }
+
+        function calculateLockoutDuration(attempts) {
+            // Skema lockout bertingkat:
+            // 3x salah: 60 detik (1 menit)
+            // 4x salah: 180 detik (3 menit)
+            // 5x+ salah: 600 detik (10 menit)
+            if (attempts >= 5) return 600;
+            if (attempts === 4) return 180;
+            if (attempts >= 3) return 60;
+            return 0;
+        }
+
+        function checkAndApplyLockout() {
+            const state = getRateLimitState();
+            const now = Date.now();
+            if (state.lockoutUntil && state.lockoutUntil > now) {
+                startCountdown(state.lockoutUntil);
+                return true;
+            } else if (state.lockoutUntil && state.lockoutUntil <= now) {
+                // Lockout selesai
+                stopCountdown();
+                saveRateLimitState(Math.min(state.attempts, 2), 0);
+            }
+            return false;
+        }
+
+        function startCountdown(targetTime) {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            loginBtn.disabled = true;
+            if (btnVerify2FA) btnVerify2FA.disabled = true;
+
+            const tick = () => {
+                const remainingSec = Math.max(0, Math.ceil((targetTime - Date.now()) / 1000));
+                if (remainingSec <= 0) {
+                    stopCountdown();
+                    return;
+                }
+                const mins = Math.floor(remainingSec / 60);
+                const secs = remainingSec % 60;
+                const timeText = mins > 0 ? `${mins} menit ${secs} detik` : `${secs} detik`;
+                countdownEl.innerHTML = `<i class="fas fa-ban"></i> Terlalu banyak percobaan gagal. Akses dibatasi sementara selama <strong>${timeText}</strong> demi keamanan.`;
+                countdownEl.style.display = 'flex';
+                errorEl.style.display = 'none';
+            };
+
+            tick();
+            countdownInterval = setInterval(tick, 1000);
+        }
+
+        function stopCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            countdownEl.style.display = 'none';
+            loginBtn.disabled = false;
+            if (btnVerify2FA) btnVerify2FA.disabled = false;
+        }
+
+        function registerFailedAttempt() {
+            const state = getRateLimitState();
+            const newAttempts = state.attempts + 1;
+            const lockoutDuration = calculateLockoutDuration(newAttempts);
+
+            if (lockoutDuration > 0) {
+                const lockoutUntil = Date.now() + lockoutDuration * 1000;
+                saveRateLimitState(newAttempts, lockoutUntil);
+                startCountdown(lockoutUntil);
+            } else {
+                saveRateLimitState(newAttempts, 0);
+            }
+            return newAttempts;
+        }
+
+        // ===== 3. INTERACTIVE CANVAS CAPTCHA =====
+        function generateCaptchaCode() {
+            // Hindari karakter ambigu: 0/O, 1/I/l
+            const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz';
+            let result = '';
+            for (let i = 0; i < 5; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function drawCaptcha() {
+            currentCaptchaCode = generateCaptchaCode();
+            const ctx = captchaCanvas.getContext('2d');
+            const w = captchaCanvas.width;
+            const h = captchaCanvas.height;
+
+            // Background
+            ctx.fillStyle = '#18181b';
+            ctx.fillRect(0, 0, w, h);
+
+            // Noise: dots
+            for (let i = 0; i < 40; i++) {
+                ctx.fillStyle = `rgba(255, 105, 180, ${Math.random() * 0.4 + 0.1})`;
+                ctx.beginPath();
+                ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Noise: wavy lines
+            for (let i = 0; i < 3; i++) {
+                ctx.strokeStyle = `rgba(255, 182, 193, ${Math.random() * 0.4 + 0.2})`;
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(0, Math.random() * h);
+                ctx.bezierCurveTo(
+                    w * 0.25, Math.random() * h,
+                    w * 0.75, Math.random() * h,
+                    w, Math.random() * h
+                );
+                ctx.stroke();
+            }
+
+            // Characters
+            const charCount = currentCaptchaCode.length;
+            const xStep = (w - 30) / charCount;
+            const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#f472b6', '#fda4af', '#fdf2f8'];
+
+            for (let i = 0; i < charCount; i++) {
+                const char = currentCaptchaCode[i];
+                ctx.save();
+                const x = 16 + i * xStep + (Math.random() * 6 - 3);
+                const y = h / 2 + (Math.random() * 8 - 4);
+                const angle = (Math.random() * 30 - 15) * Math.PI / 180;
+
+                ctx.translate(x, y);
+                ctx.rotate(angle);
+                ctx.font = `bold ${Math.floor(Math.random() * 4 + 24)}px 'Courier New', monospace`;
+                ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(255, 20, 147, 0.5)';
+                ctx.shadowBlur = 6;
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+            }
+
+            if (captchaInput) captchaInput.value = '';
+        }
+
+        btnReloadCaptcha.addEventListener('click', () => {
+            btnReloadCaptcha.classList.add('spin');
+            drawCaptcha();
+            setTimeout(() => btnReloadCaptcha.classList.remove('spin'), 500);
+        });
+
+        captchaCanvas.addEventListener('click', drawCaptcha);
+
+        btnAudioCaptcha.addEventListener('click', () => {
+            if ('speechSynthesis' in window && currentCaptchaCode) {
+                window.speechSynthesis.cancel();
+                // Baca huruf per huruf dengan jeda
+                const spoken = currentCaptchaCode.split('').join('. ');
+                const utterance = new SpeechSynthesisUtterance(spoken);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showError('Audio baca CAPTCHA tidak didukung di browser ini.');
             }
         });
 
-        // Password toggle
+        // ===== 4. SECURE ERROR MESSAGING HELPER =====
+        function showError(message) {
+            errorEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <span>${message}</span>`;
+            errorEl.style.display = 'flex';
+            successEl.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successEl.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+            successEl.style.display = 'flex';
+            errorEl.style.display = 'none';
+        }
+
+        // ===== 5. 2FA (TWO-FACTOR AUTHENTICATION) DIGIT HANDLING =====
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value.replace(/\D/g, '');
+                e.target.value = val ? val[0] : '';
+                if (val && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
+                const cleanDigits = pasteData.replace(/\D/g, '').slice(0, 6);
+                if (cleanDigits) {
+                    cleanDigits.split('').forEach((char, i) => {
+                        if (otpInputs[i]) otpInputs[i].value = char;
+                    });
+                    const focusIdx = Math.min(cleanDigits.length, 5);
+                    otpInputs[focusIdx].focus();
+                }
+            });
+        });
+
+        function getOtpCode() {
+            return otpInputs.map(i => i.value).join('').trim();
+        }
+
+        function clearOtpInputs() {
+            otpInputs.forEach(i => i.value = '');
+            if (otpInputs[0]) otpInputs[0].focus();
+        }
+
+        function switchToStep(step) {
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+            if (step === '2fa') {
+                stepLogin.classList.add('step-hidden');
+                step2FA.classList.remove('step-hidden');
+                clearOtpInputs();
+            } else {
+                step2FA.classList.add('step-hidden');
+                stepLogin.classList.remove('step-hidden');
+                pendingMfaFactorId = null;
+                drawCaptcha();
+            }
+        }
+
+        btnCancel2FA.addEventListener('click', async () => {
+            try {
+                await signOut();
+            } catch (e) {}
+            switchToStep('login');
+        });
+
+        // ===== 6. AUTH STATE CHECK ON LOAD =====
+        onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    // Periksa apakah user memiliki kewajiban AAL2 (2FA)
+                    const assurance = await getMfaAssuranceLevel();
+                    if (assurance && assurance.nextLevel === 'aal2' && assurance.currentLevel !== 'aal2') {
+                        // User membutuhkan verifikasi 2FA
+                        const factors = await listMfaFactors();
+                        const totpFactor = factors?.totp?.find(f => f.status === 'verified');
+                        if (totpFactor) {
+                            pendingMfaFactorId = totpFactor.id;
+                            switchToStep('2fa');
+                            return;
+                        }
+                    }
+                    // Jika sudah AAL2 atau tidak memiliki faktor 2FA aktif, redirect ke admin
+                    window.location.href = 'admin.html';
+                } catch (err) {
+                    console.error('Error mengecek level MFA user:', err);
+                    window.location.href = 'admin.html';
+                }
+            }
+        });
+
+        // Password visibility toggle
         document.getElementById('passwordToggle').addEventListener('click', () => {
             const input = document.getElementById('loginPassword');
             const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -232,65 +799,147 @@
                 '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
 
-        // Login form submit
+        // Initialize state
+        checkAndApplyLockout();
+        drawCaptcha();
+
+        // ===== 7. STEP 1 LOGIN SUBMIT HANDLER =====
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (Date.now() < lockoutUntil) return;
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const btn = document.getElementById('loginBtn');
-            const errorEl = document.getElementById('loginError');
-            const successEl = document.getElementById('loginSuccess');
+
+            // Cek lockout aktif
+            if (checkAndApplyLockout()) return;
+
+            // Honeypot Trap (Bot Protection)
+            const hp1 = document.getElementById('hp_user_website')?.value;
+            const hp2 = document.getElementById('hp_secondary_phone')?.value;
+            if (hp1 || hp2) {
+                // Silently block automated scraper bot
+                showError('Aktivitas tidak wajar terdeteksi. Silakan muat ulang browser Anda.');
+                return;
+            }
+
+            // Submission speed check (Human takes at least 1.2 seconds)
+            if (Date.now() - pageLoadTimestamp < 1200) {
+                showError('Pengiriman form terlalu cepat terdeteksi. Silakan coba lagi.');
+                drawCaptcha();
+                return;
+            }
+
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value;
+            const userCaptcha = captchaInput.value.trim();
 
             if (!email || !password) {
-                errorEl.textContent = '⚠️ Email dan password harus diisi!';
-                errorEl.style.display = 'flex';
-                successEl.style.display = 'none';
+                showError('Email dan password wajib diisi.');
+                return;
+            }
+
+            // Validasi CAPTCHA (case-insensitive for good UX)
+            if (!userCaptcha || userCaptcha.toLowerCase() !== currentCaptchaCode.toLowerCase()) {
+                showError('Kode CAPTCHA tidak cocok. Silakan ketik kode verifikasi baru.');
+                drawCaptcha();
+                registerFailedAttempt();
                 return;
             }
 
             try {
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-                btn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi Kredensial...';
+                loginBtn.disabled = true;
                 errorEl.style.display = 'none';
                 successEl.style.display = 'none';
 
-                await signInWithEmailAndPassword(email, password);
-                failedAttempts = 0;
+                // Artificial delay (1s) to prevent high-speed brute force automated timing
+                await new Promise(res => setTimeout(res, 900));
 
-                successEl.innerHTML = '✅ Login berhasil! Mengarahkan ke dashboard...';
-                successEl.style.display = 'flex';
+                const { user } = await signInWithEmailAndPassword(email, password);
 
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1500);
+                // Periksa apakah user memiliki 2FA aktif (Supabase MFA)
+                const assurance = await getMfaAssuranceLevel();
+                const factors = await listMfaFactors();
+                const verifiedTotp = factors?.totp?.find(f => f.status === 'verified');
 
-            } catch (error) {
-                failedAttempts += 1;
-                if (failedAttempts >= 3) {
-                    startLockout();
-                    errorEl.style.display = 'none';
+                if (verifiedTotp && (assurance?.nextLevel === 'aal2' || assurance?.currentLevel !== 'aal2')) {
+                    // Alihkan ke Step 2: Verifikasi 2 Langkah
+                    pendingMfaFactorId = verifiedTotp.id;
+                    loginBtn.innerHTML = '<i class="fas fa-lock"></i> Masuk ke Dashboard';
+                    loginBtn.disabled = false;
+                    switchToStep('2fa');
                     return;
                 }
-                let msg = 'Login gagal! ';
-                const errMsg = error.message || '';
-                if (errMsg.includes('Invalid login credentials') || errMsg.includes('invalid_credentials')) {
-                    msg += 'Email atau password salah.';
-                } else if (errMsg.includes('Email not confirmed')) {
-                    msg += 'Email belum dikonfirmasi.';
-                } else if (errMsg.includes('Invalid email')) {
-                    msg += 'Format email tidak valid.';
-                } else if (errMsg.includes('Too many requests') || errMsg.includes('rate_limit')) {
-                    msg += 'Terlalu banyak percobaan. Coba lagi nanti.';
-                } else {
-                    msg += error.message;
+
+                // Jika tidak ada 2FA, login langsung berhasil
+                clearRateLimitState();
+                showSuccess('Login berhasil! Mengarahkan ke dashboard admin...');
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1000);
+
+            } catch (err) {
+                // Increment failed attempts and apply lockout if threshold reached
+                const attempts = registerFailedAttempt();
+                drawCaptcha();
+
+                // OWASP Secure Error Message: Never enumerate whether email or password was wrong
+                const maxAttemptsBeforeLock = 3;
+                const remaining = Math.max(0, maxAttemptsBeforeLock - (attempts % maxAttemptsBeforeLock));
+                let errorMsg = 'Email atau password yang Anda masukkan tidak valid.';
+                if (remaining > 0 && attempts < 3) {
+                    errorMsg += ` (Percobaan tersisa: ${remaining})`;
                 }
-                errorEl.textContent = '⚠️ ' + msg;
-                errorEl.style.display = 'flex';
-                successEl.style.display = 'none';
+                showError(errorMsg);
+
             } finally {
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-                btn.disabled = Date.now() < lockoutUntil;
+                if (!pendingMfaFactorId) {
+                    loginBtn.innerHTML = '<i class="fas fa-lock"></i> Masuk ke Dashboard';
+                    loginBtn.disabled = checkAndApplyLockout();
+                }
+            }
+        });
+
+        // ===== 8. STEP 2: 2FA VERIFY SUBMIT HANDLER =====
+        form2FA.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (checkAndApplyLockout()) return;
+
+            const code = getOtpCode();
+            if (code.length !== 6) {
+                showError('Masukkan 6 digit kode keamanan autentikasi.');
+                return;
+            }
+
+            try {
+                btnVerify2FA.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memvalidasi 2FA...';
+                btnVerify2FA.disabled = true;
+                errorEl.style.display = 'none';
+                successEl.style.display = 'none';
+
+                if (!pendingMfaFactorId) {
+                    const factors = await listMfaFactors();
+                    const verifiedTotp = factors?.totp?.find(f => f.status === 'verified');
+                    if (verifiedTotp) {
+                        pendingMfaFactorId = verifiedTotp.id;
+                    } else {
+                        throw new Error('Faktor 2FA tidak ditemukan.');
+                    }
+                }
+
+                await challengeAndVerifyMfa(pendingMfaFactorId, code);
+
+                // 2FA Sukses!
+                clearRateLimitState();
+                showSuccess('Verifikasi 2 langkah berhasil! Membuka dashboard...');
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1000);
+
+            } catch (err) {
+                registerFailedAttempt();
+                clearOtpInputs();
+                showError('Kode verifikasi 2 langkah tidak valid atau sudah kedaluwarsa.');
+            } finally {
+                btnVerify2FA.innerHTML = '<i class="fas fa-check-shield"></i> Verifikasi &amp; Masuk';
+                btnVerify2FA.disabled = checkAndApplyLockout();
             }
         });
     </script>

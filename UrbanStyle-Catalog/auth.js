@@ -49,4 +49,59 @@ export function onAuthStateChanged(callback) {
     });
 }
 
+// ===== MFA / 2FA (Two-Factor Authentication) =====
+export async function getMfaAssuranceLevel() {
+    const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (error) throw error;
+    return data;
+}
+
+export async function listMfaFactors() {
+    const { data, error } = await supabase.auth.mfa.listFactors();
+    if (error) throw error;
+    return data;
+}
+
+export async function enrollMfa(issuer = 'Nurul Fashion') {
+    const { data, error } = await supabase.auth.mfa.enroll({
+        factorType: 'totp',
+        issuer: issuer,
+        friendlyName: 'Admin Authenticator'
+    });
+    if (error) throw error;
+    return data;
+}
+
+export async function challengeMfa(factorId) {
+    const { data, error } = await supabase.auth.mfa.challenge({ factorId });
+    if (error) throw error;
+    return data;
+}
+
+export async function verifyMfa(factorId, challengeId, code) {
+    const { data, error } = await supabase.auth.mfa.verify({
+        factorId,
+        challengeId,
+        code: String(code).trim()
+    });
+    if (error) throw error;
+    return data;
+}
+
+export async function challengeAndVerifyMfa(factorId, code) {
+    const { data, error } = await supabase.auth.mfa.challengeAndVerify({
+        factorId,
+        code: String(code).trim()
+    });
+    if (error) throw error;
+    return data;
+}
+
+export async function unenrollMfa(factorId) {
+    const { data, error } = await supabase.auth.mfa.unenroll({ factorId });
+    if (error) throw error;
+    return data;
+}
+
 export default supabase;
+

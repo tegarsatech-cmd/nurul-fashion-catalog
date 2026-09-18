@@ -19,6 +19,7 @@
             <a href="#produk" class="sidebar-link" data-page="produk"><i class="fas fa-box"></i> <span>Produk</span></a>
             <a href="#kategori" class="sidebar-link" data-page="kategori"><i class="fas fa-tags"></i> <span>Kelompok Usia</span></a>
             <a href="#galeri" class="sidebar-link" data-page="galeri"><i class="fas fa-images"></i> <span>Galeri</span></a>
+            <a href="#banner-home" class="sidebar-link" data-page="banner-home"><i class="fas fa-photo-film"></i> <span>Banner Home</span></a>
             <a href="#pengaturan" class="sidebar-link" data-page="pengaturan"><i class="fas fa-cog"></i> <span>Pengaturan</span></a>
             <a href="#pengaturan-akun" class="sidebar-link" data-page="pengaturan-akun"><i class="fas fa-user-cog"></i> <span>Pengaturan Akun</span></a>
             <a href="#" class="sidebar-link logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
@@ -59,6 +60,18 @@
             <div class="galeri-admin-grid" id="galeriAdminGrid"></div>
         </div>
 
+        <!-- ===== BANNER HOME PAGE ===== -->
+        <div class="page" id="page-banner-home">
+            <div class="page-header">
+                <div>
+                    <h1>Banner &amp; Background Home</h1>
+                    <p style="font-size: 13px; color: #666; margin-top: 4px;">Kelola foto-foto menarik yang tampil sebagai latar belakang halaman utama (Hero section).</p>
+                </div>
+                <button class="btn btn-primary" id="btnAddBanner"><i class="fas fa-plus"></i> Tambah Banner</button>
+            </div>
+            <div class="galeri-admin-grid" id="bannerAdminGrid"></div>
+        </div>
+
 
         <!-- ===== PENGATURAN PAGE ===== -->
         <div class="page" id="page-pengaturan">
@@ -87,14 +100,66 @@
         </div>
 
         <div class="page" id="page-pengaturan-akun">
-            <div class="page-header"><h1>Pengaturan Akun</h1></div>
-            <form id="accountPasswordForm" class="form-admin">
-                <div class="form-group"><label>Email Akun</label><input type="email" id="accountEmail" readonly></div>
-                <div class="form-group"><label>Password Lama <small>(wajib diisi)</small></label><input type="password" id="accountCurrentPassword" required autocomplete="current-password"></div>
-                <div class="form-group"><label>Password Baru <small>(wajib, minimal 6 karakter)</small></label><input type="password" id="accountNewPassword" minlength="6" required autocomplete="new-password"></div>
-                <div class="form-group"><label>Konfirmasi Password Baru <small>(wajib diisi)</small></label><input type="password" id="accountConfirmPassword" required autocomplete="new-password"></div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Ubah Password</button>
-            </form>
+            <div class="page-header"><h1>Pengaturan Akun &amp; Keamanan</h1></div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                <!-- Password Form Card -->
+                <div style="background: var(--bg-card, #ffffff); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.06);">
+                    <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-size: 18px; color: #111;">
+                        <i class="fas fa-key" style="color: #FF1493;"></i> Ubah Password
+                    </h3>
+                    <form id="accountPasswordForm" class="form-admin">
+                        <div class="form-group"><label>Email Akun</label><input type="email" id="accountEmail" readonly></div>
+                        <div class="form-group"><label>Password Lama <small>(wajib diisi)</small></label><input type="password" id="accountCurrentPassword" required autocomplete="current-password"></div>
+                        <div class="form-group"><label>Password Baru <small>(wajib, minimal 6 karakter)</small></label><input type="password" id="accountNewPassword" minlength="6" required autocomplete="new-password"></div>
+                        <div class="form-group"><label>Konfirmasi Password Baru <small>(wajib diisi)</small></label><input type="password" id="accountConfirmPassword" required autocomplete="new-password"></div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-save"></i> Ubah Password</button>
+                    </form>
+                </div>
+
+                <!-- 2FA & Session Security Card -->
+                <div style="background: var(--bg-card, #ffffff); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.06);">
+                    <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-size: 18px; color: #111;">
+                        <i class="fas fa-shield-alt" style="color: #FF1493;"></i> Verifikasi 2 Langkah (2FA)
+                    </h3>
+                    
+                    <div style="background: #fdf2f8; border: 1px solid rgba(255, 105, 180, 0.25); border-radius: 12px; padding: 14px; margin-bottom: 18px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-weight: 600; font-size: 13.5px; color: #333;">Status 2FA:</span>
+                            <span id="mfaStatusBadge" style="padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; background: #e5e7eb; color: #4b5563;">
+                                Memeriksa...
+                            </span>
+                        </div>
+                        <p style="font-size: 12.5px; color: #666; margin: 0; line-height: 1.45;">
+                            Mewajibkan kode 6 digit dari aplikasi <strong>Google Authenticator</strong> atau <strong>Authy</strong> setiap kali login, melindungi akun dari peretasan.
+                        </p>
+                    </div>
+
+                    <div id="mfaInactiveActions">
+                        <button type="button" class="btn btn-primary" id="btnOpenMfaModal" style="width: 100%; margin-bottom: 10px;">
+                            <i class="fas fa-qrcode"></i> Aktifkan Verifikasi 2 Langkah
+                        </button>
+                    </div>
+
+                    <div id="mfaActiveActions" style="display: none;">
+                        <div style="margin-bottom: 14px; font-size: 13px; color: #16a34a; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-check-circle" style="font-size: 16px;"></i> <span>2FA Aktif &amp; Terlindungi</span>
+                        </div>
+                        <button type="button" class="btn btn-cancel" id="btnDisableMfa" style="width: 100%; border: 1px solid #ef4444; color: #ef4444; background: transparent;">
+                            <i class="fas fa-trash-alt"></i> Nonaktifkan 2FA
+                        </button>
+                    </div>
+
+                    <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+
+                    <h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-user-shield" style="color: #666;"></i> Keamanan Sesi Aktif
+                    </h4>
+                    <p style="font-size: 12px; color: #777; margin-bottom: 10px; line-height: 1.4;">
+                        Sesi admin akan otomatis keluar jika tidak ada aktivitas selama 15 menit untuk mencegah akses fisik tidak berwenang.
+                    </p>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -157,6 +222,94 @@
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Foto</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- ===== MODAL BANNER HOME ===== -->
+<div class="modal" id="bannerModal">
+    <div class="modal-content">
+        <div class="modal-header"><h2 id="bannerModalTitle">Tambah Banner Background Home</h2><span class="modal-close" id="closeBannerModal">&times;</span></div>
+        <form id="bannerForm" class="form-admin">
+            <input type="hidden" id="bannerEditId">
+            <div class="form-group">
+                <label>Judul / Label Foto <small>(wajib diisi)</small></label>
+                <input type="text" id="bannerJudul" placeholder="Contoh: Koleksi Cantik 2026" required>
+            </div>
+            <div class="form-group">
+                <label>Upload Foto Banner <small>(wajib saat tambah, opsional saat edit)</small></label>
+                <input type="file" id="bannerGambar" accept="image/*">
+                <div class="file-preview" id="bannerFilePreview"><img id="bannerPreviewImg" src="" alt="preview"> <span id="bannerFileName"></span></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal('bannerModal')"><i class="fas fa-times"></i> Batal</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Banner</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== MODAL SETUP 2FA ===== -->
+<div class="modal" id="mfaSetupModal">
+    <div class="modal-content" style="max-width: 440px;">
+        <div class="modal-header">
+            <h2>Setup Verifikasi 2 Langkah</h2>
+            <span class="modal-close" id="closeMfaModal">&times;</span>
+        </div>
+        <div style="padding: 10px 0;">
+            <p style="font-size: 13px; color: #555; margin-bottom: 14px; line-height: 1.4;">
+                1. Buka <strong>Google Authenticator</strong> atau <strong>Authy</strong> di HP Anda.<br>
+                2. Pindai kode QR di bawah ini atau salin kode manual:
+            </p>
+
+            <div id="mfaQrContainer" style="text-align: center; margin-bottom: 14px; min-height: 160px; display: flex; align-items: center; justify-content: center; background: #fafafa; border-radius: 12px; padding: 14px; border: 1px dashed #ddd;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #FF1493;"></i>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label style="font-size: 12px; color: #666;">Kunci Rahasia Manual:</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="mfaSecretKeyText" readonly style="font-family: monospace; font-size: 13px; letter-spacing: 1px; background: #f4f4f5; text-align: center;">
+                    <button type="button" class="btn btn-cancel" id="btnCopySecretKey" title="Salin Kunci" style="padding: 0 14px;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <form id="mfaVerifyForm">
+                <div class="form-group">
+                    <label for="mfaVerifyCode" style="font-weight: 600;">3. Masukkan 6 Digit Kode dari Aplikasi:</label>
+                    <input type="text" id="mfaVerifyCode" placeholder="••••••" maxlength="6" inputmode="numeric" required style="font-size: 20px; text-align: center; letter-spacing: 4px; font-weight: 700;">
+                </div>
+                <div class="modal-actions" style="margin-top: 16px;">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal('mfaSetupModal')"><i class="fas fa-times"></i> Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitMfaVerify"><i class="fas fa-check"></i> Verifikasi &amp; Aktifkan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL PERINGATAN SESI INAKTIVITAS ===== -->
+<div class="modal" id="sessionWarningModal" style="z-index: 9999;">
+    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 26px 20px;">
+        <div style="width: 56px; height: 56px; background: #fff7ed; border: 2px solid #fdba74; color: #ea580c; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px;">
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+        <h3 style="font-size: 19px; color: #111; margin-bottom: 8px;">Sesi Akan Berakhir</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 14px; line-height: 1.4;">
+            Tidak ada aktivitas terdeteksi. Sesi Anda akan keluar otomatis demi keamanan dalam:
+        </p>
+        <div id="sessionCountdownDisplay" style="font-size: 26px; font-weight: 800; color: #ea580c; margin-bottom: 18px; font-family: monospace;">
+            02:00
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button type="button" class="btn btn-primary" id="btnExtendSession" style="flex: 1;">
+                <i class="fas fa-rotate-right"></i> Lanjutkan Sesi
+            </button>
+            <button type="button" class="btn btn-cancel" id="btnLogoutSessionNow" style="padding: 10px 14px;">
+                Logout
+            </button>
+        </div>
     </div>
 </div>
 

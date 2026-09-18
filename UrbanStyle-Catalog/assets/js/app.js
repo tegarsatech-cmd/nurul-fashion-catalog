@@ -800,7 +800,90 @@ if (galleryGrid) {
     });
 }
 
-// ===== Load Gallery =====
+// ===== HERO BACKGROUND SLIDER (Dynamic Photos) =====
+let heroSliderInterval = null;
+let currentHeroSlideIndex = 0;
+const defaultHeroImages = [
+    'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1600&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1600&auto=format&fit=crop&q=80'
+];
+
+function renderHeroBanners(banners = []) {
+    const sliderContainer = document.getElementById('heroBgSlider');
+    const dotsContainer = document.getElementById('heroSliderDots');
+    if (!sliderContainer) return;
+
+    let images = [];
+    if (banners && banners.length > 0) {
+        images = banners.map(b => b.gambar).filter(Boolean);
+    }
+    
+    // Jika belum ada foto banner dari admin, gunakan default fashion images
+    if (images.length === 0) {
+        images = defaultHeroImages;
+    }
+
+    if (heroSliderInterval) {
+        clearInterval(heroSliderInterval);
+        heroSliderInterval = null;
+    }
+
+    sliderContainer.innerHTML = images.map((src, idx) =>
+        '<div class="hero-bg-slide ' + (idx === 0 ? 'active' : '') + '" data-slide-index="' + idx + '" style="background-image: url(\'' + src + '\')"></div>'
+    ).join('');
+
+    if (dotsContainer) {
+        if (images.length > 1) {
+            dotsContainer.innerHTML = images.map((_, idx) =>
+                '<button type="button" class="hero-slider-dot ' + (idx === 0 ? 'active' : '') + '" data-slide-to="' + idx + '" aria-label="Slide ' + (idx + 1) + '"></button>'
+            ).join('');
+
+            dotsContainer.querySelectorAll('.hero-slider-dot').forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    const idx = Number(e.target.dataset.slideTo);
+                    goToHeroSlide(idx);
+                });
+            });
+        } else {
+            dotsContainer.innerHTML = '';
+        }
+    }
+
+    currentHeroSlideIndex = 0;
+    if (images.length > 1) {
+        heroSliderInterval = setInterval(() => {
+            const slides = sliderContainer.querySelectorAll('.hero-bg-slide');
+            if (slides.length <= 1) return;
+            const nextIndex = (currentHeroSlideIndex + 1) % slides.length;
+            goToHeroSlide(nextIndex);
+        }, 5500);
+    }
+}
+
+function goToHeroSlide(index) {
+    const sliderContainer = document.getElementById('heroBgSlider');
+    const dotsContainer = document.getElementById('heroSliderDots');
+    if (!sliderContainer) return;
+    const slides = sliderContainer.querySelectorAll('.hero-bg-slide');
+    const dots = dotsContainer?.querySelectorAll('.hero-slider-dot');
+    if (!slides || slides.length === 0) return;
+
+    slides.forEach((slide, idx) => {
+        slide.classList.toggle('active', idx === index);
+    });
+
+    if (dots) {
+        dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === index);
+        });
+    }
+
+    currentHeroSlideIndex = index;
+}
+
+// ===== Load Gallery & Banner =====
 async function refreshGallery() {
     if (!galleryGrid) return;
     galleryGrid.innerHTML = getGallerySkeleton(4);
@@ -811,7 +894,16 @@ async function refreshGallery() {
             'galeri'
         );
         if (error) throw error;
-        galleryData = (data || []).map(item => ({ id: item.id, ...item }));
+        
+        const allItems = (data || []).map(item => ({ id: item.id, ...item }));
+        
+        // Pisahkan item banner background home ([BANNER]) dan item galeri biasa
+        const bannerPhotos = allItems.filter(item => (item.judul || '').trim().startsWith('[BANNER]'));
+        galleryData = allItems.filter(item => !(item.judul || '').trim().startsWith('[BANNER]'));
+
+        // Render Hero Slider dari banner photos
+        renderHeroBanners(bannerPhotos);
+
         if (galleryData.length === 0) {
             galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Belum ada foto galeri</div>';
             return;
@@ -825,11 +917,13 @@ async function refreshGallery() {
     } catch (error) {
         console.error('Error loading gallery:', error);
         showToast('Gagal memuat galeri', 'error');
+        renderHeroBanners([]);
         galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Gagal memuat galeri</div>';
     }
 }
 
 async function loadGallery() {
+    renderHeroBanners([]);
     await refreshGallery();
     if (!galleryUnsubscribe) {
         galleryUnsubscribe = createRealtimeSubscription('gallery', refreshGallery);

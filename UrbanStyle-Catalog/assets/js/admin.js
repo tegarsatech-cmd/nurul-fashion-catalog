@@ -3,7 +3,17 @@
 // Supabase CRUD Operations
 // ============================================
 
-import supabase, { signInWithEmailAndPassword, updatePassword, signOut, onAuthStateChanged } from '../../auth.js';
+import supabase, {
+    signInWithEmailAndPassword,
+    updatePassword,
+    signOut,
+    onAuthStateChanged,
+    getMfaAssuranceLevel,
+    listMfaFactors,
+    enrollMfa,
+    challengeAndVerifyMfa,
+    unenrollMfa
+} from '../../auth.js';
 import { ref, uploadBytes, getDownloadURL } from '../../storage.js';
 
 
@@ -61,6 +71,7 @@ function setupFilePreview(inputId, previewId, imgId, nameId) {
 // Setup file previews on DOM ready
 setupFilePreview('produkGambar', 'produkFilePreview', 'produkPreviewImg', 'produkFileName');
 setupFilePreview('galeriGambar', 'galeriFilePreview', 'galeriPreviewImg', 'galeriFileName');
+setupFilePreview('bannerGambar', 'bannerFilePreview', 'bannerPreviewImg', 'bannerFileName');
 
 function normalizeProductItems(product) {
     if (Array.isArray(product?.items) && product.items.length > 0) {
@@ -129,9 +140,21 @@ function collectProductItems() {
 
 renderProductItemInputs();
 
-// ===== Auth State =====
-onAuthStateChanged((user) => {
+// ===== Auth State & Security Enforcement =====
+onAuthStateChanged(async (user) => {
     if (user) {
+        // Enforce 2FA verification if enrolled (AAL2 Check)
+        try {
+            const assurance = await getMfaAssuranceLevel();
+            if (assurance && assurance.nextLevel === 'aal2' && assurance.currentLevel !== 'aal2') {
+                // User has not completed Step 2 2FA yet!
+                window.location.href = 'login.html?step=2fa';
+                return;
+            }
+        } catch (mfaCheckError) {
+            console.warn('MFA assurance check warning:', mfaCheckError);
+        }
+
         currentUser = user;
         const nameEl = document.getElementById('adminName');
         if (nameEl) nameEl.textContent = user.email || 'Admin';
@@ -140,6 +163,8 @@ onAuthStateChanged((user) => {
         const requestedPage = window.location.hash.replace('#', '') || 'dashboard';
         showPage(requestedPage);
         loadDashboardData();
+        initSessionInactivityManager();
+        refreshMfaStatus();
     } else {
         // Redirect ke halaman login terpisah
         window.location.href = 'login.html';
@@ -224,11 +249,13 @@ window.addEventListener('hashchange', () => {
 let produkUnsubscribe = null;
 let kategoriUnsubscribe = null;
 let galeriUnsubscribe = null;
+let bannerUnsubscribe = null;
 
 function unsubscribeAll() {
     if (produkUnsubscribe) { try { produkUnsubscribe(); } catch(e) { console.error('Unsubscribe produk error:', e); } produkUnsubscribe = null; }
     if (kategoriUnsubscribe) { try { kategoriUnsubscribe(); } catch(e) { console.error('Unsubscribe kategori error:', e); } kategoriUnsubscribe = null; }
     if (galeriUnsubscribe) { try { galeriUnsubscribe(); } catch(e) { console.error('Unsubscribe galeri error:', e); } galeriUnsubscribe = null; }
+    if (bannerUnsubscribe) { try { bannerUnsubscribe(); } catch(e) { console.error('Unsubscribe banner error:', e); } bannerUnsubscribe = null; }
 }
 
 function createRealtimeSubscription(table, callback) {
@@ -447,6 +474,7 @@ function showPage(page) {
     if (normalizedPage === 'produk') loadProdukTable();
     if (normalizedPage === 'kategori') loadKategoriTable();
     if (normalizedPage === 'galeri') loadGaleriAdmin();
+    if (normalizedPage === 'banner-home') loadBannerHomeAdmin();
     if (normalizedPage === 'kontak') loadKontakSummary();
     if (normalizedPage === 'pengaturan') loadKontakForm();
     if (normalizedPage === 'profile') loadProfilePage();
@@ -819,7 +847,9 @@ async function refreshGaleriAdmin() {
     try {
         const { data, error } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
         if (error) throw error;
-        populateGaleriGrid(data || []);
+        // Hanya tampilkan foto galeri reguler (bukan banner home)
+        const regularItems = (data || []).filter(g => !(g.judul || '').trim().startsWith('[BANNER]'));
+        populateGaleriGrid(regularItems);
     } catch (error) {
         console.error('Galeri load error:', error);
         if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px;">Gagal memuat galeri</p>';
@@ -961,6 +991,125 @@ document.getElementById('galeriForm').addEventListener('submit', async (e) => {
 const btnAddGaleri = document.getElementById('btnAddGaleri');
 if (btnAddGaleri) btnAddGaleri.addEventListener('click', window.showAddGaleriModal);
 
+// ===== BANNER & BACKGROUND HOME CRUD =====
+function populateBannerGrid(items) {
+    const grid = document.getElementById('bannerAdminGrid');
+    if (!grid) return;
+    if (!items || items.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;background:#f9fafb;border-radius:12px;border:1px dashed #ddd;"><i class="fas fa-image" style="font-size:36px;color:#ccc;margin-bottom:12px;display:block;"></i><p style="color:#666;font-size:14px;margin-bottom:12px;">Belum ada foto banner background home.</p><button type="button" class="btn btn-primary btn-sm" onclick="window.showAddBannerModal()"><i class="fas fa-plus"></i> Tambah Foto Sekarang</button></div>';
+        return;
+    }
+    grid.innerHTML = items.map(b => {
+        const cleanTitle = (b.judul || '').replace(/^\[BANNER\]\s*/i, '') || 'Banner Home';
+        return '<div class="galeri-admin-item" data-id="' + b.id + '">' +
+            '<img src="' + (b.gambar || 'https://via.placeholder.com/200') + '" alt="' + cleanTitle + '" style="height:160px;object-fit:cover;">' +
+            '<div class="galeri-admin-info"><h4>' + cleanTitle + '</h4><span style="font-size:11px;color:#16a34a;font-weight:600;"><i class="fas fa-check-circle"></i> Tampil di Hero</span></div>' +
+            '<div class="galeri-actions"><button class="btn-sm btn-delete" data-action="delete" title="Hapus banner"><i class="fas fa-trash"></i></button></div>' +
+            '</div>';
+    }).join('');
+}
+
+async function refreshBannerAdmin() {
+    const grid = document.getElementById('bannerAdminGrid');
+    if (!grid) return;
+    try {
+        const { data, error } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        const bannerItems = (data || []).filter(b => (b.judul || '').trim().startsWith('[BANNER]'));
+        populateBannerGrid(bannerItems);
+    } catch (error) {
+        console.error('Banner load error:', error);
+        if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px;">Gagal memuat banner home</p>';
+        showToast('Gagal memuat banner home', 'error');
+    }
+}
+
+function loadBannerHomeAdmin() {
+    const grid = document.getElementById('bannerAdminGrid');
+    if (grid) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin" style="font-size:32px;"></i><p>Memuat banner...</p></div>';
+    }
+    refreshBannerAdmin();
+    bannerUnsubscribe = createRealtimeSubscription('gallery', refreshBannerAdmin);
+    if (grid && !grid.dataset.listenerAttached) {
+        grid.addEventListener('click', function(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const action = btn.dataset.action;
+            const item = btn.closest('.galeri-admin-item');
+            if (!item) return;
+            const id = item.dataset.id;
+            if (action === 'delete') {
+                window.hapusBanner(id);
+            }
+        });
+        grid.dataset.listenerAttached = '1';
+    }
+}
+
+window.showAddBannerModal = function() {
+    document.getElementById('bannerModalTitle').textContent = 'Tambah Banner Background Home';
+    document.getElementById('bannerEditId').value = '';
+    document.getElementById('bannerForm').reset();
+    const preview = document.getElementById('bannerFilePreview');
+    if (preview) preview.classList.remove('show');
+    document.getElementById('bannerModal').classList.add('active');
+};
+
+window.hapusBanner = async function(id) {
+    if (!confirm('Hapus foto banner ini dari latar belakang halaman Home?')) return;
+    try {
+        const { error } = await supabase.from('gallery').delete().eq('id', id);
+        if (error) throw error;
+        showToast('Foto banner berhasil dihapus!', 'success');
+        refreshBannerAdmin();
+    } catch (error) {
+        console.error('Hapus banner error:', error);
+        showToast('Gagal menghapus banner: ' + (error.message || 'Terjadi kesalahan'), 'error');
+    }
+};
+
+document.getElementById('bannerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const file = document.getElementById('bannerGambar');
+    if (!file || !file.files || file.files.length === 0) {
+        showToast('Pilih file foto banner terlebih dahulu.', 'warning');
+        return;
+    }
+    const btn = e.target.querySelector('button[type="submit"]');
+    const rawJudul = document.getElementById('bannerJudul').value.trim();
+    const judul = '[BANNER] ' + rawJudul;
+    const data = { judul: judul, created_at: new Date().toISOString() };
+
+    try {
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah...';
+            btn.disabled = true;
+        }
+        const storageRef = ref('gallery/banner_' + Date.now() + '_' + file.files[0].name);
+        await uploadBytes(storageRef, file.files[0]);
+        data.gambar = await getDownloadURL(storageRef);
+
+        const { error } = await supabase.from('gallery').insert([data]);
+        if (error) throw error;
+
+        showToast('Foto banner home berhasil ditambahkan!', 'success');
+        closeModal('bannerModal');
+        refreshBannerAdmin();
+    } catch (error) {
+        console.error('Banner simpan error:', error);
+        showToast('Gagal menyimpan banner: ' + (error.message || 'Terjadi kesalahan'), 'error');
+    } finally {
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-save"></i> Simpan Banner';
+            btn.disabled = false;
+        }
+    }
+});
+
+const btnAddBanner = document.getElementById('btnAddBanner');
+if (btnAddBanner) btnAddBanner.addEventListener('click', window.showAddBannerModal);
+
 document.getElementById('btnEditKontak')?.addEventListener('click', function() {
     showPage('pengaturan');
 });
@@ -1079,6 +1228,8 @@ window.closeModal = closeModal;
 document.getElementById('closeProdukModal').addEventListener('click', function() { closeModal('produkModal'); });
 document.getElementById('closeKategoriModal').addEventListener('click', function() { closeModal('kategoriModal'); });
 document.getElementById('closeGaleriModal').addEventListener('click', function() { closeModal('galeriModal'); });
+document.getElementById('closeBannerModal')?.addEventListener('click', function() { closeModal('bannerModal'); });
+document.getElementById('closeMfaModal')?.addEventListener('click', function() { closeModal('mfaSetupModal'); });
 
 // Close on outside click
 document.querySelectorAll('.modal').forEach(modal => {
@@ -1092,3 +1243,221 @@ window.addEventListener('keydown', (e) => {
 });
 
 function formatPrice(price) { return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+// ====================================================
+// SECURE SESSION INACTIVITY MANAGER (AUTO-LOGOUT 15 MENIT)
+// ====================================================
+let lastActivityTime = Date.now();
+const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 menit
+const WARNING_BEFORE_TIMEOUT_MS = 2 * 60 * 1000; // Peringatan 2 menit sebelum logout
+let sessionCheckInterval = null;
+
+function recordUserActivity() {
+    lastActivityTime = Date.now();
+}
+
+function initSessionInactivityManager() {
+    if (sessionCheckInterval) clearInterval(sessionCheckInterval);
+    lastActivityTime = Date.now();
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(evt => {
+        window.addEventListener(evt, () => {
+            const warningModal = document.getElementById('sessionWarningModal');
+            if (!warningModal || !warningModal.classList.contains('active')) {
+                recordUserActivity();
+            }
+        }, { passive: true });
+    });
+
+    sessionCheckInterval = setInterval(checkSessionInactivity, 1000);
+}
+
+async function terminateSessionDueInactivity() {
+    if (sessionCheckInterval) clearInterval(sessionCheckInterval);
+    try {
+        await signOut();
+    } catch (e) {
+        console.warn('Signout warning during timeout:', e);
+    }
+    window.location.href = 'login.html?reason=session_timeout';
+}
+
+function checkSessionInactivity() {
+    const elapsed = Date.now() - lastActivityTime;
+    const warningModal = document.getElementById('sessionWarningModal');
+    const countdownDisplay = document.getElementById('sessionCountdownDisplay');
+
+    if (elapsed >= INACTIVITY_TIMEOUT_MS) {
+        terminateSessionDueInactivity();
+        return;
+    }
+
+    const timeUntilTimeout = INACTIVITY_TIMEOUT_MS - elapsed;
+    if (timeUntilTimeout <= WARNING_BEFORE_TIMEOUT_MS) {
+        if (warningModal && !warningModal.classList.contains('active')) {
+            warningModal.classList.add('active');
+        }
+        if (countdownDisplay) {
+            const remainingSeconds = Math.max(0, Math.ceil(timeUntilTimeout / 1000));
+            const m = Math.floor(remainingSeconds / 60);
+            const s = remainingSeconds % 60;
+            countdownDisplay.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+    } else {
+        if (warningModal && warningModal.classList.contains('active')) {
+            warningModal.classList.remove('active');
+        }
+    }
+}
+
+document.getElementById('btnExtendSession')?.addEventListener('click', () => {
+    lastActivityTime = Date.now();
+    const warningModal = document.getElementById('sessionWarningModal');
+    if (warningModal) warningModal.classList.remove('active');
+    showToast('Sesi Anda berhasil diperpanjang.', 'success');
+});
+
+document.getElementById('btnLogoutSessionNow')?.addEventListener('click', async () => {
+    await terminateSessionDueInactivity();
+});
+
+// ====================================================
+// 2FA (TWO-FACTOR AUTHENTICATION) MANAGEMENT
+// ====================================================
+let activeMfaFactor = null;
+let pendingEnrolledFactorId = null;
+
+async function refreshMfaStatus() {
+    const badge = document.getElementById('mfaStatusBadge');
+    const inactiveActions = document.getElementById('mfaInactiveActions');
+    const activeActions = document.getElementById('mfaActiveActions');
+    if (!badge) return;
+
+    try {
+        const factors = await listMfaFactors();
+        const verifiedFactor = factors?.totp?.find(f => f.status === 'verified');
+
+        if (verifiedFactor) {
+            activeMfaFactor = verifiedFactor;
+            badge.textContent = 'Aktif (AAL2)';
+            badge.style.background = '#dcfce7';
+            badge.style.color = '#15803d';
+            if (inactiveActions) inactiveActions.style.display = 'none';
+            if (activeActions) activeActions.style.display = 'block';
+        } else {
+            activeMfaFactor = null;
+            badge.textContent = 'Belum Aktif';
+            badge.style.background = '#fee2e2';
+            badge.style.color = '#b91c1c';
+            if (inactiveActions) inactiveActions.style.display = 'block';
+            if (activeActions) activeActions.style.display = 'none';
+        }
+    } catch (err) {
+        console.warn('Gagal memuat status 2FA:', err);
+        badge.textContent = 'Tidak Diketahui';
+    }
+}
+
+document.getElementById('btnOpenMfaModal')?.addEventListener('click', async () => {
+    const modal = document.getElementById('mfaSetupModal');
+    const qrContainer = document.getElementById('mfaQrContainer');
+    const secretInput = document.getElementById('mfaSecretKeyText');
+    const verifyCodeInput = document.getElementById('mfaVerifyCode');
+    const submitBtn = document.getElementById('btnSubmitMfaVerify');
+
+    if (modal) modal.classList.add('active');
+    if (verifyCodeInput) verifyCodeInput.value = '';
+    if (qrContainer) qrContainer.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 28px; color: #FF1493;"></i>';
+    if (secretInput) secretInput.value = 'Membuat kunci rahasia...';
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+        const enrollData = await enrollMfa('Nurul Fashion');
+        pendingEnrolledFactorId = enrollData.id;
+
+        if (enrollData?.totp?.qr_code) {
+            qrContainer.innerHTML = `<img src="${enrollData.totp.qr_code}" alt="QR Code 2FA" style="width: 170px; height: 170px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">`;
+        } else {
+            qrContainer.innerHTML = '<p style="color: #666; font-size: 13px;">Gunakan kunci manual di bawah untuk aplikasi Authenticator.</p>';
+        }
+
+        if (secretInput) {
+            secretInput.value = enrollData?.totp?.secret || '-';
+        }
+        if (submitBtn) submitBtn.disabled = false;
+        if (verifyCodeInput) verifyCodeInput.focus();
+
+    } catch (err) {
+        console.error('Enroll MFA error:', err);
+        showToast('Gagal memulai pendaftaran 2FA: ' + (err.message || 'Coba lagi'), 'error');
+        if (modal) modal.classList.remove('active');
+    }
+});
+
+document.getElementById('btnCopySecretKey')?.addEventListener('click', async () => {
+    const secretInput = document.getElementById('mfaSecretKeyText');
+    if (secretInput && secretInput.value && !secretInput.value.includes('Membuat')) {
+        try {
+            await navigator.clipboard.writeText(secretInput.value);
+            showToast('Kunci rahasia disalin ke clipboard!', 'success');
+        } catch (e) {
+            secretInput.select();
+            document.execCommand('copy');
+            showToast('Kunci rahasia disalin!', 'success');
+        }
+    }
+});
+
+document.getElementById('mfaVerifyForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = document.getElementById('mfaVerifyCode')?.value.trim();
+    const submitBtn = document.getElementById('btnSubmitMfaVerify');
+
+    if (!code || code.length !== 6) {
+        showToast('Masukkan 6 digit angka kode verifikasi.', 'warning');
+        return;
+    }
+    if (!pendingEnrolledFactorId) {
+        showToast('Sesi setup 2FA kedaluwarsa. Silakan buka kembali modal.', 'error');
+        return;
+    }
+
+    try {
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+            submitBtn.disabled = true;
+        }
+
+        await challengeAndVerifyMfa(pendingEnrolledFactorId, code);
+
+        showToast('Verifikasi 2 Langkah (2FA) berhasil diaktifkan!', 'success');
+        closeModal('mfaSetupModal');
+        await refreshMfaStatus();
+
+    } catch (err) {
+        console.error('Verifikasi 2FA error:', err);
+        showToast('Kode verifikasi salah atau sudah kedaluwarsa.', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Verifikasi &amp; Aktifkan';
+            submitBtn.disabled = false;
+        }
+    }
+});
+
+document.getElementById('btnDisableMfa')?.addEventListener('click', async () => {
+    if (!activeMfaFactor) return;
+    const agree = confirm('Apakah Anda yakin ingin menonaktifkan Verifikasi 2 Langkah? Akun Anda akan menjadi kurang terlindungi.');
+    if (!agree) return;
+
+    try {
+        await unenrollMfa(activeMfaFactor.id);
+        showToast('Verifikasi 2 Langkah berhasil dinonaktifkan.', 'info');
+        await refreshMfaStatus();
+    } catch (err) {
+        console.error('Unenroll MFA error:', err);
+        showToast('Gagal menonaktifkan 2FA: ' + (err.message || 'Terjadi kesalahan'), 'error');
+    }
+});
+
