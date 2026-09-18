@@ -1545,11 +1545,24 @@ document.getElementById('btnOpenMfaModal')?.addEventListener('click', async () =
         // 3. Render QR Code ukuran besar (260px) responsif untuk semua perangkat
         if (enrollData?.totp?.qr_code) {
             const qrData = enrollData.totp.qr_code;
-            const isSvg = qrData.trim().startsWith('<svg');
-            if (isSvg) {
+            let svgHtml = null;
+
+            if (qrData.includes('<svg')) {
+                // Ekstrak tag SVG murni dari string XML langsung maupun data URI
+                const svgStart = qrData.indexOf('<svg');
+                svgHtml = qrData.substring(svgStart);
+            } else if (qrData.startsWith('data:image/svg+xml;base64,')) {
+                try {
+                    svgHtml = atob(qrData.split(',')[1]);
+                } catch (decodeErr) {
+                    console.warn('Decode base64 SVG fallback:', decodeErr);
+                }
+            }
+
+            if (svgHtml) {
                 qrContainer.innerHTML = `
-                    <div style="background: #ffffff; padding: 12px; border-radius: 12px; border: 1.5px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.06); width: 100%; max-width: 280px; box-sizing: border-box; overflow: hidden;">
-                        ${qrData}
+                    <div class="qr-code-wrapper" style="background: #ffffff; padding: 14px; border-radius: 12px; border: 1.5px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.06); width: 100%; max-width: 280px; box-sizing: border-box; overflow: hidden; margin: 0 auto;">
+                        ${svgHtml}
                     </div>`;
                 const svg = qrContainer.querySelector('svg');
                 if (svg) {
@@ -1565,11 +1578,13 @@ document.getElementById('btnOpenMfaModal')?.addEventListener('click', async () =
                     svg.style.height = 'auto';
                     svg.style.aspectRatio = '1 / 1';
                     svg.style.display = 'block';
+                    svg.style.margin = '0 auto';
+                    svg.style.shapeRendering = 'crispEdges';
                 }
             } else {
                 qrContainer.innerHTML = `
-                    <div style="background: #ffffff; padding: 12px; border-radius: 12px; border: 1.5px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.06); width: 100%; max-width: 280px; box-sizing: border-box;">
-                        <img src="${qrData}" alt="QR Code 2FA" style="width: 100%; max-width: 260px; height: auto; aspect-ratio: 1 / 1; object-fit: contain; display: block; margin: 0 auto; border-radius: 0;">
+                    <div class="qr-code-wrapper" style="background: #ffffff; padding: 14px; border-radius: 12px; border: 1.5px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.06); width: 100%; max-width: 280px; box-sizing: border-box; margin: 0 auto;">
+                        <img src="${qrData}" alt="QR Code 2FA" style="width: 100%; max-width: 260px; height: auto; aspect-ratio: 1 / 1; object-fit: contain; display: block; margin: 0 auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
                     </div>`;
             }
         } else {
