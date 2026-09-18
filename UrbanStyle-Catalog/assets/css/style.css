@@ -2854,120 +2854,279 @@ img {
     margin: 0 auto;
 }
 
-/* --- TAMPILAN DESKTOP (Layar Komputer & Laptop >= 992px) --- */
+/* =========================================================
+   SHOPEE-STYLE DESKTOP PRODUCT POST LAYOUT (DESKTOP ONLY >= 992px)
+   ========================================================= */
+
+/* Shared Shopee Badge & Micro Elements */
+.shopee-badge-mall {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #ee4d2d;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    z-index: 3;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+}
+
+.shopee-badge-stock {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+    z-index: 3;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.shopee-badge-stock.tersedia {
+    background: #22c55e;
+    color: #ffffff;
+}
+
+.shopee-badge-stock.habis {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.shopee-card-rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.54);
+    margin: 3px 0;
+}
+
+.shopee-stars {
+    color: #ffaa00;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+}
+
+.shopee-sold-count {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 11px;
+}
+
+.shopee-card-footer-location {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+/* --- TAMPILAN DESKTOP KHUSUS ALA SHOPEE (>= 992px) --- */
 @media (min-width: 992px) {
     .section > .container,
     .navbar > .container {
         width: 92% !important;
-        max-width: 1400px !important;
+        max-width: 1240px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        padding: 0 28px !important;
+        padding: 0 20px !important;
     }
 
-    /* Grid produk desktop: PERSIS 3 KOLOM SEIMBANG & ELEGAN */
+    /* Grid produk desktop: 4 Kolom di 992px-1199px ala Shopee */
     .product-grid,
     #featuredProducts,
     #allProducts {
         display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 28px !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 16px !important;
         width: 100% !important;
     }
 
-    /* Kartu produk desktop: Desain editorial mewah */
+    /* Kartu produk desktop: Desain Presisi Ala Shopee */
     .product-card {
-        border-radius: 20px !important;
-        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        border-radius: 6px !important;
+        border: 1px solid #ededed !important;
         background: #ffffff !important;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
         overflow: hidden !important;
-        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative !important;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease !important;
     }
 
     .product-card:hover {
-        transform: translateY(-6px) !important;
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1) !important;
-        border-color: rgba(0, 0, 0, 0.14) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12) !important;
+        border-color: #ee4d2d !important;
     }
 
     .product-card .product-image {
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-        background: var(--meta-surface-soft);
-        aspect-ratio: 4 / 5 !important;
-        max-height: 480px !important;
+        width: 100% !important;
+        position: relative !important;
+        overflow: hidden !important;
+        background: #fbfbfb !important;
+        aspect-ratio: 1 / 1 !important;
         height: auto !important;
+        max-height: 250px !important;
+        border-radius: 5px 5px 0 0 !important;
     }
 
     .product-card .product-image img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top center;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: top center !important;
+        transition: transform 0.4s ease !important;
     }
 
     .product-card:hover .product-image img {
-        transform: scale(1.05);
+        transform: scale(1.04) !important;
     }
 
     .product-card .product-details {
-        padding: 24px !important;
-        gap: 12px !important;
+        padding: 10px 10px 12px !important;
+        gap: 5px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 !important;
+    }
+
+    .product-card .product-category {
+        font-size: 10.5px !important;
+        color: #888888 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.3px !important;
+        margin-bottom: 2px !important;
+        font-weight: 500 !important;
     }
 
     .product-card .product-name {
-        font-size: 19px !important;
-        font-weight: 600 !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
         line-height: 1.35 !important;
+        color: rgba(0, 0, 0, 0.87) !important;
+        min-height: 36px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin: 0 !important;
     }
 
     .product-card .product-price {
-        font-size: 22px !important;
+        font-size: 17px !important;
         font-weight: 700 !important;
-        letter-spacing: -0.2px;
+        color: #ee4d2d !important;
+        letter-spacing: -0.2px !important;
+        margin: 2px 0 !important;
+    }
+
+    .product-card .product-stock {
+        display: none !important;
+    }
+
+    .product-card .product-item-select-label {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+    }
+
+    .product-card .product-item-select {
+        min-height: 32px !important;
+        font-size: 11.5px !important;
+        padding: 4px 22px 4px 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #e2e8f0 !important;
     }
 
     .product-card .product-selected-meta {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 8px !important;
-        margin: 6px 0 !important;
+        gap: 4px !important;
+        margin: 4px 0 !important;
     }
 
     .product-card .product-selected-meta span {
-        padding: 8px 10px !important;
-        border-radius: 8px !important;
-        font-size: 11px !important;
+        padding: 4px 6px !important;
+        border-radius: 4px !important;
+        font-size: 10px !important;
+        text-align: center !important;
     }
 
     .product-card .product-actions {
-        padding-top: 12px !important;
+        padding-top: 6px !important;
+        margin-top: auto !important;
+        width: 100% !important;
+    }
+
+    .product-card-buttons {
+        display: flex !important;
+        gap: 6px !important;
+        width: 100% !important;
     }
 
     .product-card .btn-whatsapp {
-        min-height: 46px !important;
-        font-size: 14px !important;
+        flex: 1 1 auto !important;
+        min-height: 34px !important;
+        height: 34px !important;
+        font-size: 12px !important;
         font-weight: 700 !important;
+        border-radius: 4px !important;
+        background: #25D366 !important;
+        color: #ffffff !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
+    }
+
+    .product-card .btn-whatsapp:hover {
+        background: #20ba59 !important;
+    }
+
+    .product-card .btn-cart {
+        width: 34px !important;
+        min-width: 34px !important;
+        height: 34px !important;
+        font-size: 13px !important;
+        border-radius: 4px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        color: #0f172a !important;
     }
 }
 
-/* Tetap 3 kolom di layar ultra lebar >= 1400px sesuai permintaan user */
-@media (min-width: 1400px) {
+/* Layar Lebar >= 1200px: 5 Kolom Shopee Desktop Standard */
+@media (min-width: 1200px) {
+    .section > .container,
+    .navbar > .container {
+        max-width: 1280px !important;
+    }
+
     .product-grid,
     #featuredProducts,
     #allProducts {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 36px !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 16px !important;
     }
     
     .gallery-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 24px !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 16px !important;
     }
 }
 
@@ -3406,21 +3565,21 @@ img {
     display: block;
 }
 
-/* Desktop catalog: Kontainer terpusat rapi dan proporsional (sweet spot 1400px) */
+/* Desktop catalog: Kontainer terpusat rapi dan proporsional (Standar Shopee) */
 @media (min-width: 992px) {
     .section > .container,
     .navbar > .container {
         width: 92% !important;
-        max-width: 1400px !important;
+        max-width: 1240px !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
     .section > .container {
         width: 92% !important;
-        max-width: 1440px !important;
+        max-width: 1280px !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }

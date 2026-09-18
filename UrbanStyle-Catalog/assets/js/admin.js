@@ -31,6 +31,50 @@ function showToast(message, type = 'success') {
     setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
 }
 
+// ===== KEAMANAN INPUT VALIDATION & SANITASI =====
+function sanitizeInput(str) {
+    if (typeof str !== 'string') return '';
+    return str.trim()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
+
+function validateEmail(email) {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email || '').trim());
+}
+
+function validateWhatsAppNumber(num) {
+    const clean = String(num || '').replace(/\D/g, '');
+    return clean.length >= 10 && clean.length <= 15;
+}
+
+function validateUrl(url, allowEmpty = true) {
+    const val = String(url || '').trim();
+    if (!val && allowEmpty) return true;
+    try {
+        const parsed = new URL(val);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
+function validateImageFile(file, maxMb = 5) {
+    if (!file) return { valid: true };
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type) && !file.type.startsWith('image/')) {
+        return { valid: false, error: 'Format file tidak didukung! Gunakan gambar JPG, PNG, WEBP, atau GIF.' };
+    }
+    if (file.size > maxMb * 1024 * 1024) {
+        return { valid: false, error: `Ukuran file terlalu besar! Maksimal ${maxMb}MB.` };
+    }
+    return { valid: true };
+}
+
 // ===== File Preview Handler =====
 function setupFilePreview(inputId, previewId, imgId, nameId) {
     const input = document.getElementById(inputId);
@@ -634,7 +678,6 @@ window.hapusProduk = async function(id) {
         showToast('Gagal menghapus produk: ' + (error.message || 'Terjadi kesalahan'), 'error');
     }
 };
-
 document.getElementById('produkForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const editId = document.getElementById('produkEditId').value;
@@ -644,20 +687,27 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
         showToast('Gambar Produk wajib diisi saat menambah produk.', 'warning');
         return;
     }
+    if (imageInput && imageInput.files && imageInput.files.length > 0) {
+        const fileCheck = validateImageFile(imageInput.files[0], 5);
+        if (!fileCheck.valid) {
+            showToast(fileCheck.error, 'warning');
+            return;
+        }
+    }
     const btn = e.target.querySelector('button[type="submit"]');
     const items = collectProductItems();
     if (items === null) return;
-    const title = document.getElementById('produkJudul').value.trim();
+    const title = sanitizeInput(document.getElementById('produkJudul').value);
     const data = {
         nama: title || items[0]?.nama || 'Koleksi Produk',
         judul_postingan: title || items[0]?.nama || 'Koleksi Produk',
-        keterangan_foto: document.getElementById('produkDeskripsi').value.trim(),
+        keterangan_foto: sanitizeInput(document.getElementById('produkDeskripsi').value),
         items,
-        kategori: document.getElementById('produkKategori').value,
-        harga: items[0]?.harga === '' || items[0]?.harga === undefined ? 0 : items[0].harga,
+        kategori: sanitizeInput(document.getElementById('produkKategori').value),
+        harga: items[0]?.harga === '' || items[0]?.harga === undefined ? 0 : Number(items[0].harga) || 0,
         stok: items[0]?.stok || 'Tersedia',
-        ukuran: document.getElementById('produkUkuran').value,
-        warna: document.getElementById('produkWarna').value
+        ukuran: sanitizeInput(document.getElementById('produkUkuran').value),
+        warna: sanitizeInput(document.getElementById('produkWarna').value)
     };
     if (!editId) {
         data.created_at = new Date().toISOString();
@@ -674,12 +724,6 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
             data.gambar = await getDownloadURL(storageRef);
         }
         if (editId) {
-            if (!data.gambar) {
-                const { data: existing, error } = await supabase.from('products').select('gambar').eq('id', editId).single();
-                if (!error && existing?.gambar) {
-                    data.gambar = existing.gambar;
-                }
-            }
             const { error } = await supabase.from('products').update(data).eq('id', editId);
             if (error) throw error;
             showToast('Produk berhasil diperbarui!', 'success');
@@ -689,6 +733,7 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
             showToast('Produk berhasil ditambahkan!', 'success');
         }
         closeModal('produkModal');
+        refreshProdukTable();
     } catch (error) {
         console.error('Produk simpan error:', error);
         showToast('Gagal menyimpan produk: ' + (error.message || 'Terjadi kesalahan'), 'error');
@@ -798,7 +843,13 @@ document.getElementById('kategoriForm').addEventListener('submit', async (e) => 
     e.preventDefault();
     const editId = document.getElementById('kategoriEditId').value;
     const btn = e.target.querySelector('button[type="submit"]');
-    const data = { nama: document.getElementById('kategoriNama').value, icon: document.getElementById('kategoriIcon').value || 'fas fa-tag' };
+    const namaKategori = sanitizeInput(document.getElementById('kategoriNama').value);
+    if (!namaKategori) {
+        showToast('Nama kelompok usia wajib diisi.', 'warning');
+        return;
+    }
+    const iconKategori = sanitizeInput(document.getElementById('kategoriIcon').value) || 'fas fa-tag';
+    const data = { nama: namaKategori, icon: iconKategori };
     try {
         if (btn) {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
@@ -945,8 +996,19 @@ document.getElementById('galeriForm').addEventListener('submit', async (e) => {
         showToast('Upload Foto wajib diisi saat menambah foto galeri.', 'warning');
         return;
     }
+    if (imageInput && imageInput.files && imageInput.files.length > 0) {
+        const fileCheck = validateImageFile(imageInput.files[0], 5);
+        if (!fileCheck.valid) {
+            showToast(fileCheck.error, 'warning');
+            return;
+        }
+    }
     const btn = e.target.querySelector('button[type="submit"]');
-    const data = { judul: document.getElementById('galeriJudul').value };
+    const data = { judul: sanitizeInput(document.getElementById('galeriJudul').value) };
+    if (!data.judul) {
+        showToast('Judul foto wajib diisi.', 'warning');
+        return;
+    }
     if (!editId) {
         data.created_at = new Date().toISOString();
     }
@@ -996,7 +1058,8 @@ function populateBannerGrid(items) {
     const grid = document.getElementById('bannerAdminGrid');
     if (!grid) return;
     if (!items || items.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;background:#f9fafb;border-radius:12px;border:1px dashed #ddd;"><i class="fas fa-image" style="font-size:36px;color:#ccc;margin-bottom:12px;display:block;"></i><p style="color:#666;font-size:14px;margin-bottom:12px;">Belum ada foto banner background home.</p><button type="button" class="btn btn-primary btn-sm" onclick="window.showAddBannerModal()"><i class="fas fa-plus"></i> Tambah Foto Sekarang</button></div>';
+        // Tombol tambah cukup 1 buah saja di header halaman
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;background:#f9fafb;border-radius:12px;border:1px dashed #ddd;"><i class="fas fa-image" style="font-size:36px;color:#ccc;margin-bottom:12px;display:block;"></i><p style="color:#666;font-size:14px;margin:0;">Belum ada foto banner background home. Gunakan tombol "Tambah Banner" di atas untuk menambahkan foto baru.</p></div>';
         return;
     }
     grid.innerHTML = items.map(b => {
@@ -1004,7 +1067,10 @@ function populateBannerGrid(items) {
         return '<div class="galeri-admin-item" data-id="' + b.id + '">' +
             '<img src="' + (b.gambar || 'https://via.placeholder.com/200') + '" alt="' + cleanTitle + '" style="height:160px;object-fit:cover;">' +
             '<div class="galeri-admin-info"><h4>' + cleanTitle + '</h4><span style="font-size:11px;color:#16a34a;font-weight:600;"><i class="fas fa-check-circle"></i> Tampil di Hero</span></div>' +
-            '<div class="galeri-actions"><button class="btn-sm btn-delete" data-action="delete" title="Hapus banner"><i class="fas fa-trash"></i></button></div>' +
+            '<div class="galeri-actions" style="display:flex;gap:6px;">' +
+                '<button class="btn-sm btn-edit" data-action="edit" title="Edit banner" style="background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;"><i class="fas fa-edit"></i> Edit</button>' +
+                '<button class="btn-sm btn-delete" data-action="delete" title="Hapus banner" style="border:none;border-radius:6px;padding:6px 10px;cursor:pointer;"><i class="fas fa-trash"></i> Hapus</button>' +
+            '</div>' +
             '</div>';
     }).join('');
 }
@@ -1041,6 +1107,8 @@ function loadBannerHomeAdmin() {
             const id = item.dataset.id;
             if (action === 'delete') {
                 window.hapusBanner(id);
+            } else if (action === 'edit') {
+                window.editBanner(id);
             }
         });
         grid.dataset.listenerAttached = '1';
@@ -1054,6 +1122,34 @@ window.showAddBannerModal = function() {
     const preview = document.getElementById('bannerFilePreview');
     if (preview) preview.classList.remove('show');
     document.getElementById('bannerModal').classList.add('active');
+};
+
+window.editBanner = async function(id) {
+    try {
+        const { data, error } = await supabase.from('gallery').select('*').eq('id', id).single();
+        if (error) throw error;
+        if (!data) return;
+
+        document.getElementById('bannerModalTitle').textContent = 'Edit Banner Background Home';
+        document.getElementById('bannerEditId').value = data.id;
+        document.getElementById('bannerJudul').value = (data.judul || '').replace(/^\[BANNER\]\s*/i, '');
+
+        const preview = document.getElementById('bannerFilePreview');
+        const previewImg = document.getElementById('bannerPreviewImg');
+        const fileName = document.getElementById('bannerFileName');
+        if (data.gambar && preview && previewImg) {
+            previewImg.src = data.gambar;
+            if (fileName) fileName.textContent = 'Foto saat ini (kosongkan jika tidak diganti)';
+            preview.classList.add('show');
+        } else if (preview) {
+            preview.classList.remove('show');
+        }
+
+        document.getElementById('bannerModal').classList.add('active');
+    } catch (err) {
+        console.error('Gagal memuat data banner untuk diedit:', err);
+        showToast('Gagal memuat data banner.', 'error');
+    }
 };
 
 window.hapusBanner = async function(id) {
@@ -1071,29 +1167,60 @@ window.hapusBanner = async function(id) {
 
 document.getElementById('bannerForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const file = document.getElementById('bannerGambar');
-    if (!file || !file.files || file.files.length === 0) {
+    const editId = document.getElementById('bannerEditId').value;
+    const fileInput = document.getElementById('bannerGambar');
+    const hasNewFile = fileInput && fileInput.files && fileInput.files.length > 0;
+
+    // Jika tambah baru, file wajib ada
+    if (!editId && !hasNewFile) {
         showToast('Pilih file foto banner terlebih dahulu.', 'warning');
         return;
     }
+
+    // Validasi file jika ada
+    if (hasNewFile) {
+        const fileCheck = validateImageFile(fileInput.files[0], 5);
+        if (!fileCheck.valid) {
+            showToast(fileCheck.error, 'warning');
+            return;
+        }
+    }
+
     const btn = e.target.querySelector('button[type="submit"]');
-    const rawJudul = document.getElementById('bannerJudul').value.trim();
+    const rawJudul = sanitizeInput(document.getElementById('bannerJudul').value);
+    if (!rawJudul) {
+        showToast('Judul / label banner wajib diisi.', 'warning');
+        return;
+    }
     const judul = '[BANNER] ' + rawJudul;
-    const data = { judul: judul, created_at: new Date().toISOString() };
+    const payload = { judul: judul };
 
     try {
         if (btn) {
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
             btn.disabled = true;
         }
-        const storageRef = ref('gallery/banner_' + Date.now() + '_' + file.files[0].name);
-        await uploadBytes(storageRef, file.files[0]);
-        data.gambar = await getDownloadURL(storageRef);
 
-        const { error } = await supabase.from('gallery').insert([data]);
-        if (error) throw error;
+        if (hasNewFile) {
+            const file = fileInput.files[0];
+            const storageRef = ref('gallery/banner_' + Date.now() + '_' + file.name);
+            await uploadBytes(storageRef, file);
+            payload.gambar = await getDownloadURL(storageRef);
+        }
 
-        showToast('Foto banner home berhasil ditambahkan!', 'success');
+        if (editId) {
+            // Update banner yang ada
+            const { error } = await supabase.from('gallery').update(payload).eq('id', editId);
+            if (error) throw error;
+            showToast('Foto banner home berhasil diperbarui!', 'success');
+        } else {
+            // Tambah banner baru
+            payload.created_at = new Date().toISOString();
+            const { error } = await supabase.from('gallery').insert([payload]);
+            if (error) throw error;
+            showToast('Foto banner home berhasil ditambahkan!', 'success');
+        }
+
         closeModal('bannerModal');
         refreshBannerAdmin();
     } catch (error) {
@@ -1182,16 +1309,36 @@ document.getElementById('btnSaveKontak').addEventListener('click', async functio
     const canonicalWaNumber = waDigits
         ? (waDigits.startsWith('0') ? '62' + waDigits.substring(1) : (waDigits.startsWith('62') ? waDigits : '62' + waDigits))
         : '';
+
+    // Keamanan Input Validation
+    if (!validateWhatsAppNumber(canonicalWaNumber)) {
+        showToast('Nomor WhatsApp tidak valid (harus 10-15 digit angka).', 'warning');
+        return;
+    }
+    const emailVal = document.getElementById('adminEmail').value.trim();
+    if (!validateEmail(emailVal)) {
+        showToast('Format email tidak valid (contoh: toko@nurulfashion.com).', 'warning');
+        return;
+    }
+    const igVal = document.getElementById('adminInstagram').value.trim();
+    const fbVal = document.getElementById('adminFacebook').value.trim();
+    const ttVal = document.getElementById('adminTiktok').value.trim();
+    const mapsVal = document.getElementById('adminMapsUrl').value.trim();
+    if (!validateUrl(igVal) || !validateUrl(fbVal) || !validateUrl(ttVal) || !validateUrl(mapsVal)) {
+        showToast('Link media sosial / Google Maps harus berupa URL valid (diawali https:// atau http://).', 'warning');
+        return;
+    }
+
     const data = {
-        nama_toko: document.getElementById('adminStoreName').value,
+        nama_toko: sanitizeInput(document.getElementById('adminStoreName').value),
         wa_number: canonicalWaNumber,
-        email: document.getElementById('adminEmail').value,
-        jam_operasional: document.getElementById('adminJam').value,
-        alamat: document.getElementById('adminAlamat').value,
-        instagram: document.getElementById('adminInstagram').value,
-        facebook: document.getElementById('adminFacebook').value,
-        tiktok: document.getElementById('adminTiktok').value,
-        maps_url: document.getElementById('adminMapsUrl').value
+        email: emailVal,
+        jam_operasional: sanitizeInput(document.getElementById('adminJam').value),
+        alamat: sanitizeInput(document.getElementById('adminAlamat').value),
+        instagram: igVal,
+        facebook: fbVal,
+        tiktok: ttVal,
+        maps_url: mapsVal
     };
     try {
         const { data: existing, error: fetchError } = await supabase.from('settings').select('*').limit(1).maybeSingle();
@@ -1377,7 +1524,28 @@ document.getElementById('btnOpenMfaModal')?.addEventListener('click', async () =
         pendingEnrolledFactorId = enrollData.id;
 
         if (enrollData?.totp?.qr_code) {
-            qrContainer.innerHTML = `<img src="${enrollData.totp.qr_code}" alt="QR Code 2FA" style="width: 170px; height: 170px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">`;
+            const qrData = enrollData.totp.qr_code;
+            const isSvg = qrData.trim().startsWith('<svg');
+            if (isSvg) {
+                qrContainer.innerHTML = `
+                    <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 100%; box-sizing: border-box;">
+                        ${qrData}
+                    </div>`;
+                const svg = qrContainer.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('width', '200');
+                    svg.setAttribute('height', '200');
+                    svg.style.width = '200px';
+                    svg.style.height = '200px';
+                    svg.style.display = 'block';
+                    svg.style.maxWidth = '100%';
+                }
+            } else {
+                qrContainer.innerHTML = `
+                    <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 100%; box-sizing: border-box;">
+                        <img src="${qrData}" alt="QR Code 2FA" style="width: 200px; height: 200px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; border-radius: 0;">
+                    </div>`;
+            }
         } else {
             qrContainer.innerHTML = '<p style="color: #666; font-size: 13px;">Gunakan kunci manual di bawah untuk aplikasi Authenticator.</p>';
         }

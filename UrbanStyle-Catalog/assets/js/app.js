@@ -606,9 +606,12 @@ function createProductCard(product, tier = null) {
               '</select></div>'
             : '';
         const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
+        const soldCount = Math.max(12, (Number(product.wa_clicks_monthly) || 0) * 4 + 18);
         return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
             '<div class="product-image">' +
             '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
+            '<span class="shopee-badge-mall"><i class="fas fa-crown"></i> Star</span>' +
+            '<span class="shopee-badge-stock ' + stockClass + '">' + firstStock + '</span>' +
             '<span class="product-image-hint" aria-label="Buka detail produk"><i class="fas fa-expand-alt" aria-hidden="true"></i></span>' +
             tierBadge +
             (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
@@ -617,6 +620,8 @@ function createProductCard(product, tier = null) {
             '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
             '<h3 class="product-name">' + title + '</h3>' +
             (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
+            '<div class="shopee-card-rating-row"><span class="shopee-stars"><i class="fas fa-star"></i> 5.0</span><span class="shopee-sold-count">' + soldCount + ' Terjual</span></div>' +
+            '<div class="shopee-card-footer-location"><i class="fas fa-map-marker-alt"></i> Kota Bekasi</div>' +
             '<div class="product-stock ' + stockClass + '" data-product-stock><i class="fas ' + (firstStock === 'Tersedia' ? 'fa-check-circle' : 'fa-times-circle') + '"></i> ' + firstStock + '</div>' +
             (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
             '<div class="product-actions">' +
