@@ -6,7 +6,6 @@
     <meta name="color-scheme" content="dark">
     <title>Login Admin - Nurul Fashion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { width: 100%; overflow-x: hidden; height: 100%; color-scheme: dark; }
@@ -235,7 +234,7 @@
             z-index: 2;
         }
 
-        /* State when Lamp is OFF: Transparent Black & Zoom-In Scale Prepared */
+        /* State when Lamp is OFF: Completely Hidden (Tidak Muncul) */
         .login-card {
             background: rgba(0, 0, 0, 0.42) !important;
             padding: 34px 28px;
@@ -247,17 +246,16 @@
             -webkit-backdrop-filter: blur(14px);
             border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transform: scale(0.65);
-            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
-            will-change: transform, opacity;
+            transition: opacity 0.35s ease, visibility 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
         }
 
-        /* State when Lamp is ON: Smooth Zoom-In (Scale 1) & Golden Light Beam Illumination */
+        /* State when Lamp is ON: Appears Directly & Illuminated by Lamp */
         body.lamp-active .login-card {
             opacity: 1;
+            visibility: visible;
             pointer-events: auto;
-            transform: scale(1);
             border-color: rgba(251, 191, 36, 0.45) !important;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), -15px 0 45px rgba(251, 191, 36, 0.3), 0 0 35px rgba(254, 240, 138, 0.18);
         }
@@ -682,10 +680,6 @@
             .login-card {
                 padding: 24px 18px !important;
                 border-radius: 20px !important;
-                transform: scale(0.65);
-            }
-            body.lamp-active .login-card {
-                transform: scale(1);
             }
             .login-logo h2 { font-size: 22px !important; }
             .login-logo p { font-size: 12.5px !important; }
@@ -783,7 +777,7 @@
         <div class="login-card-section">
             
             <!-- The Main Login Card (Illuminated by Lamp) -->
-            <div class="login-card" id="loginCard" data-aos="zoom-in">
+            <div class="login-card" id="loginCard">
                 <div class="login-logo">
                     <h2>Admin Portal</h2>
                     <p>Sistem Manajemen Katalog Nurul Fashion</p>
@@ -1348,12 +1342,6 @@
                 } else {
                     document.body.classList.remove('lamp-active');
                 }
-
-                if (typeof AOS !== 'undefined') {
-                    setTimeout(() => {
-                        try { AOS.refresh(); } catch (e) {}
-                    }, 60);
-                }
             }
 
             if (pullString) {
@@ -1366,20 +1354,6 @@
                 });
             }
         })();
-    </script>
-
-    <!-- ================= AOS (ANIMATE ON SCROLL) SCRIPT ================= -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof AOS !== 'undefined') {
-                AOS.init({
-                    duration: 600,
-                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                    once: false
-                });
-            }
-        });
     </script>
 </body>
 </html>

@@ -626,7 +626,7 @@ function createProductCard(product, tier = null) {
               '</select></div>'
             : '';
         const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
-        return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
+        return '<div class="product-card" data-aos="zoom-in" data-product-card-id="' + product.id + '">' +
             '<div class="product-image">' +
             '<img src="' + imageUrl + '" alt="" class="product-image-bg" aria-hidden="true" loading="lazy">' +
             '<img src="' + imageUrl + '" alt="' + title + '" class="product-image-main" loading="lazy">' +
@@ -980,7 +980,7 @@ async function refreshGallery() {
             return;
         }
         galleryGrid.innerHTML = galleryData.map((item, index) =>
-            '<div class="gallery-item" data-aos="fade-up" data-index="' + index + '">' +
+            '<div class="gallery-item" data-aos="zoom-in" data-index="' + index + '">' +
             '<img src="' + (item.gambar || 'https://via.placeholder.com/400?text=Gallery') + '" alt="' + (item.judul || 'Foto') + '" loading="lazy">' +
             '<div class="gallery-overlay"><h3>' + (item.judul || 'Foto Galeri') + '</h3></div>' +
             '</div>'
