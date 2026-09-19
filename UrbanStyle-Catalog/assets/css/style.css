@@ -1284,9 +1284,9 @@ i.fa-truck-fast {
     min-width: 44px;
     height: 44px;
     border-radius: var(--meta-rounded-full);
-    background: var(--meta-surface-soft);
-    border: 1px solid var(--meta-hairline-soft);
-    color: var(--meta-ink);
+    background: #fdf2f8;
+    border: 1px solid rgba(236, 72, 153, 0.25);
+    color: #EC4899 !important;
     font-size: 18px;
     display: inline-flex;
     align-items: center;
@@ -1296,7 +1296,8 @@ i.fa-truck-fast {
 }
 
 .product-card-buttons .btn-cart:hover {
-    background: var(--meta-hairline-soft);
+    background: #fce7f3;
+    border-color: rgba(236, 72, 153, 0.4);
 }
 
 /* ============================================
@@ -2251,8 +2252,9 @@ i.fa-map-marker-alt,
     height: 44px;
     border: 1px solid var(--meta-hairline-soft);
     border-radius: var(--meta-rounded-full);
-    background: var(--meta-surface-soft);
-    color: var(--meta-ink-deep);
+    background: #fdf2f8;        /* Latar pink terang */
+    color: #EC4899 !important;  /* Icon tas berwarna pink #EC4899 */
+    border-color: rgba(236, 72, 153, 0.25) !important;
     font-size: 18px;
     cursor: pointer;
     display: inline-flex;
@@ -2262,7 +2264,8 @@ i.fa-map-marker-alt,
 }
 
 .btn-cart:hover {
-    background: var(--meta-hairline-soft);
+    background: #fce7f3;
+    border-color: rgba(236, 72, 153, 0.4) !important;
 }
 
 .cart-button {
@@ -3593,9 +3596,9 @@ img {
         height: 35px !important;
         font-size: 13px !important;
         border-radius: 100px !important;
-        border: 1px solid #dee3e9 !important;
-        background: #f8fafc !important;
-        color: #0f172a !important;
+        border: 1px solid rgba(236, 72, 153, 0.25) !important;
+        background: #fdf2f8 !important;
+        color: #EC4899 !important;  /* Icon tas pink #EC4899 */
     }
 
     .product-card .btn-cart:hover {
@@ -3837,9 +3840,9 @@ img {
         position: relative !important;
         overflow: hidden !important;
         background: var(--meta-surface-soft) !important;
-        aspect-ratio: 3 / 4 !important;   /* Lebih tinggi agar gambar pakaian terlihat jelas */
+        aspect-ratio: 3 / 4 !important;
         height: auto !important;
-        max-height: 330px !important; /* Diperbesar dari 250px agar gambar produk lebih terlihat jelas */
+        max-height: 270px !important; /* Sedikit dipendekkan dari 330px */
         border-top-left-radius: 13px !important;
         border-top-right-radius: 13px !important;
     }
