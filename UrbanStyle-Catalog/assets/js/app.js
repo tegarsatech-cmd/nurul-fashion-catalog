@@ -668,9 +668,36 @@ function normalizeProductItems(product) {
 }
 
 function getFeaturedProducts(products) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+    const currentMonthPrefix = currentYear + '-' + currentMonth;
+
     return [...products]
-        .sort((a, b) => (Number(b.wa_clicks_monthly) || 0) - (Number(a.wa_clicks_monthly) || 0))
-        .slice(0, 4);
+        .map(product => {
+            const periodStr = product.wa_clicks_period_start ? String(product.wa_clicks_period_start).slice(0, 7) : '';
+            const isCurrentMonth = periodStr === currentMonthPrefix;
+            const monthlyClicks = isCurrentMonth ? (Number(product.wa_clicks_monthly) || 0) : 0;
+            const totalClicks = Number(product.wa_clicks) || 0;
+            return {
+                ...product,
+                _monthlyClicks: monthlyClicks,
+                _totalClicks: totalClicks
+            };
+        })
+        .sort((a, b) => {
+            // 1. Urutkan berdasarkan klik WhatsApp bulan berjalan (terbanyak di atas)
+            if (b._monthlyClicks !== a._monthlyClicks) {
+                return b._monthlyClicks - a._monthlyClicks;
+            }
+            // 2. Jika sama, urutkan berdasarkan total klik WhatsApp keseluruhan
+            if (b._totalClicks !== a._totalClicks) {
+                return b._totalClicks - a._totalClicks;
+            }
+            // 3. Jika masih sama, urutkan dari yang terbaru
+            return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        })
+        .slice(0, 4); // Hanya 4 produk terpopuler
 }
 
     function getWhatsAppMessage(product, itemIndex) {
