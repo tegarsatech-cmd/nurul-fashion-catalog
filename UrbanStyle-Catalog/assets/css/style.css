@@ -3679,10 +3679,10 @@ img {
     }
 
     .product-card .product-image {
-        aspect-ratio: 3 / 3.5 !important;
+        aspect-ratio: 3 / 4 !important;      /* Lebih panjang vertikal di tablet */
         height: auto !important;
-        min-height: 310px !important;
-        max-height: 380px !important; /* Gambar dipanjangkan di tablet */
+        min-height: 350px !important;
+        max-height: 430px !important; /* Diperbesar dari 380px agar gambar lebih jelas */
         background: #f8fafc !important;
         border-radius: 16px 16px 0 0 !important;
     }
@@ -3837,9 +3837,9 @@ img {
         position: relative !important;
         overflow: hidden !important;
         background: var(--meta-surface-soft) !important;
-        aspect-ratio: 1 / 1 !important;
+        aspect-ratio: 3 / 4 !important;   /* Lebih tinggi agar gambar pakaian terlihat jelas */
         height: auto !important;
-        max-height: 250px !important; /* Dikecilkan dari 330px menjadi 250px agar tidak terlalu panjang */
+        max-height: 330px !important; /* Diperbesar dari 250px agar gambar produk lebih terlihat jelas */
         border-top-left-radius: 13px !important;
         border-top-right-radius: 13px !important;
     }
