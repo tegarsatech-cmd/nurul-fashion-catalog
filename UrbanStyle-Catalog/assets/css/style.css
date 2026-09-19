@@ -2462,6 +2462,59 @@ a[href="#kontak"] i.fa-phone-alt {
     padding: 12px;
 }
 
+/* ===== CUSTOM ANIMATED LOADER ===== */
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 60px;
+  aspect-ratio: 1;
+  background: linear-gradient(#dc1818 0 0) bottom/100% 0% no-repeat #ccc;
+  -webkit-mask: 
+    radial-gradient(circle at 60% 65%, #000 62%, #0000 65%) top left, 
+    radial-gradient(circle at 40% 65%, #000 62%, #0000 65%) top right, 
+    linear-gradient(to bottom left, #000 42%,#0000 43%) bottom left , 
+    linear-gradient(to bottom right,#000 42%,#0000 43%) bottom right;
+  -webkit-mask-size: 50% 50%;
+  -webkit-mask-repeat: no-repeat;
+  animation: l19 2s infinite linear;
+  margin: 0 auto;
+}
+@keyframes l19 {
+    90%,100% {background-size:100% 100%}
+}
+
+/* Page Preloader Overlay */
+.page-preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(255, 255, 255, 0.98);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+}
+.page-preloader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.preloader-brand {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.preloader-brand .logo {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+}
+
 @keyframes shimmer {
     0% { background-position: -400px 0; }
     100% { background-position: 400px 0; }

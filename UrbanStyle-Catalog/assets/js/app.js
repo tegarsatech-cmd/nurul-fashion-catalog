@@ -376,10 +376,28 @@ window.addEventListener('beforeunload', () => {
     if (settingsBroadcast) settingsBroadcast.close();
 });
 
-// ===== AOS Init =====
+// ===== AOS Init & Preloader =====
 if (typeof AOS !== 'undefined') {
-    AOS.init({ duration: 800, once: true, offset: 100 });
+    AOS.init({ duration: 800, once: true, offset: 60 });
 }
+
+function refreshAOS() {
+    if (typeof AOS !== 'undefined') {
+        setTimeout(() => { AOS.refresh(); }, 150);
+    }
+}
+
+function dismissPreloader() {
+    const preloader = document.getElementById('pagePreloader');
+    if (preloader && !preloader.classList.contains('fade-out')) {
+        setTimeout(() => {
+            preloader.classList.add('fade-out');
+            setTimeout(() => { if (preloader.parentNode) preloader.remove(); }, 600);
+        }, 250);
+    }
+}
+window.addEventListener('load', dismissPreloader);
+setTimeout(dismissPreloader, 1200);
 
 // ===== Toast =====
 function showToast(message, type = 'info') {
@@ -539,6 +557,7 @@ function renderFeaturedProducts(products) {
         return;
     }
     featuredProducts.innerHTML = products.slice(0, 3).map((product, index) => createProductCard(product, index + 1)).join('');
+    refreshAOS();
 }
 
 // ===== Render All Products =====
@@ -570,7 +589,7 @@ function renderAllProducts(products) {
 
     const sortValue = sortFilter ? sortFilter.value : 'default';
     if (sortValue === 'termurah') {
-        filtered.sort((a, b) => (Number(a.harga) || 0) - (Number(b.harga) || 0));
+        filtered.sort((a, b) => (Number(a.harga) || 0) - (Number(a.harga) || 0));
     } else if (sortValue === 'termahal') {
         filtered.sort((a, b) => (Number(b.harga) || 0) - (Number(a.harga) || 0));
     } else if (sortValue === 'az') {
@@ -584,6 +603,7 @@ function renderAllProducts(products) {
         return;
     }
     allProducts.innerHTML = filtered.map(product => createProductCard(product)).join('');
+    refreshAOS();
 }
 
 // ===== Create Product Card =====
@@ -964,6 +984,7 @@ async function refreshGallery() {
             '<div class="gallery-overlay"><h3>' + (item.judul || 'Foto Galeri') + '</h3></div>' +
             '</div>'
         ).join('');
+        refreshAOS();
     } catch (error) {
         console.error('Error loading gallery:', error);
         showToast('Gagal memuat galeri', 'error');
