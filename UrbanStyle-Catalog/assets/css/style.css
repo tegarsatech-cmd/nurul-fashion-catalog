@@ -2275,10 +2275,11 @@ i.fa-map-marker-alt,
     z-index: 2400;
     width: 48px;
     height: 48px;
-    border: 1px solid var(--meta-hairline-soft);
+    border: 1px solid rgba(236, 72, 153, 0.3);
     border-radius: var(--meta-rounded-circle);
-    background: var(--meta-canvas);
-    box-shadow: 0 4px 16px rgba(20, 22, 26, 0.12);
+    background: #fdf2f8;                /* Latar pink terang */
+    color: #EC4899 !important;          /* Icon tas pink #EC4899 */
+    box-shadow: 0 4px 16px rgba(236, 72, 153, 0.2);
     cursor: pointer;
     touch-action: none;
     font-size: 20px;
@@ -2292,13 +2293,14 @@ i.fa-map-marker-alt,
 
 .cart-button:hover,
 .cart-button:focus-visible {
-    box-shadow: 0 6px 20px rgba(20, 22, 26, 0.18);
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
+    background: #fce7f3;
     outline: none;
 }
 
 .cart-button.is-dragging {
     cursor: grabbing;
-    box-shadow: 0 10px 28px rgba(20, 22, 26, 0.24);
+    box-shadow: 0 10px 28px rgba(236, 72, 153, 0.4);
 }
 
 #cartBadge {
@@ -2388,17 +2390,24 @@ i.fa-map-marker-alt,
 
 .cart-checkout {
     width: 100%;
-    background: var(--meta-primary) !important;
-    color: var(--meta-on-primary) !important;
+    background: #25D366 !important;     /* Hijau WhatsApp */
+    color: #ffffff !important;
     border-radius: var(--meta-rounded-full) !important;
     padding: 14px 28px !important;
     font-size: 14px !important;
     font-weight: 700 !important;
     border: none !important;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
 }
 
 .cart-checkout:hover {
-    background: var(--meta-primary-deep) !important;
+    background: #20ba59 !important;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4) !important;
+    transform: translateY(-1px);
 }
 
 .cart-clear {
