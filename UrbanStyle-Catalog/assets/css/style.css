@@ -889,19 +889,25 @@ a[href="#kontak"] i.fa-phone-alt {
     position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: var(--meta-surface-soft);
+    background: #f8fafc;
     width: 100%;
     flex-shrink: 0;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .product-card .product-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain !important;
+    object-position: center center !important;
     position: absolute;
     inset: 0;
-    transition: transform 0.4s ease;
+    padding: 6px;
+    box-sizing: border-box;
+    transition: transform 0.35s ease;
 }
 
 .product-image-hint {
@@ -2702,8 +2708,15 @@ a[href="#kontak"] i.fa-phone-alt {
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .gallery-item {
+        max-height: 250px;
+        border-radius: 14px;
     }
 
     .katalog-controls {
@@ -2811,7 +2824,14 @@ a[href="#kontak"] i.fa-phone-alt {
 
     .gallery-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        gap: 18px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .gallery-item {
+        max-height: 260px;
+        border-radius: 14px;
     }
 
     .navbar {
@@ -3134,10 +3154,13 @@ img {
         position: relative !important;
         overflow: hidden !important;
         background: #f8fafc !important;
-        aspect-ratio: 4 / 5 !important;
+        aspect-ratio: 1 / 1 !important;
         height: auto !important;
-        max-height: 480px !important;
+        max-height: 360px !important;
         border-radius: 14px 14px 0 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     .product-card .product-image img {
@@ -3145,8 +3168,10 @@ img {
         inset: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover !important;
-        object-position: top center !important;
+        object-fit: contain !important;
+        object-position: center center !important;
+        padding: 8px !important;
+        box-sizing: border-box !important;
         transition: transform 0.4s ease !important;
     }
 
@@ -3286,7 +3311,7 @@ img {
     }
 }
 
-/* Layar Lebar >= 1200px: Tetap 3 Kolom Mewah & Penuh */
+/* Layar Lebar >= 1200px: 3 Kolom Produk, 4 Kolom Galeri Ringkas & Proporsional */
 @media (min-width: 1200px) {
     .section > .container,
     .navbar > .container {
@@ -3301,12 +3326,17 @@ img {
     }
     
     .gallery-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 24px !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 20px !important;
+    }
+
+    .gallery-item {
+        border-radius: 14px !important;
+        max-height: 280px !important;
     }
 }
 
-/* Tablet (769px - 991px): 2 Kolom Sedang */
+/* Tablet (769px - 991px): 2 Kolom Produk, 3 Kolom Galeri */
 @media (min-width: 769px) and (max-width: 991px) {
     .product-grid,
     #featuredProducts,
@@ -3316,17 +3346,21 @@ img {
     }
 
     .product-card .product-image {
-        aspect-ratio: 4 / 5 !important;
+        aspect-ratio: 1 / 1 !important;
         height: auto !important;
+        background: #f8fafc !important;
     }
 
     .product-card .product-image img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top center;
+        object-fit: contain !important;
+        object-position: center center !important;
+        padding: 6px !important;
+        box-sizing: border-box !important;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 14px !important;
     }
 }
 

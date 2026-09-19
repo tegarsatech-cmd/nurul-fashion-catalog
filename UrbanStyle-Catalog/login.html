@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="assets/css/admin.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { width: 100%; overflow-x: hidden; }
+        html { width: 100%; overflow-x: hidden; height: 100%; }
         body {
             display: flex;
             align-items: center;
@@ -16,56 +16,56 @@
             min-height: 100vh;
             min-height: 100dvh;
             padding: 16px;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0d0d0d 100%);
+            background: #060913;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
             font-family: 'Times New Roman', Times, serif;
             width: 100%;
             max-width: 100%;
         }
-        body::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -20%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255, 105, 180, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: loginGlow 8s ease-in-out infinite alternate;
+
+        /* Killua Dynamic Electric Canvas */
+        #killuaCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
         }
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -20%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 105, 180, 0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: loginGlow 10s ease-in-out infinite alternate-reverse;
+
+        /* Killua Aura Vignette & Ambient Glow */
+        .killua-vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: radial-gradient(circle at center, transparent 40%, rgba(3, 7, 18, 0.75) 90%),
+                        radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.12) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 50%);
         }
-        @keyframes loginGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, -20px) scale(1.2); }
-        }
+
+        /* Glassmorphic Translucent Login Card */
         .login-card {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(10, 16, 30, 0.74);
             padding: 36px 30px;
             border-radius: 24px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75), 0 0 40px rgba(0, 240, 255, 0.16);
             width: 100%;
             max-width: 440px;
             position: relative;
-            z-index: 2;
+            z-index: 3;
             animation: cardSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 105, 180, 0.15);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.32);
         }
+
         @keyframes cardSlideUp {
             from { opacity: 0; transform: translateY(24px) scale(0.97); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
+
         .login-logo { text-align: center; margin-bottom: 22px; }
         .login-logo .logo {
             width: 66px; height: 66px;
@@ -73,69 +73,80 @@
             color: #FFFFFF; font-size: 26px; font-weight: 800;
             display: flex; align-items: center; justify-content: center;
             border-radius: 18px; margin: 0 auto 12px;
-            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.3);
+            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.4), 0 0 20px rgba(0, 240, 255, 0.3);
             transition: transform 0.3s ease;
+            position: relative;
         }
-        .login-logo .logo:hover { transform: rotate(-5deg) scale(1.05); }
-        .login-logo h2 { font-size: 24px; font-weight: 700; color: #111; }
-        .login-logo p { color: #666; font-size: 13px; margin-top: 4px; }
+        .login-logo .logo:hover { transform: rotate(-5deg) scale(1.06); }
+        .login-logo h2 { font-size: 24px; font-weight: 700; color: #FFFFFF; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .login-logo p { color: #94a3b8; font-size: 13px; margin-top: 4px; }
         
         .security-badge-top {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 10px;
-            background: rgba(255, 105, 180, 0.08);
-            border: 1px solid rgba(255, 105, 180, 0.2);
+            padding: 5px 12px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.35);
             border-radius: 20px;
             font-size: 11px;
-            color: #d11270;
-            margin-top: 6px;
+            color: #38bdf8;
+            margin-top: 8px;
             font-weight: 600;
+            letter-spacing: 0.3px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
         }
 
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #222; margin-bottom: 5px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; }
         .form-group input {
             width: 100%; padding: 12px 14px;
-            border: 2px solid #e5e7eb; border-radius: 10px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1.5px solid rgba(148, 163, 184, 0.28);
+            border-radius: 10px;
             font-family: 'Times New Roman', Times, serif; font-size: 15px;
-            transition: all 0.3s ease; outline: none; background: #FFF;
+            color: #ffffff;
+            transition: all 0.3s ease; outline: none;
             box-sizing: border-box;
         }
-        .form-group input:focus { border-color: #FF69B4; box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.12); }
+        .form-group input::placeholder { color: #64748b; }
+        .form-group input:focus {
+            border-color: #00f0ff;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.2), 0 0 20px rgba(0, 240, 255, 0.15);
+        }
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { padding-right: 48px !important; }
         .password-toggle {
             position: absolute; right: 2px; top: 2px; bottom: 2px; width: 44px;
             background: transparent; border: none; border-radius: 8px;
-            color: #666; font-size: 17px; cursor: pointer;
+            color: #94a3b8; font-size: 17px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s ease;
         }
-        .password-toggle:hover { color: #FF69B4; background: rgba(255, 105, 180, 0.08); }
+        .password-toggle:hover { color: #00f0ff; background: rgba(0, 240, 255, 0.1); }
 
         /* Robot Checkbox ('Saya bukan robot') Styles */
         .robot-check-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #f9fafb;
-            border: 1.5px solid #d1d5db;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1.5px solid rgba(148, 163, 184, 0.28);
             border-radius: 10px;
             padding: 10px 14px;
             margin-bottom: 16px;
             user-select: none;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             transition: all 0.25s ease;
         }
         .robot-check-container.error-highlight {
             border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
         }
         .robot-check-container.verified {
             border-color: #10b981;
-            background: #f0fdf4;
+            background: rgba(16, 185, 129, 0.12);
         }
         .robot-check-left {
             display: flex;
@@ -146,9 +157,9 @@
         .robot-checkbox {
             width: 28px;
             height: 28px;
-            border: 2px solid #9ca3af;
+            border: 2px solid #64748b;
             border-radius: 6px;
-            background: #ffffff;
+            background: rgba(30, 41, 59, 0.8);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -158,18 +169,19 @@
             position: relative;
         }
         .robot-checkbox:hover {
-            border-color: #4b5563;
+            border-color: #00f0ff;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
         }
         .robot-checkbox:focus-visible {
-            outline: 2px solid #0064e0;
+            outline: 2px solid #00f0ff;
             outline-offset: 2px;
         }
         .robot-spinner {
             display: none;
             width: 16px;
             height: 16px;
-            border: 2.5px solid #d1d5db;
-            border-top-color: #0064e0;
+            border: 2.5px solid #475569;
+            border-top-color: #00f0ff;
             border-radius: 50%;
             animation: robotSpin 0.7s linear infinite;
         }
@@ -187,15 +199,15 @@
             100% { transform: scale(1); opacity: 1; }
         }
         .robot-checkbox.loading {
-            border-color: #0064e0;
-            background: #ffffff;
+            border-color: #00f0ff;
+            background: rgba(30, 41, 59, 0.9);
         }
         .robot-checkbox.loading .robot-spinner {
             display: block;
         }
         .robot-checkbox.checked {
             border-color: #10b981;
-            background: #ffffff;
+            background: rgba(30, 41, 59, 0.9);
         }
         .robot-checkbox.checked .robot-check-icon {
             display: block;
@@ -203,7 +215,7 @@
         .robot-label {
             font-size: 14px;
             font-weight: 600;
-            color: #1f2937;
+            color: #f1f5f9;
             cursor: pointer;
             margin: 0;
         }
@@ -212,28 +224,29 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            color: #6b7280;
+            color: #94a3b8;
         }
         .robot-brand-icon {
             font-size: 18px;
-            color: #0064e0;
+            color: #00f0ff;
         }
         .robot-brand-text {
             font-size: 9px;
             font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            color: #4b5563;
+            color: #94a3b8;
         }
         .robot-brand-links {
             font-size: 9px;
-            color: #9ca3af;
+            color: #64748b;
         }
         .robot-brand-links a {
-            color: #6b7280;
+            color: #94a3b8;
             text-decoration: none;
         }
         .robot-brand-links a:hover {
+            color: #00f0ff;
             text-decoration: underline;
         }
 
@@ -251,30 +264,30 @@
         .two-factor-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(255, 20, 147, 0.25));
-            border: 2px solid rgba(255, 105, 180, 0.3);
-            color: #FF1493;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.25));
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            color: #00f0ff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 26px;
             margin: 0 auto 12px;
-            box-shadow: 0 0 25px rgba(255, 105, 180, 0.25);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.35);
             animation: pulse2FA 2s infinite ease-in-out;
         }
         @keyframes pulse2FA {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 105, 180, 0.2); }
-            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 105, 180, 0.4); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 240, 255, 0.25); }
+            50% { transform: scale(1.05); box-shadow: 0 0 32px rgba(0, 240, 255, 0.5); }
         }
         .two-factor-header h3 {
             font-size: 20px;
-            color: #111;
+            color: #ffffff;
             margin-bottom: 6px;
         }
         .two-factor-header p {
             font-size: 13px;
-            color: #666;
+            color: #94a3b8;
             line-height: 1.4;
         }
         .otp-inputs {
@@ -289,40 +302,40 @@
             text-align: center;
             font-size: 22px;
             font-weight: 700;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(56, 189, 248, 0.3);
             border-radius: 12px;
-            background: #fff;
+            background: rgba(15, 23, 42, 0.75);
             outline: none;
             transition: all 0.2s ease;
             font-family: monospace;
-            color: #111;
+            color: #00f0ff;
         }
         .otp-digit:focus {
-            border-color: #FF69B4;
-            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.15);
+            border-color: #00f0ff;
+            box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.25), 0 0 15px rgba(0, 240, 255, 0.2);
             transform: translateY(-2px);
         }
 
         /* Notice / Error / Info Messages */
         .login-error {
             display: none; align-items: flex-start; gap: 8px;
-            padding: 12px 14px; background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.3); color: #dc2626;
+            padding: 12px 14px; background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;
             border-radius: 10px; font-size: 13px; font-weight: 500;
             margin-bottom: 14px; animation: errorShake 0.4s ease;
             line-height: 1.4;
         }
         .login-info {
             display: none; align-items: flex-start; gap: 8px;
-            padding: 12px 14px; background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.3); color: #2563eb;
+            padding: 12px 14px; background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8;
             border-radius: 10px; font-size: 13px; font-weight: 500;
             margin-bottom: 14px; line-height: 1.4;
         }
         .login-countdown {
             display: none; align-items: center; gap: 8px;
-            padding: 12px 14px; background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.35); color: #b45309;
+            padding: 12px 14px; background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a;
             border-radius: 10px; font-size: 13px; font-weight: 600;
             margin-bottom: 14px; line-height: 1.4;
         }
@@ -333,8 +346,8 @@
         }
         .login-success {
             display: none; align-items: center; gap: 8px;
-            padding: 12px 14px; background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3); color: #16a34a;
+            padding: 12px 14px; background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4); color: #86efac;
             border-radius: 10px; font-size: 13px; font-weight: 500; margin-bottom: 14px;
         }
 
@@ -347,20 +360,34 @@
             border: none; min-height: 46px;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-            color: #FFFFFF; box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3); width: 100%;
+            background: linear-gradient(135deg, #00f0ff 0%, #0284c7 45%, #FF1493 100%);
+            color: #FFFFFF;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3), 0 0 15px rgba(255, 20, 147, 0.25);
+            width: 100%;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 105, 180, 0.45); }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.45), 0 0 25px rgba(255, 20, 147, 0.35);
+        }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; transform: none !important; }
         
         .btn-secondary-action {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 10px; padding: 12px; background: transparent; color: #555;
-            border: 2px solid #e5e7eb; border-radius: 12px;
+            margin-top: 10px; padding: 12px;
+            background: rgba(15, 23, 42, 0.55);
+            color: #cbd5e1;
+            border: 1.5px solid rgba(148, 163, 184, 0.28);
+            border-radius: 12px;
             font-family: 'Times New Roman', Times, serif; font-size: 13.5px; font-weight: 500;
             text-decoration: none; transition: all 0.3s ease; width: 100%; cursor: pointer;
         }
-        .btn-secondary-action:hover { border-color: #FF69B4; color: #FF1493; background: rgba(255, 105, 180, 0.04); }
+        .btn-secondary-action:hover {
+            border-color: #00f0ff;
+            color: #00f0ff;
+            background: rgba(0, 240, 255, 0.08);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
 
         /* Mobile Adjustments */
         @media (max-width: 480px) {
@@ -375,6 +402,10 @@
     </style>
 </head>
 <body>
+    <!-- Killua Animated Canvas -->
+    <canvas id="killuaCanvas" aria-hidden="true"></canvas>
+    <div class="killua-vignette" aria-hidden="true"></div>
+
     <div class="login-card">
         <div class="login-logo">
             <div class="logo">NF</div>
@@ -926,6 +957,282 @@
                 btnVerify2FA.disabled = checkAndApplyLockout();
             }
         });
+    </script>
+
+    <!-- ================= KILLUA GODSPEED LIGHTNING ANIMATION ENGINE ================= -->
+    <script>
+        (function initKilluaCanvas() {
+            const canvas = document.getElementById('killuaCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            let width = 0;
+            let height = 0;
+            let dpr = 1;
+            let bolts = [];
+            let particles = [];
+            let shockwaves = [];
+            let mouse = { x: -1000, y: -1000, active: false };
+
+            function resize() {
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = Math.floor(width * dpr);
+                canvas.height = Math.floor(height * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            window.addEventListener('resize', resize, { passive: true });
+            resize();
+
+            // Interactivity: pointer & touch support
+            function handlePointer(e) {
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                mouse.x = clientX;
+                mouse.y = clientY;
+                mouse.active = true;
+
+                // Chance to discharge electric spark near touch/pointer
+                if (Math.random() < 0.35) {
+                    createLightningBolt(
+                        mouse.x + (Math.random() - 0.5) * 80,
+                        mouse.y + (Math.random() - 0.5) * 80,
+                        mouse.x + (Math.random() - 0.5) * 200,
+                        mouse.y + (Math.random() - 0.5) * 200,
+                        2,
+                        '#00f0ff'
+                    );
+                }
+            }
+            window.addEventListener('mousemove', handlePointer, { passive: true });
+            window.addEventListener('touchmove', handlePointer, { passive: true });
+            window.addEventListener('mouseleave', () => { mouse.active = false; });
+            window.addEventListener('touchend', () => { mouse.active = false; });
+
+            // Lightning Bolt Generator (Kanmuru / Narukami electric arcs)
+            class LightningSegment {
+                constructor(x1, y1, x2, y2, color, width, alpha) {
+                    this.x1 = x1;
+                    this.y1 = y1;
+                    this.x2 = x2;
+                    this.y2 = y2;
+                    this.color = color;
+                    this.width = width;
+                    this.alpha = alpha;
+                    this.maxAlpha = alpha;
+                    this.decay = 0.04 + Math.random() * 0.05;
+                }
+                update() {
+                    this.alpha -= this.decay;
+                }
+                draw(ctx) {
+                    if (this.alpha <= 0) return;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(this.x1, this.y1);
+                    ctx.lineTo(this.x2, this.y2);
+                    ctx.strokeStyle = this.color;
+                    ctx.globalAlpha = Math.max(0, this.alpha);
+                    ctx.lineWidth = this.width;
+                    ctx.shadowColor = '#00f0ff';
+                    ctx.shadowBlur = 12;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+
+                    // Bright inner core
+                    ctx.beginPath();
+                    ctx.moveTo(this.x1, this.y1);
+                    ctx.lineTo(this.x2, this.y2);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = Math.max(0.8, this.width * 0.35);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            function createLightningBolt(x1, y1, x2, y2, branchDepth = 2, customColor = null) {
+                const dist = Math.hypot(x2 - x1, y2 - y1);
+                const steps = Math.max(3, Math.floor(dist / 22));
+                const colors = ['#00f0ff', '#38bdf8', '#a855f7', '#ffffff'];
+                const color = customColor || colors[Math.floor(Math.random() * colors.length)];
+                
+                let curX = x1;
+                let curY = y1;
+                const dx = (x2 - x1) / steps;
+                const dy = (y2 - y1) / steps;
+
+                for (let i = 1; i <= steps; i++) {
+                    const progress = i / steps;
+                    const jitter = (1 - Math.abs(progress - 0.5) * 1.5) * 35;
+                    const nx = (i === steps) ? x2 : x1 + dx * i + (Math.random() - 0.5) * jitter;
+                    const ny = (i === steps) ? y2 : y1 + dy * i + (Math.random() - 0.5) * jitter;
+                    
+                    bolts.push(new LightningSegment(curX, curY, nx, ny, color, Math.max(1, (1 - progress * 0.5) * 2.8), 0.9 + Math.random() * 0.1));
+
+                    // Random sub-branching
+                    if (branchDepth > 0 && Math.random() < 0.28) {
+                        const bx = nx + (Math.random() - 0.5) * 70;
+                        const by = ny + (Math.random() - 0.5) * 70;
+                        createLightningBolt(nx, ny, bx, by, branchDepth - 1, color);
+                    }
+
+                    curX = nx;
+                    curY = ny;
+                }
+            }
+
+            // Floating Electric Nen Particles (Aura Sparks)
+            const PARTICLE_COUNT = Math.min(45, Math.floor((window.innerWidth * window.innerHeight) / 22000));
+            class NenParticle {
+                constructor() {
+                    this.reset(true);
+                }
+                reset(initial = false) {
+                    this.x = Math.random() * width;
+                    this.y = initial ? Math.random() * height : height + 10;
+                    this.vx = (Math.random() - 0.5) * 1.2;
+                    this.vy = -0.5 - Math.random() * 1.4;
+                    this.size = 1.2 + Math.random() * 2.2;
+                    this.baseAlpha = 0.3 + Math.random() * 0.6;
+                    this.alpha = this.baseAlpha;
+                    this.flickerSpeed = 0.05 + Math.random() * 0.1;
+                    this.flickerOffset = Math.random() * Math.PI * 2;
+                    this.hue = Math.random() < 0.75 ? (185 + Math.random() * 25) : (270 + Math.random() * 20); // Cyan or Violet Nen
+                }
+                update(t) {
+                    this.x += this.vx + Math.sin(t * 0.002 + this.flickerOffset) * 0.4;
+                    this.y += this.vy;
+                    this.alpha = Math.max(0.1, this.baseAlpha + Math.sin(t * this.flickerSpeed + this.flickerOffset) * 0.35);
+
+                    if (this.y < -20 || this.x < -20 || this.x > width + 20) {
+                        this.reset(false);
+                    }
+                }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${this.hue}, 100%, 75%, ${this.alpha})`;
+                    ctx.shadowColor = `hsla(${this.hue}, 100%, 65%, 0.9)`;
+                    ctx.shadowBlur = 10;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new NenParticle());
+            }
+
+            // Shockwave Electric Pulse
+            class ElectricPulse {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.radius = 5;
+                    this.maxRadius = 140 + Math.random() * 120;
+                    this.alpha = 0.7;
+                    this.speed = 3 + Math.random() * 2.5;
+                }
+                update() {
+                    this.radius += this.speed;
+                    this.alpha -= 0.018;
+                }
+                draw(ctx) {
+                    if (this.alpha <= 0) return;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(0, 240, 255, ${Math.max(0, this.alpha * 0.6)})`;
+                    ctx.lineWidth = 2;
+                    ctx.shadowColor = '#00f0ff';
+                    ctx.shadowBlur = 15;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // Timing & Autonomous discharge loop
+            let lastBoltTime = 0;
+            let nextBoltDelay = 400;
+
+            function animate(time) {
+                ctx.clearRect(0, 0, width, height);
+
+                // Update & draw particles
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.update(time);
+                    p.draw(ctx);
+
+                    // Micro-arcs between close Nen particles
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.hypot(dx, dy);
+                        if (dist < 55 && Math.random() < 0.12) {
+                            ctx.save();
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(
+                                (p.x + p2.x) / 2 + (Math.random() - 0.5) * 8,
+                                (p.y + p2.y) / 2 + (Math.random() - 0.5) * 8
+                            );
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+                            ctx.lineWidth = 1;
+                            ctx.shadowColor = '#00f0ff';
+                            ctx.shadowBlur = 6;
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                    }
+                }
+
+                // Random Autonomous Killua Lightning Discharge
+                if (time - lastBoltTime > nextBoltDelay) {
+                    lastBoltTime = time;
+                    nextBoltDelay = 600 + Math.random() * 1200;
+
+                    // Choose discharge origin & target
+                    const startX = Math.random() * width;
+                    const startY = Math.random() < 0.6 ? 0 : Math.random() * height;
+                    const endX = startX + (Math.random() - 0.5) * 500;
+                    const endY = startY + 180 + Math.random() * 320;
+
+                    createLightningBolt(startX, startY, endX, endY, 2);
+
+                    if (Math.random() < 0.4) {
+                        shockwaves.push(new ElectricPulse(endX, endY));
+                    }
+                }
+
+                // Update & draw shockwaves
+                for (let i = shockwaves.length - 1; i >= 0; i--) {
+                    shockwaves[i].update();
+                    shockwaves[i].draw(ctx);
+                    if (shockwaves[i].alpha <= 0 || shockwaves[i].radius >= shockwaves[i].maxRadius) {
+                        shockwaves.splice(i, 1);
+                    }
+                }
+
+                // Update & draw lightning bolts
+                for (let i = bolts.length - 1; i >= 0; i--) {
+                    bolts[i].update();
+                    bolts[i].draw(ctx);
+                    if (bolts[i].alpha <= 0) {
+                        bolts.splice(i, 1);
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        })();
     </script>
 </body>
 </html>
