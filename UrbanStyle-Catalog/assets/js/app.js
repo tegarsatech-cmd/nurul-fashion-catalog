@@ -849,13 +849,6 @@ function setupProductCardClicks(container) {
             openProductImageZoom(src, title);
             return;
         }
-
-        const productImage = event.target.closest('.product-image');
-        if (!productImage) return;
-        const productCard = productImage.closest('[data-product-card-id]');
-        const productId = productCard?.dataset.productCardId;
-        const product = allProductsData.find(p => p.id === productId);
-        if (product) openPreviewModal(product, 'product');
     });
 }
 
