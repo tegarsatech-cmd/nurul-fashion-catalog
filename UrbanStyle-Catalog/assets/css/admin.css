@@ -440,14 +440,15 @@ img {
 .login-logo h2 {
     font-size: 26px;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--primary), #333);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
 }
 
 .login-logo p {
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.95);
     font-size: 14px;
     margin-top: 4px;
 }

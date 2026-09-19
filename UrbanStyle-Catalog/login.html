@@ -99,49 +99,50 @@
         .lamp-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.25));
+            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 25px rgba(255, 255, 255, 0.45));
             transition: filter 0.5s ease;
             will-change: filter;
         }
         body.lamp-active .lamp-svg {
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 32px rgba(251, 191, 36, 0.85));
+            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 35px rgba(251, 191, 36, 0.9));
         }
 
         /* Lampshade Colors - Clear Physical White in Dark, Golden Amber when ON */
         .lamp-shade-path {
-            fill: #FFFFFF;
-            stroke: #E2E8F0;
-            stroke-width: 2.5;
-            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
+            fill: url(#lampShadeOffGrad);
+            stroke: #FFFFFF;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.45));
             transition: fill 0.5s ease, stroke 0.5s ease, filter 0.5s ease;
         }
         body.lamp-active .lamp-shade-path {
             fill: url(#lampShadeGlowGrad);
             stroke: #f59e0b;
-            filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.85));
+            filter: drop-shadow(0 0 35px rgba(251, 191, 36, 0.95));
         }
 
         .lamp-bulb {
-            fill: #F1F5F9;
+            fill: #FFFFFF;
             stroke: #E2E8F0;
-            stroke-width: 1;
+            stroke-width: 1.5;
             transition: fill 0.4s ease, filter 0.4s ease;
         }
         body.lamp-active .lamp-bulb {
-            fill: #FFFFFF;
-            filter: drop-shadow(0 0 20px #fef08a);
+            fill: #FFFBEB;
+            stroke: #FEF08A;
+            filter: drop-shadow(0 0 25px #fef08a) drop-shadow(0 0 45px #fbbf24);
         }
 
         /* Lamp Stand & Base - Solid Crisp White/Silver in dark, Golden Brass when ON */
         .lamp-metal {
-            fill: #FFFFFF;
-            stroke: #CBD5E1;
+            fill: url(#lampMetalOffGrad);
+            stroke: #FFFFFF;
             stroke-width: 1.5;
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
             transition: fill 0.4s ease, stroke 0.4s ease, filter 0.4s ease;
         }
         body.lamp-active .lamp-metal {
-            fill: #78350F;
+            fill: url(#lampMetalOnGrad);
             stroke: #D97706;
             filter: none;
         }
@@ -179,11 +180,11 @@
         }
 
         .pull-chain-beads {
-            width: 3.5px;
+            width: 4px;
             height: 85px;
-            background: repeating-linear-gradient(to bottom, #FFFFFF, #FFFFFF 4px, #CBD5E1 4px, #CBD5E1 7px);
+            background: repeating-linear-gradient(to bottom, #FFFFFF, #FFFFFF 4px, #94A3B8 4px, #94A3B8 7px);
             border-radius: 2px;
-            box-shadow: 0 1px 4px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
             transition: background 0.4s ease;
         }
         body.lamp-active .pull-chain-beads {
@@ -192,17 +193,17 @@
         }
 
         @keyframes cordPulseGlow {
-            0%, 100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.7), inset 0 1px 2px #fff; }
-            50% { box-shadow: 0 0 24px rgba(255, 255, 255, 1), inset 0 1px 2px #fff; }
+            0%, 100% { box-shadow: 0 0 14px rgba(255, 255, 255, 0.85), inset 0 2px 4px #fff; }
+            50% { box-shadow: 0 0 28px rgba(255, 255, 255, 1), inset 0 2px 4px #fff; }
         }
 
         .pull-knob-handle {
-            width: 15px;
-            height: 25px;
+            width: 16px;
+            height: 26px;
             background: #FFFFFF;
-            border-radius: 7px;
+            border-radius: 8px;
             border: 2px solid #E2E8F0;
-            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.7), inset 0 1px 2px #fff;
+            box-shadow: 0 4px 18px rgba(255, 255, 255, 0.85), inset 0 2px 4px #fff;
             margin-top: -2px;
             animation: cordPulseGlow 2.5s ease-in-out infinite;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease, border-color 0.4s ease;
@@ -214,8 +215,8 @@
             animation: none;
         }
         .lamp-pull-string:hover .pull-knob-handle {
-            box-shadow: 0 0 20px rgba(255, 255, 255, 1);
-            transform: scale(1.22);
+            box-shadow: 0 0 24px rgba(255, 255, 255, 1);
+            transform: scale(1.25);
         }
         body.lamp-active .lamp-pull-string:hover .pull-knob-handle {
             box-shadow: 0 0 20px rgba(251, 191, 36, 1);
@@ -268,11 +269,17 @@
             font-size: 26px !important;
             font-weight: 800 !important;
             color: #FFFFFF !important;
-            text-shadow: 0 2px 14px rgba(0,0,0,0.95) !important;
+            -webkit-text-fill-color: #FFFFFF !important;
+            background: none !important;
+            -webkit-background-clip: initial !important;
+            background-clip: initial !important;
+            text-shadow: 0 2px 14px rgba(0,0,0,0.95), 0 0 24px rgba(255,255,255,0.4) !important;
             letter-spacing: 0.5px;
+            margin: 0;
         }
         .login-logo p {
             color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
             font-size: 13.5px !important;
             font-weight: 500;
             margin-top: 4px;
@@ -290,6 +297,7 @@
             border-radius: 20px;
             font-size: 11.5px;
             color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
             margin-top: 8px;
             font-weight: 700;
             letter-spacing: 0.3px;
@@ -306,6 +314,7 @@
             font-size: 14px;
             font-weight: 700;
             color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
             margin-bottom: 6px;
             text-shadow: 0 1px 4px rgba(0,0,0,0.8);
             letter-spacing: 0.3px;
@@ -320,6 +329,7 @@
             font-size: 15.5px;
             font-weight: 600;
             color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
             transition: all 0.3s ease;
             outline: none;
             box-sizing: border-box;
@@ -327,6 +337,7 @@
         }
         .form-group input::placeholder {
             color: rgba(255, 255, 255, 0.6) !important;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.6) !important;
             opacity: 1;
             font-weight: 400;
         }
@@ -687,12 +698,36 @@
                 <!-- Bedside Lamp Vector Graphic -->
                 <svg viewBox="0 0 200 300" class="lamp-svg" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <!-- Warm Light Lampshade Gradient -->
+                        <!-- 3D White Shading for Lampshade in Dark -->
+                        <linearGradient id="lampShadeOffGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#E2E8F0"/>
+                            <stop offset="25%" stop-color="#FFFFFF"/>
+                            <stop offset="70%" stop-color="#FFFFFF"/>
+                            <stop offset="100%" stop-color="#CBD5E1"/>
+                        </linearGradient>
+
+                        <!-- Warm Light Lampshade Gradient when ON -->
                         <linearGradient id="lampShadeGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="#fffbeb"/>
                             <stop offset="35%" stop-color="#fef08a"/>
                             <stop offset="80%" stop-color="#fbbf24"/>
                             <stop offset="100%" stop-color="#d97706"/>
+                        </linearGradient>
+
+                        <!-- Chrome / Polished White Metallic Rod in Dark -->
+                        <linearGradient id="lampMetalOffGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#CBD5E1"/>
+                            <stop offset="35%" stop-color="#FFFFFF"/>
+                            <stop offset="70%" stop-color="#F1F5F9"/>
+                            <stop offset="100%" stop-color="#94A3B8"/>
+                        </linearGradient>
+
+                        <!-- Golden Brass Rod when ON -->
+                        <linearGradient id="lampMetalOnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#78350F"/>
+                            <stop offset="35%" stop-color="#FBBF24"/>
+                            <stop offset="70%" stop-color="#F59E0B"/>
+                            <stop offset="100%" stop-color="#92400E"/>
                         </linearGradient>
                     </defs>
 
@@ -701,21 +736,26 @@
                     <rect x="96" y="24" width="8" height="6" class="lamp-metal" rx="1"/>
 
                     <!-- Lampshade (Tudung Lampu Tidur) -->
-                    <polygon points="65,30 135,30 160,110 40,110" class="lamp-shade-path" rx="6"/>
-                    <ellipse cx="100" cy="110" rx="60" ry="12" class="lamp-shade-path"/>
+                    <!-- Top rim -->
+                    <ellipse cx="100" cy="30" rx="36" ry="6" class="lamp-shade-path"/>
+                    <!-- Main Cone -->
+                    <polygon points="64,30 136,30 162,112 38,112" class="lamp-shade-path"/>
+                    <!-- Bottom rim ellipse -->
+                    <ellipse cx="100" cy="112" rx="62" ry="13" class="lamp-shade-path"/>
 
-                    <!-- Lamp Bulb (Visible from bottom edge) -->
-                    <circle cx="100" cy="112" r="14" class="lamp-bulb"/>
+                    <!-- Lamp Bulb (Visible under shade) -->
+                    <circle cx="100" cy="115" r="14" class="lamp-bulb"/>
 
                     <!-- Lamp Rod / Stand -->
-                    <rect x="96" y="118" width="8" height="135" class="lamp-metal" rx="2"/>
-                    <!-- Decorative Ring on Stem -->
-                    <rect x="93" y="160" width="14" height="6" class="lamp-metal" rx="2"/>
+                    <rect x="96" y="122" width="8" height="130" class="lamp-metal" rx="2"/>
+                    <!-- Decorative Ring / Collar on Stem -->
+                    <rect x="92" y="160" width="16" height="6" class="lamp-metal" rx="2"/>
+                    <rect x="94" y="244" width="12" height="5" class="lamp-metal" rx="1"/>
 
-                    <!-- Solid Base -->
-                    <ellipse cx="100" cy="255" rx="36" ry="8" class="lamp-metal"/>
-                    <path d="M 64 255 Q 100 248 136 255 L 140 265 Q 100 272 60 265 Z" class="lamp-metal"/>
-                    <ellipse cx="100" cy="265" rx="40" ry="9" class="lamp-metal"/>
+                    <!-- Solid Stepped Pedestal Base -->
+                    <ellipse cx="100" cy="252" rx="34" ry="7" class="lamp-metal"/>
+                    <path d="M 64 252 Q 100 244 136 252 L 142 266 Q 100 274 58 266 Z" class="lamp-metal"/>
+                    <ellipse cx="100" cy="266" rx="44" ry="9" class="lamp-metal"/>
                 </svg>
 
                 <!-- Pull String Cord (Tali Saklar Lampu) -->
