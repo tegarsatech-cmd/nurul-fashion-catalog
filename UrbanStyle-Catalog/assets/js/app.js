@@ -614,7 +614,7 @@ function createProductCard(product, tier = null) {
         const title = product.judul_postingan || product.nama || 'Produk';
         const firstItem = items.find(item => item.nama) || {};
         const sizes = items.length > 0 ? [] : (product.ukuran ? product.ukuran.split(',').map(s => s.trim()) : []);
-        const colors = (product.warna || '').split(',').map(c => c.trim()).filter(Boolean);
+        const colors = extractProductColors(product);
         const firstStock = firstItem.stok || product.stok || 'Tersedia';
         const stockClass = firstStock === 'Tersedia' ? 'tersedia' : 'habis';
         const itemOptions = items.filter(item => item.nama || item.harga !== '');
@@ -665,6 +665,35 @@ function normalizeProductItems(product) {
         })).filter(item => item.nama || item.harga !== '');
     }
     return product?.nama ? [{ nama: product.nama, harga: product.harga ?? '', ukuran: product.ukuran || '', warna: product.warna || '', stok: product.stok || 'Tersedia' }] : [];
+}
+
+function extractProductColors(product) {
+    const rawList = [];
+    // 1. Ambil warna dari input header/postingan
+    if (product?.warna) {
+        String(product.warna).split(/[,;/|\n]+/).forEach(w => rawList.push(w.trim()));
+    }
+    // 2. Ambil warna dari setiap varian/barang yang diinput di portal admin
+    const items = normalizeProductItems(product);
+    items.forEach(item => {
+        if (item?.warna) {
+            String(item.warna).split(/[,;/|\n]+/).forEach(w => rawList.push(w.trim()));
+        }
+    });
+
+    // 3. Normalisasi, bersihkan, dan deduplikasi
+    const uniqueColors = new Map();
+    rawList.filter(Boolean).forEach(color => {
+        const trimmed = color.trim();
+        if (!trimmed) return;
+        const key = trimmed.toLowerCase();
+        if (!uniqueColors.has(key)) {
+            const formatted = trimmed.split(/\s+/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            uniqueColors.set(key, formatted);
+        }
+    });
+
+    return Array.from(uniqueColors.values());
 }
 
 function getFeaturedProducts(products) {
@@ -755,10 +784,30 @@ function getFeaturedProducts(products) {
         container.addEventListener('click', event => {
             const colorButton = event.target.closest('.color-dot[data-color-name]');
             if (!colorButton) return;
+            const card = colorButton.closest('.product-card');
             const colors = colorButton.closest('[data-product-colors]')?.querySelectorAll('.color-dot');
             colors?.forEach(dot => dot.classList.remove('active'));
             colorButton.classList.add('active');
-            showToast('WARNA: ' + colorButton.dataset.colorName, 'info');
+
+            // Sinkronkan pilihan varian dengan warna yang diklik
+            const clickedColor = (colorButton.dataset.colorName || '').toLowerCase().trim();
+            const select = card?.querySelector('.product-item-select');
+            if (select && card) {
+                const product = allProductsData.find(p => p.id === card.dataset.productCardId);
+                if (product) {
+                    const items = normalizeProductItems(product);
+                    const matchIndex = items.findIndex(item => {
+                        const itemCol = (item.warna || '').toLowerCase();
+                        return itemCol.includes(clickedColor) || clickedColor.includes(itemCol);
+                    });
+                    if (matchIndex !== -1 && select.value !== String(matchIndex)) {
+                        select.value = String(matchIndex);
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }
+            }
+
+            showToast('Warna: ' + colorButton.dataset.colorName, 'info');
         });
         container.addEventListener('click', event => {
             const cartButton = event.target.closest('.btn-cart[data-cart-product-id]');
@@ -814,33 +863,90 @@ function getGallerySkeleton(count) {
 function getColorHex(color) {
     const key = String(color || '').trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
     const colorMap = {
-        'merah': '#ef4444', 'merah marun': '#800000', 'marun': '#800000', 'maroon': '#800000', 'merah bata': '#b55239',
+        // Merah, Marun, Bata
+        'merah': '#ef4444', 'red': '#ef4444', 'merah marun': '#800000', 'marun': '#800000', 'maroon': '#800000',
+        'merah bata': '#b55239', 'bata': '#b55239', 'terracotta': '#c65d42', 'terakota': '#c65d42', 'crimson': '#dc143c',
+        'merah cabe': '#dc2626', 'cabe': '#dc2626',
+
+        // Pink, Salem, Fanta
         'merah muda': '#f472b6', 'pink': '#ec4899', 'dusty pink': '#d8a0a6', 'baby pink': '#f8c8dc', 'rose': '#e11d48',
-        'salem': '#f3a683', 'peach': '#ffcba4', 'coral': '#ff7f50', 'salmon': '#fa8072', 'magenta': '#d946ef', 'fuchsia': '#c026d3',
-        'ungu': '#7e22ce', 'ungu muda': '#c8a2c8', 'lilac': '#c8a2c8', 'lavender': '#b57edc', 'dusty purple': '#93708c', 'violet': '#8b5cf6', 'mauve': '#e0b0ff', 'plum': '#8e4585',
-        'biru': '#2563eb', 'biru muda': '#60a5fa', 'navy': '#000080', 'dark navy': '#001f3f', 'baby blue': '#89cff0', 'sky blue': '#38bdf8', 'powder blue': '#b0e0e6', 'ice blue': '#d9f3ff',
-        'denim': '#3f5f8f', 'royal blue': '#4169e1', 'dusty blue': '#7b9bb2', 'tosca': '#2dd4bf', 'turquoise': '#14b8a6', 'teal': '#0f766e',
-        'mint': '#98ff98', 'hijau': '#22c55e', 'hijau army': '#4b5320', 'army': '#4b5320', 'olive': '#808000',
-        'sage': '#9caf88', 'emerald': '#059669', 'lime': '#84cc16', 'hijau botol': '#006a4e',
-        'kuning': '#facc15', 'mustard': '#d4a017', 'kuning lemon': '#fff44f', 'lemon': '#fff44f', 'orange': '#f97316',
-        'terracotta': '#c65d42', 'coklat': '#92400e', 'mocca': '#967969', 'coklat susu': '#a67b5b', 'coklat tua': '#4a2c2a', 'khaki': '#c3b091',
-        'caramel': '#c68e53', 'tan': '#d2b48c', 'beige': '#f5f5dc', 'cream': '#fffdd0', 'ivory': '#fffff0',
-        'broken white': '#f8f7f2', 'putih': '#ffffff', 'abu-abu': '#808080', 'abu': '#808080', 'abu-abu muda': '#d3d3d3',
-        'abu-abu tua': '#555555', 'silver': '#c0c0c0', 'charcoal': '#36454f', 'hitam': '#000000'
+        'fanta': '#ec008c', 'merah fanta': '#ec008c', 'pink fanta': '#ec008c',
+        'salem': '#f3a683', 'peach': '#ffcba4', 'coral': '#ff7f50', 'salmon': '#fa8072', 'magenta': '#d946ef',
+        'fuchsia': '#c026d3', 'fuksin': '#c026d3', 'fuschia': '#c026d3',
+
+        // Ungu, Lilac, Lavender
+        'ungu': '#7e22ce', 'purple': '#7e22ce', 'ungu muda': '#c8a2c8', 'lilac': '#c8a2c8', 'lavender': '#b57edc',
+        'dusty purple': '#93708c', 'violet': '#8b5cf6', 'mauve': '#e0b0ff', 'plum': '#8e4585', 'taro': '#a484a4',
+
+        // Biru, Navy, Denim
+        'biru': '#2563eb', 'blue': '#2563eb', 'biru muda': '#60a5fa', 'light blue': '#60a5fa',
+        'navy': '#000080', 'nevy': '#000080', 'dark navy': '#001f3f', 'navy blue': '#000080',
+        'baby blue': '#89cff0', 'sky blue': '#38bdf8', 'biru langit': '#38bdf8',
+        'powder blue': '#b0e0e6', 'ice blue': '#d9f3ff', 'biru laut': '#0284c7', 'biru tua': '#1e3a8a', 'dark blue': '#1e3a8a',
+        'denim': '#3f5f8f', 'jeans': '#3f5f8f', 'royal blue': '#4169e1', 'dusty blue': '#7b9bb2', 'biru bca': '#00529c',
+        'wardah': '#73b9b4', 'biru wardah': '#73b9b4',
+
+        // Tosca, Mint, Turquoise
+        'tosca': '#2dd4bf', 'toska': '#2dd4bf', 'turquoise': '#14b8a6', 'teal': '#0f766e', 'mint': '#98ff98',
+
+        // Hijau & Varian
+        'hijau': '#22c55e', 'green': '#22c55e', 'hijau army': '#4b5320', 'army': '#4b5320', 'olive': '#808000',
+        'sage': '#9caf88', 'sage green': '#9caf88', 'hijau sage': '#9caf88',
+        'emerald': '#059669', 'lime': '#84cc16', 'hijau botol': '#006a4e', 'lumut': '#355e3b', 'hijau lumut': '#355e3b',
+        'hijau tua': '#166534', 'dark green': '#166534', 'hijau muda': '#86efac', 'matcha': '#94a378',
+
+        // Kuning & Orange
+        'kuning': '#facc15', 'yellow': '#facc15', 'mustard': '#d4a017', 'kunyit': '#d4a017', 'kubus': '#c59b27',
+        'kuning lemon': '#fff44f', 'lemon': '#fff44f',
+        'orange': '#f97316', 'oren': '#f97316', 'oranye': '#f97316', 'jingga': '#f97316',
+
+        // Coklat & Earth Tones
+        'coklat': '#92400e', 'cokelat': '#92400e', 'brown': '#92400e', 'mocca': '#967969', 'moka': '#967969',
+        'coklat susu': '#a67b5b', 'coksu': '#a67b5b', 'milo': '#a28669', 'coklat tua': '#4a2c2a', 'dark brown': '#4a2c2a',
+        'khaki': '#c3b091', 'kaki': '#c3b091', 'caramel': '#c68e53', 'karamel': '#c68e53', 'tan': '#d2b48c',
+        'beige': '#f5f5dc', 'cream': '#fffdd0', 'krem': '#fffdd0', 'ivory': '#fffff0', 'nude': '#e3bc9a', 'taupe': '#8b8589',
+        'gold': '#ffd700', 'emas': '#ffd700',
+
+        // Hitam, Putih, Abu
+        'putih': '#ffffff', 'white': '#ffffff', 'broken white': '#f8f7f2', 'bw': '#f8f7f2', 'putih tulang': '#f8f7f2', 'tulang': '#f8f7f2',
+        'hitam': '#000000', 'black': '#000000',
+        'abu-abu': '#808080', 'abu': '#808080', 'abu abu': '#808080', 'grey': '#808080', 'gray': '#808080',
+        'abu-abu muda': '#d3d3d3', 'abu muda': '#d3d3d3', 'light grey': '#d3d3d3',
+        'abu-abu tua': '#555555', 'abu tua': '#555555', 'dark grey': '#555555', 'silver': '#c0c0c0', 'charcoal': '#36454f'
     };
+
     if (colorMap[key]) return colorMap[key];
+
+    // Jika warna mengandung kata kunci yang dikenal (contoh: "dusty pink tua" -> dusty pink)
+    for (const [name, hex] of Object.entries(colorMap)) {
+        if (key.includes(name)) return hex;
+    }
+
     const cssColor = String(color || '').trim();
     if (/^#([\da-f]{3}|[\da-f]{6})$/i.test(cssColor) || /^rgba?\(/i.test(cssColor) || /^hsla?\(/i.test(cssColor)) return cssColor;
     const hue = Array.from(key).reduce((sum, character) => sum + character.charCodeAt(0), 0) % 360;
-    return 'hsl(' + hue + ' 42% 62%)';
+    return 'hsl(' + hue + ' 48% 60%)';
 }
 
 function getColorVisual(color) {
     const name = String(color || '').trim();
     const key = name.toLowerCase();
-    if (/rainbow|motif|mix color|multi/i.test(key)) {
+
+    // Cek pattern / rainbow / kombinasi
+    if (/rainbow|pelangi|motif|mix|multi|kombinasi|campur|corak|bunga|pattern|abstrak/i.test(key)) {
         return 'linear-gradient(135deg, #ef4444 0%, #facc15 25%, #22c55e 50%, #38bdf8 75%, #a855f7 100%)';
     }
+
+    // Cek kombinasi dua warna (misal: "hitam putih", "merah hitam", "biru kuning")
+    const parts = key.split(/[\s/&-]+/);
+    if (parts.length === 2) {
+        const hex1 = getColorHex(parts[0]);
+        const hex2 = getColorHex(parts[1]);
+        if (hex1 && hex2 && hex1 !== hex2 && !hex1.startsWith('hsl(') && !hex2.startsWith('hsl(')) {
+            return `linear-gradient(135deg, ${hex1} 50%, ${hex2} 50%)`;
+        }
+    }
+
     return getColorHex(name);
 }
 

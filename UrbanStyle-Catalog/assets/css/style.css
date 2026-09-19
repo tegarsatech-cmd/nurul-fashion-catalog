@@ -3520,7 +3520,7 @@ img {
     }
 }
 
-/* Tablet (768px - 991px): 2 Kolom Produk */
+/* Tablet (768px - 991px): 2 Kolom Produk - Format Vertikal Lebih Panjang & Proporsional */
 @media (min-width: 768px) and (max-width: 991px) {
     .produk-unggulan .container,
     .katalog .container,
@@ -3544,10 +3544,20 @@ img {
         box-sizing: border-box !important;
     }
 
+    .product-card {
+        border-radius: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 530px !important; /* Dipanjangkan untuk tablet */
+    }
+
     .product-card .product-image {
-        aspect-ratio: 1 / 1 !important;
+        aspect-ratio: 3 / 3.5 !important;
         height: auto !important;
-        background: #0f172a !important;
+        min-height: 310px !important;
+        max-height: 380px !important; /* Gambar dipanjangkan di tablet */
+        background: #f8fafc !important;
+        border-radius: 16px 16px 0 0 !important;
     }
 
     .product-card .product-image img {
@@ -3558,13 +3568,45 @@ img {
         image-rendering: -webkit-optimize-contrast !important;
     }
 
+    .product-card .product-details {
+        padding: 14px 16px 16px !important;
+        gap: 6px !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .product-card .product-name {
+        font-size: 15.5px !important;
+        min-height: 40px !important;
+        line-height: 1.35 !important;
+    }
+
+    .product-card .product-price {
+        font-size: 18px !important;
+        margin: 2px 0 !important;
+    }
+
+    .product-card .btn-whatsapp {
+        min-height: 42px !important;
+        height: 42px !important;
+        font-size: 13.5px !important;
+    }
+
+    .product-card .btn-cart {
+        width: 42px !important;
+        min-width: 42px !important;
+        height: 42px !important;
+        font-size: 15px !important;
+    }
+
     .gallery-grid {
         grid-template-columns: repeat(3, 1fr) !important;
         gap: 14px !important;
     }
 }
 
-/* --- TAMPILAN MOBILE KHUSUS (Smartphones <= 767px): 1 KOLOM PENUH MEMENUHI LAYAR --- */
+/* --- TAMPILAN MOBILE KHUSUS (Smartphones <= 767px): 1 KOLOM PENUH LEBIH PENDEK & RINGKAS --- */
 @media (max-width: 767px) {
     .container,
     .produk-unggulan .container,
@@ -3582,7 +3624,7 @@ img {
     #allProducts {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 18px !important;
+        gap: 16px !important;
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
@@ -3649,11 +3691,11 @@ img {
     #allProducts {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 18px !important;
+        gap: 16px !important;
         width: 100% !important;
     }
 
-    /* Kartu produk 1 kolom penuh di mobile - Ukuran Ramping & Proporsional */
+    /* Kartu produk 1 kolom di mobile - Dikecilkan panjangnya agar lebih ringkas & pas di layar HP */
     .product-card {
         width: 100% !important;
         border-radius: 14px !important;
@@ -3670,7 +3712,7 @@ img {
         background: var(--meta-surface-soft) !important;
         aspect-ratio: 1 / 1 !important;
         height: auto !important;
-        max-height: 330px !important;
+        max-height: 250px !important; /* Dikecilkan dari 330px menjadi 250px agar tidak terlalu panjang */
         border-top-left-radius: 13px !important;
         border-top-right-radius: 13px !important;
     }
@@ -3685,12 +3727,12 @@ img {
     }
 
     .product-card .product-details {
-        padding: 13px 14px 15px !important;
-        gap: 6px !important;
+        padding: 10px 12px 12px !important; /* Lebih ramping */
+        gap: 4px !important;
     }
 
     .product-card .product-category {
-        font-size: 10.5px !important;
+        font-size: 10px !important;
         letter-spacing: 0.3px;
         color: #71717a !important;
         margin-bottom: 1px !important;
@@ -3698,9 +3740,9 @@ img {
     }
 
     .product-card .product-name {
-        font-size: 15px !important;
+        font-size: 14px !important;
         font-weight: 600 !important;
-        line-height: 1.35 !important;
+        line-height: 1.25 !important;
         min-height: 0 !important;
         -webkit-line-clamp: 2 !important;
         line-clamp: 2 !important;
@@ -3708,76 +3750,77 @@ img {
     }
 
     .product-card .product-price {
-        font-size: 17px !important;
+        font-size: 16px !important;
         font-weight: 700 !important;
-        margin: 2px 0 !important;
+        margin: 1px 0 !important;
         color: #FF1493 !important;
     }
 
     .product-card .product-stock {
-        font-size: 10.5px !important;
-        padding: 3px 10px !important;
+        font-size: 10px !important;
+        padding: 2px 8px !important;
         border-radius: 50px !important;
     }
 
     /* Pilihan Varian Mobile */
     .product-item-select-label {
-        font-size: 11px !important;
+        font-size: 10.5px !important;
+        margin-bottom: 1px !important;
     }
 
     .product-item-select {
-        min-height: 38px !important;
-        font-size: 12.5px !important;
-        padding: 6px 30px 6px 10px !important;
-        border-radius: 8px !important;
+        min-height: 32px !important;
+        font-size: 11.5px !important;
+        padding: 3px 26px 3px 8px !important;
+        border-radius: 7px !important;
     }
 
     /* Metadata chips mobile: 3 kolom bersih sejajar */
     .product-selected-meta {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 6px !important;
-        margin: 6px 0 !important;
+        gap: 4px !important;
+        margin: 4px 0 !important;
     }
 
     .product-selected-meta span {
         display: flex !important;
         flex-direction: column !important;
-        padding: 6px 8px !important;
-        font-size: 11px !important;
-        border-radius: 6px !important;
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        border-radius: 5px !important;
         text-align: center !important;
     }
 
     .product-selected-meta strong {
-        font-size: 10px !important;
+        font-size: 9px !important;
     }
 
     /* Tombol Aksi Mobile */
     .product-card .product-actions {
-        padding-top: 8px !important;
+        padding-top: 5px !important;
         width: 100% !important;
     }
 
     .product-card-buttons {
         display: flex !important;
-        gap: 8px !important;
+        gap: 6px !important;
         width: 100% !important;
     }
 
     .product-card .btn-cart {
-        width: 44px !important;
-        min-width: 44px !important;
-        height: 44px !important;
-        font-size: 16px !important;
+        width: 38px !important;
+        min-width: 38px !important;
+        height: 38px !important;
+        font-size: 14px !important;
         border-radius: 50px !important;
     }
 
     .product-card .btn-whatsapp {
         flex: 1 1 0 !important;
-        min-height: 44px !important;
-        height: 44px !important;
-        font-size: 13.5px !important;
+        min-height: 38px !important;
+        height: 38px !important;
+        font-size: 12.5px !important;
         font-weight: 700 !important;
         border-radius: 50px !important;
         white-space: nowrap !important;
