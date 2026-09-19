@@ -627,10 +627,9 @@ function createProductCard(product, tier = null) {
             : '';
         const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
         return '<div class="product-card" data-product-card-id="' + product.id + '">' +
-            '<div class="product-image">' +
+            '<div class="product-image product-image-zoomable" data-zoom-src="' + imageUrl.replace(/"/g, '&quot;') + '" data-zoom-title="' + title.replace(/"/g, '&quot;') + '" role="button" tabindex="0" title="Tap gambar untuk memperbesar" aria-label="Tap gambar untuk melihat foto ' + title.replace(/"/g, '&quot;') + ' layar penuh">' +
             '<img src="' + imageUrl + '" alt="" class="product-image-bg" aria-hidden="true" loading="lazy">' +
             '<img src="' + imageUrl + '" alt="' + title + '" class="product-image-main" loading="lazy">' +
-            '<button type="button" class="btn-product-zoom" data-zoom-src="' + imageUrl.replace(/"/g, '&quot;') + '" data-zoom-title="' + title.replace(/"/g, '&quot;') + '" aria-label="Lihat foto produk layar penuh dan perbesar (zoom)"><i class="fas fa-search-plus" aria-hidden="true"></i></button>' +
             tierBadge +
             (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
             '</div>' +
@@ -973,14 +972,20 @@ function setupProductCardClicks(container) {
     if (!container) return;
     setupProductWhatsAppInteractions(container);
     container.addEventListener('click', (event) => {
-        const zoomBtn = event.target.closest('.btn-product-zoom');
-        if (zoomBtn) {
+        const zoomArea = event.target.closest('.product-image-zoomable');
+        if (zoomArea) {
             event.preventDefault();
             event.stopPropagation();
-            const src = zoomBtn.dataset.zoomSrc;
-            const title = zoomBtn.dataset.zoomTitle || 'Foto Produk';
+            const src = zoomArea.dataset.zoomSrc;
+            const title = zoomArea.dataset.zoomTitle || 'Foto Produk';
             openProductImageZoom(src, title);
             return;
+        }
+    });
+    container.addEventListener('keydown', (event) => {
+        if ((event.key === 'Enter' || event.key === ' ') && event.target.classList?.contains('product-image-zoomable')) {
+            event.preventDefault();
+            openProductImageZoom(event.target.dataset.zoomSrc, event.target.dataset.zoomTitle || 'Foto Produk');
         }
     });
 }
