@@ -659,6 +659,10 @@ body.no-scroll {
     -webkit-backdrop-filter: blur(10px);
 }
 
+.hero-badge i {
+    color: #38bdf8 !important;
+}
+
 .hero-content h1 {
     font-size: 38px;
     font-weight: 500;
@@ -1463,20 +1467,21 @@ a[href="#kontak"] i.fa-phone-alt {
     justify-content: center;
 }
 
+/* Social Links (Kontak) dengan Warna Resmi */
 .social-link {
     width: 44px;
     height: 44px;
     min-width: 44px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--meta-surface-soft);
-    color: var(--meta-ink-deep);
+    background: #ffffff;
     border: 1px solid var(--meta-hairline-soft);
     border-radius: var(--meta-rounded-circle);
     font-size: 18px;
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .social-link i.fa-facebook,
@@ -1485,22 +1490,55 @@ a[href="#kontak"] i.fa-phone-alt {
     color: #1877F2 !important;
 }
 
+.social-link[href*="facebook"]:hover,
+#socialFacebook:hover {
+    background: #1877F2 !important;
+    border-color: #1877F2 !important;
+    box-shadow: 0 4px 12px rgba(24, 119, 242, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.social-link[href*="facebook"]:hover i,
+#socialFacebook:hover i {
+    color: #ffffff !important;
+}
+
 .social-link i.fa-instagram,
 .social-link[href*="instagram"] i,
 #socialInstagram i {
-    color: #E1306C !important;
+    color: #E4405F !important;
+}
+
+.social-link[href*="instagram"]:hover,
+#socialInstagram:hover {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important;
+    border-color: #d6249f !important;
+    box-shadow: 0 4px 12px rgba(228, 64, 95, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.social-link[href*="instagram"]:hover i,
+#socialInstagram:hover i {
+    color: #ffffff !important;
 }
 
 .social-link i.fa-tiktok,
 .social-link[href*="tiktok"] i,
 #socialTiktok i {
-    color: #111111 !important;
+    color: #000000 !important;
 }
 
-.social-link:hover {
-    background: var(--meta-ink-deep);
-    color: #ffffff;
-    border-color: var(--meta-ink-deep);
+.social-link[href*="tiktok"]:hover,
+#socialTiktok:hover {
+    background: #000000 !important;
+    border-color: #000000 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.social-link[href*="tiktok"]:hover i,
+#socialTiktok:hover i {
+    color: #ffffff !important;
 }
 
 .kontak-map {
@@ -1666,23 +1704,73 @@ a[href="#kontak"] i.fa-phone-alt {
 .social-icon {
     width: 40px;
     height: 40px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--meta-surface-soft);
-    color: var(--meta-ink-deep);
+    background: #ffffff;
     border: 1px solid var(--meta-hairline-soft);
     border-radius: var(--meta-rounded-circle);
     font-size: 16px;
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-.social-icon:hover {
-    background: var(--meta-ink-deep);
-    color: #ffffff;
-    border-color: var(--meta-ink-deep);
-    transform: none;
+.social-icon i.fa-facebook,
+.social-icon[href*="facebook"] i,
+#footerFacebook i {
+    color: #1877F2 !important;
+}
+
+.social-icon[href*="facebook"]:hover,
+#footerFacebook:hover {
+    background: #1877F2 !important;
+    border-color: #1877F2 !important;
+    box-shadow: 0 4px 12px rgba(24, 119, 242, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.social-icon[href*="facebook"]:hover i,
+#footerFacebook:hover i {
+    color: #ffffff !important;
+}
+
+.social-icon i.fa-instagram,
+.social-icon[href*="instagram"] i,
+#footerInstagram i {
+    color: #E4405F !important;
+}
+
+.social-icon[href*="instagram"]:hover,
+#footerInstagram:hover {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important;
+    border-color: #d6249f !important;
+    box-shadow: 0 4px 12px rgba(228, 64, 95, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.social-icon[href*="instagram"]:hover i,
+#footerInstagram:hover i {
+    color: #ffffff !important;
+}
+
+.social-icon i.fa-tiktok,
+.social-icon[href*="tiktok"] i,
+#footerTiktok i {
+    color: #000000 !important;
+}
+
+.social-icon[href*="tiktok"]:hover,
+#footerTiktok:hover {
+    background: #000000 !important;
+    border-color: #000000 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+.social-icon[href*="tiktok"]:hover i,
+#footerTiktok:hover i {
+    color: #ffffff !important;
 }
 
 .footer-bottom {
@@ -3305,23 +3393,23 @@ img {
         font-size: 11px !important;
     }
 
-    /* 1 Kolom Penuh: Setiap postingan pakaian memenuhi lebar layar HP */
+    /* 1 Kolom Penuh: Setiap postingan pakaian memenuhi lebar layar HP secara proporsional */
     .product-grid,
     #featuredProducts,
     #allProducts {
         display: grid !important;
         grid-template-columns: 1fr !important;
-        gap: 24px !important;
+        gap: 18px !important;
         width: 100% !important;
     }
 
-    /* Kartu produk 1 kolom penuh di mobile */
+    /* Kartu produk 1 kolom penuh di mobile - Ukuran Ramping & Proporsional */
     .product-card {
         width: 100% !important;
-        border-radius: 20px !important;
-        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        border-radius: 14px !important;
+        border: 1px solid rgba(0, 0, 0, 0.07) !important;
         background: #ffffff !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
         overflow: hidden !important;
     }
 
@@ -3330,11 +3418,11 @@ img {
         position: relative !important;
         overflow: hidden !important;
         background: var(--meta-surface-soft) !important;
-        aspect-ratio: 4 / 5 !important;
+        aspect-ratio: 1 / 1 !important;
         height: auto !important;
-        max-height: 520px !important;
-        border-top-left-radius: 19px !important;
-        border-top-right-radius: 19px !important;
+        max-height: 330px !important;
+        border-top-left-radius: 13px !important;
+        border-top-right-radius: 13px !important;
     }
 
     .product-card .product-image img {
@@ -3347,33 +3435,38 @@ img {
     }
 
     .product-card .product-details {
-        padding: 18px 16px !important;
-        gap: 10px !important;
+        padding: 13px 14px 15px !important;
+        gap: 6px !important;
     }
 
     .product-card .product-category {
-        font-size: 11px !important;
+        font-size: 10.5px !important;
         letter-spacing: 0.3px;
+        color: #71717a !important;
+        margin-bottom: 1px !important;
+        font-weight: 500 !important;
     }
 
     .product-card .product-name {
-        font-size: 17px !important;
+        font-size: 15px !important;
         font-weight: 600 !important;
         line-height: 1.35 !important;
         min-height: 0 !important;
         -webkit-line-clamp: 2 !important;
         line-clamp: 2 !important;
+        margin: 0 !important;
     }
 
     .product-card .product-price {
-        font-size: 20px !important;
+        font-size: 17px !important;
         font-weight: 700 !important;
         margin: 2px 0 !important;
+        color: #FF1493 !important;
     }
 
     .product-card .product-stock {
-        font-size: 11px !important;
-        padding: 4px 12px !important;
+        font-size: 10.5px !important;
+        padding: 3px 10px !important;
         border-radius: 50px !important;
     }
 
