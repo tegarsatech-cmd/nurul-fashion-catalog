@@ -889,7 +889,7 @@ a[href="#kontak"] i.fa-phone-alt {
     position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: #0f172a;
+    background: #0b0f19;
     width: 100%;
     flex-shrink: 0;
     border-radius: 14px 14px 0 0;
@@ -898,17 +898,40 @@ a[href="#kontak"] i.fa-phone-alt {
     justify-content: center;
 }
 
-.product-card .product-image img {
+/* 1. Background Ambient Layer: Fills the entire box seamlessly with matching blur */
+.product-card .product-image .product-image-bg {
+    position: absolute !important;
+    inset: -12% !important;
+    width: 124% !important;
+    height: 124% !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    filter: blur(22px) brightness(0.65) saturate(1.25);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 1;
+    transform: none !important;
+}
+
+/* 2. Main Foreground Image: 100% Complete product visible, centered, clear, no awkward cuts */
+.product-card .product-image .product-image-main,
+.product-card .product-image img:not(.product-image-bg) {
+    position: relative;
+    z-index: 2;
     width: 100%;
     height: 100%;
-    object-fit: cover !important;
-    object-position: center 15% !important;
-    position: absolute;
-    inset: 0;
+    object-fit: contain !important;
+    object-position: center center !important;
     padding: 0 !important;
     box-sizing: border-box;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45));
     image-rendering: -webkit-optimize-contrast;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-image .product-image-main,
+.product-card:hover .product-image img:not(.product-image-bg) {
+    transform: scale(1.04);
 }
 
 .btn-product-zoom {

@@ -628,7 +628,8 @@ function createProductCard(product, tier = null) {
         const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
         return '<div class="product-card" data-aos="fade-up" data-product-card-id="' + product.id + '">' +
             '<div class="product-image">' +
-            '<img src="' + imageUrl + '" alt="' + title + '" loading="lazy">' +
+            '<img src="' + imageUrl + '" alt="" class="product-image-bg" aria-hidden="true" loading="lazy">' +
+            '<img src="' + imageUrl + '" alt="' + title + '" class="product-image-main" loading="lazy">' +
             '<button type="button" class="btn-product-zoom" data-zoom-src="' + imageUrl.replace(/"/g, '&quot;') + '" data-zoom-title="' + title.replace(/"/g, '&quot;') + '" aria-label="Lihat foto produk layar penuh dan perbesar (zoom)"><i class="fas fa-search-plus" aria-hidden="true"></i></button>' +
             tierBadge +
             (sizes.length > 0 ? '<div class="product-sizes">' + sizes.map(s => '<span>' + s + '</span>').join('') + '</div>' : '') +
