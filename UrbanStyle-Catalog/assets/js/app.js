@@ -643,7 +643,9 @@ function createProductCard(product, tier = null) {
             '<div class="product-actions">' +
             '<div class="product-whatsapp-group">' + itemSelect +
             '<div class="product-selected-meta" aria-live="polite"><span><strong>Ukuran</strong><em>' + (firstItem.ukuran || '-') + '</em></span><span><strong>Warna</strong><em>' + (firstItem.warna || '-') + '</em></span><span><strong>Stok</strong><em>' + (firstItem.stok || 'Tersedia') + '</em></span></div>' +
-            '<div class="product-card-buttons"><button type="button" class="btn-cart" data-cart-product-id="' + product.id + '" data-cart-item-index="0" aria-label="Tambah ke keranjang">🛒</button><a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div></div>' +
+            '<div class="product-card-buttons"><button type="button" class="btn-cart" data-cart-product-id="' + product.id + '" data-cart-item-index="0" aria-label="Tambah ke keranjang">🛒</button><a href="' + createWhatsAppUrl(getWhatsAppMessage(product, 0)) + '" target="_blank" class="btn-whatsapp' + (firstItem.stok === 'Habis' ? ' disabled' : '') + '" data-product-id="' + product.id + '" data-item-index="0"><i class="fab fa-whatsapp"></i> Beli via WhatsApp</a></div>' +
+            '</div>' +
+            '</div>' +
             '</div>' +
             '</div>';
     } catch (cardError) {
