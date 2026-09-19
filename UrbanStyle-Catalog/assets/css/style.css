@@ -857,6 +857,12 @@ a[href="#kontak"] i.fa-phone-alt {
 /* ============================================
    PRODUCT GRID & CARD (Meta 32px Rounded Canvas)
    ============================================ */
+.product-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -2800,8 +2806,15 @@ a[href="#kontak"] i.fa-phone-alt {
         max-width: none;
     }
 
+    .product-container {
+        width: 100%;
+        max-width: none;
+        padding: 20px 30px;
+    }
+
     .product-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 20px;
         margin-top: 16px;
     }
@@ -2916,9 +2929,16 @@ a[href="#kontak"] i.fa-phone-alt {
         line-height: 1.44;
     }
 
+    .product-container {
+        width: 100%;
+        max-width: none;
+        padding: 20px 30px;
+    }
+
     .product-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 28px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
     }
 
     .gallery-grid {
@@ -3219,13 +3239,19 @@ img {
         padding: 0 24px !important;
     }
 
-    /* Grid produk desktop: 3 Kolom Elegan Memenuhi Layar */
+    /* Grid produk desktop: 4 Kolom Proporsional */
+    .product-container {
+        width: 100%;
+        max-width: none;
+        padding: 20px 30px;
+    }
+
     .product-grid,
     #featuredProducts,
     #allProducts {
         display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 28px !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 20px !important;
         width: 100% !important;
     }
 
@@ -3418,11 +3444,19 @@ img {
         max-width: 1380px !important;
     }
 
+    .product-container {
+        width: 100%;
+        max-width: none;
+        padding: 20px 30px;
+    }
+
     .product-grid,
     #featuredProducts,
     #allProducts {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 32px !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 20px !important;
+        width: 100% !important;
     }
     
     .gallery-grid {
