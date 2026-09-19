@@ -99,12 +99,12 @@
         .lamp-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.18));
+            filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.25));
             transition: filter 0.5s ease;
             will-change: filter;
         }
         body.lamp-active .lamp-svg {
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 28px rgba(251, 191, 36, 0.75));
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 32px rgba(251, 191, 36, 0.85));
         }
 
         /* Lampshade Colors - Clear Physical White in Dark, Golden Amber when ON */
@@ -112,34 +112,38 @@
             fill: #FFFFFF;
             stroke: #E2E8F0;
             stroke-width: 2.5;
-            transition: fill 0.5s ease, stroke 0.5s ease;
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
+            transition: fill 0.5s ease, stroke 0.5s ease, filter 0.5s ease;
         }
         body.lamp-active .lamp-shade-path {
             fill: url(#lampShadeGlowGrad);
             stroke: #f59e0b;
+            filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.85));
         }
 
         .lamp-bulb {
-            fill: #E2E8F0;
-            stroke: #CBD5E1;
+            fill: #F1F5F9;
+            stroke: #E2E8F0;
             stroke-width: 1;
             transition: fill 0.4s ease, filter 0.4s ease;
         }
         body.lamp-active .lamp-bulb {
             fill: #FFFFFF;
-            filter: drop-shadow(0 0 18px #fef08a);
+            filter: drop-shadow(0 0 20px #fef08a);
         }
 
         /* Lamp Stand & Base - Solid Crisp White/Silver in dark, Golden Brass when ON */
         .lamp-metal {
-            fill: #F8FAFC;
+            fill: #FFFFFF;
             stroke: #CBD5E1;
             stroke-width: 1.5;
-            transition: fill 0.4s ease, stroke 0.4s ease;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+            transition: fill 0.4s ease, stroke 0.4s ease, filter 0.4s ease;
         }
         body.lamp-active .lamp-metal {
             fill: #78350F;
             stroke: #D97706;
+            filter: none;
         }
 
         /* ================= PULL STRING / TALI LAMPU ================= */
@@ -179,12 +183,17 @@
             height: 85px;
             background: repeating-linear-gradient(to bottom, #FFFFFF, #FFFFFF 4px, #CBD5E1 4px, #CBD5E1 7px);
             border-radius: 2px;
-            box-shadow: 0 1px 4px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 1px 4px rgba(255, 255, 255, 0.6);
             transition: background 0.4s ease;
         }
         body.lamp-active .pull-chain-beads {
             background: repeating-linear-gradient(to bottom, #d97706, #d97706 4px, #78350f 4px, #78350f 7px);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes cordPulseGlow {
+            0%, 100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.7), inset 0 1px 2px #fff; }
+            50% { box-shadow: 0 0 24px rgba(255, 255, 255, 1), inset 0 1px 2px #fff; }
         }
 
         .pull-knob-handle {
@@ -193,21 +202,23 @@
             background: #FFFFFF;
             border-radius: 7px;
             border: 2px solid #E2E8F0;
-            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.6), inset 0 1px 2px #fff;
+            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.7), inset 0 1px 2px #fff;
             margin-top: -2px;
+            animation: cordPulseGlow 2.5s ease-in-out infinite;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease, border-color 0.4s ease;
         }
         body.lamp-active .pull-knob-handle {
             background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
             border-color: #fde68a;
             box-shadow: 0 4px 14px rgba(251, 191, 36, 0.7), inset 0 1px 2px #fff;
+            animation: none;
         }
         .lamp-pull-string:hover .pull-knob-handle {
-            box-shadow: 0 0 18px rgba(255, 255, 255, 0.95);
-            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+            transform: scale(1.22);
         }
         body.lamp-active .lamp-pull-string:hover .pull-knob-handle {
-            box-shadow: 0 0 18px rgba(251, 191, 36, 0.95);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 1);
         }
 
         /* ================= LOGIN CARD (Right Column) ================= */
@@ -234,7 +245,7 @@
             border: 1.5px solid rgba(255, 255, 255, 0.18);
             opacity: 0;
             pointer-events: none;
-            transform: translate3d(40px, 0, 0) scale(0.96);
+            transform: translate3d(50px, 0, 0) scale(0.95);
             transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
             will-change: transform, opacity;
         }
@@ -248,21 +259,21 @@
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), -15px 0 45px rgba(251, 191, 36, 0.28), 0 0 30px rgba(254, 240, 138, 0.14);
         }
 
-        /* Card Header & Brand - All White */
+        /* Card Header & Brand - 100% Crisp White */
         .login-logo {
             text-align: center;
             margin-bottom: 20px;
         }
         .login-logo h2 {
-            font-size: 26px;
-            font-weight: 800;
+            font-size: 26px !important;
+            font-weight: 800 !important;
             color: #FFFFFF !important;
-            text-shadow: 0 2px 14px rgba(0,0,0,0.95);
+            text-shadow: 0 2px 14px rgba(0,0,0,0.95) !important;
             letter-spacing: 0.5px;
         }
         .login-logo p {
             color: #FFFFFF !important;
-            font-size: 13.5px;
+            font-size: 13.5px !important;
             font-weight: 500;
             margin-top: 4px;
             text-shadow: 0 1px 4px rgba(0,0,0,0.8);
@@ -659,7 +670,7 @@
         }
     </style>
 </head>
-<body class="lamp-active">
+<body>
 
     <!-- Ambient Room Lighting -->
     <div class="lamp-ambient-glow" id="lampAmbient"></div>
@@ -1246,7 +1257,7 @@
     <script>
         (function initBedsideLampController() {
             const pullString = document.getElementById('lampPullString');
-            let isLampOn = true;
+            let isLampOn = false;
 
             // Web Audio Click Sound (Realistic Mechanical Switch)
             function playClickSound() {
