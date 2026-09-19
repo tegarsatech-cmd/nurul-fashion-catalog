@@ -3228,22 +3228,22 @@ img {
     margin-bottom: 4px;
 }
 
-/* --- TAMPILAN DESKTOP ELEGAN (>= 992px): 3 KOLOM PENUH & PROPORSIAL --- */
+/* --- TAMPILAN DESKTOP ELEGAN (>= 992px): 4 KOLOM PENUH & PROPORSIAL --- */
 @media (min-width: 992px) {
     .section > .container,
     .navbar > .container {
-        width: 92% !important;
-        max-width: 1380px !important;
+        width: 95% !important;
+        max-width: 1440px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        padding: 0 24px !important;
+        padding: 0 20px !important;
     }
 
     /* Grid produk desktop: 4 Kolom Proporsional */
     .product-container {
-        width: 100%;
-        max-width: none;
-        padding: 20px 30px;
+        width: 100% !important;
+        max-width: none !important;
+        padding: 20px 30px !important;
     }
 
     .product-grid,
@@ -3915,12 +3915,12 @@ img {
     display: block;
 }
 
-/* Desktop catalog: Kontainer terpusat elegan 3 kolom (Katalog Modern) */
+/* Desktop catalog: Kontainer terpusat elegan 4 kolom (Katalog Modern) */
 @media (min-width: 992px) {
     .section > .container,
     .navbar > .container {
-        width: 92% !important;
-        max-width: 1380px !important;
+        width: 95% !important;
+        max-width: 1440px !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
@@ -3928,8 +3928,8 @@ img {
 
 @media (min-width: 1200px) {
     .section > .container {
-        width: 92% !important;
-        max-width: 1380px !important;
+        width: 95% !important;
+        max-width: 1440px !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }

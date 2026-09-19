@@ -515,7 +515,7 @@ async function loadCategories() {
 // ===== Load Products =====
 async function refreshProducts(showLoading = true) {
     if (showLoading && featuredProducts) {
-        featuredProducts.innerHTML = getProductSkeleton(3);
+        featuredProducts.innerHTML = getProductSkeleton(4);
     }
     if (showLoading && allProducts) {
         allProducts.innerHTML = getProductSkeleton(4);
@@ -556,7 +556,7 @@ function renderFeaturedProducts(products) {
         featuredProducts.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Belum ada produk</div>';
         return;
     }
-    featuredProducts.innerHTML = products.slice(0, 3).map((product, index) => createProductCard(product, index + 1)).join('');
+    featuredProducts.innerHTML = products.slice(0, 4).map((product, index) => createProductCard(product, index + 1)).join('');
     refreshAOS();
 }
 
@@ -666,10 +666,10 @@ function normalizeProductItems(product) {
 }
 
 function getFeaturedProducts(products) {
-        return [...products]
-            .sort((a, b) => (Number(b.wa_clicks_monthly) || 0) - (Number(a.wa_clicks_monthly) || 0))
-            .slice(0, 3);
-    }
+    return [...products]
+        .sort((a, b) => (Number(b.wa_clicks_monthly) || 0) - (Number(a.wa_clicks_monthly) || 0))
+        .slice(0, 4);
+}
 
     function getWhatsAppMessage(product, itemIndex) {
         const items = normalizeProductItems(product);
