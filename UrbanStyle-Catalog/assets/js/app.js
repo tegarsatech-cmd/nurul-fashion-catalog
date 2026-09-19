@@ -668,32 +668,29 @@ function normalizeProductItems(product) {
 }
 
 function extractProductColors(product) {
-    const rawList = [];
-    // 1. Ambil warna dari input header/postingan
-    if (product?.warna) {
-        String(product.warna).split(/[,;/|\n]+/).forEach(w => rawList.push(w.trim()));
-    }
-    // 2. Ambil warna dari setiap varian/barang yang diinput di portal admin
-    const items = normalizeProductItems(product);
-    items.forEach(item => {
-        if (item?.warna) {
-            String(item.warna).split(/[,;/|\n]+/).forEach(w => rawList.push(w.trim()));
+    if (!product || !product.warna) return [];
+
+    // Hanya deteksi warna yang diinputkan langsung oleh admin pada kolom warna produk (tidak menambahkan warna secara otomatis)
+    const rawList = String(product.warna)
+        .split(/[,;/|\n]+/)
+        .map(w => w.trim())
+        .filter(Boolean);
+
+    const seen = new Set();
+    const colors = [];
+
+    rawList.forEach(color => {
+        const key = color.toLowerCase();
+        if (!seen.has(key)) {
+            seen.add(key);
+            const formatted = color.startsWith('#')
+                ? color
+                : color.split(/\s+/).map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+            colors.push(formatted);
         }
     });
 
-    // 3. Normalisasi, bersihkan, dan deduplikasi
-    const uniqueColors = new Map();
-    rawList.filter(Boolean).forEach(color => {
-        const trimmed = color.trim();
-        if (!trimmed) return;
-        const key = trimmed.toLowerCase();
-        if (!uniqueColors.has(key)) {
-            const formatted = trimmed.split(/\s+/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            uniqueColors.set(key, formatted);
-        }
-    });
-
-    return Array.from(uniqueColors.values());
+    return colors;
 }
 
 function getFeaturedProducts(products) {
