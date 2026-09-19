@@ -883,6 +883,8 @@ a[href="#kontak"] i.fa-phone-alt {
     flex-direction: column;
     height: 100%;
     min-width: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .product-card:hover {
@@ -3281,7 +3283,7 @@ img {
         box-sizing: border-box !important;
     }
 
-    /* Kartu produk desktop: Editorial Fashion Catalog */
+    /* Kartu produk desktop: Editorial Fashion Catalog Proporsional */
     .product-card {
         border-radius: var(--meta-rounded-xl, 16px) !important;
         border: 1px solid var(--meta-hairline-soft, #dee3e9) !important;
@@ -3292,6 +3294,9 @@ img {
         flex-direction: column !important;
         position: relative !important;
         transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
     }
 
     .product-card:hover {
@@ -3307,7 +3312,7 @@ img {
         background: #f8fafc !important;
         aspect-ratio: 1 / 1 !important;
         height: auto !important;
-        max-height: 360px !important;
+        max-height: 230px !important;
         border-radius: 14px 14px 0 0 !important;
         display: flex !important;
         align-items: center !important;
@@ -3332,28 +3337,28 @@ img {
     }
 
     .product-card .product-details {
-        padding: 16px 18px 20px !important;
-        gap: 8px !important;
+        padding: 12px 14px 14px !important;
+        gap: 5px !important;
         display: flex !important;
         flex-direction: column !important;
         flex: 1 !important;
     }
 
     .product-card .product-category {
-        font-size: 11px !important;
+        font-size: 10.5px !important;
         color: #71717a !important;
         text-transform: uppercase !important;
         letter-spacing: 0.5px !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 1px !important;
         font-weight: 600 !important;
     }
 
     .product-card .product-name {
-        font-size: 16px !important;
+        font-size: 14.5px !important;
         font-weight: 600 !important;
-        line-height: 1.35 !important;
+        line-height: 1.3 !important;
         color: #111111 !important;
-        min-height: 44px !important;
+        min-height: 38px !important;
         display: -webkit-box !important;
         -webkit-line-clamp: 2 !important;
         line-clamp: 2 !important;
@@ -3364,76 +3369,77 @@ img {
     }
 
     .product-card .product-price {
-        font-size: 20px !important;
+        font-size: 17px !important;
         font-weight: 700 !important;
         color: #FF1493 !important;
         letter-spacing: -0.2px !important;
-        margin: 4px 0 !important;
+        margin: 2px 0 !important;
     }
 
     .product-card .product-stock {
         display: inline-flex !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
+        padding: 2px 8px !important;
     }
 
     .product-card .product-item-select-label {
-        font-size: 11px !important;
-        margin-bottom: 4px !important;
+        font-size: 10.5px !important;
+        margin-bottom: 2px !important;
     }
 
     .product-card .product-item-select {
-        min-height: 38px !important;
-        font-size: 12.5px !important;
-        padding: 6px 24px 6px 10px !important;
-        border-radius: 8px !important;
+        min-height: 32px !important;
+        font-size: 11.5px !important;
+        padding: 4px 20px 4px 8px !important;
+        border-radius: 6px !important;
         border: 1px solid #dee3e9 !important;
     }
 
     .product-card .product-selected-meta {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 6px !important;
-        margin: 6px 0 !important;
+        gap: 4px !important;
+        margin: 4px 0 !important;
     }
 
     .product-card .product-selected-meta span {
-        padding: 5px 8px !important;
-        border-radius: 6px !important;
-        font-size: 11px !important;
+        padding: 4px 6px !important;
+        border-radius: 5px !important;
+        font-size: 10px !important;
         text-align: center !important;
     }
 
     .product-card .product-actions {
-        padding-top: 10px !important;
+        padding-top: 6px !important;
         margin-top: auto !important;
         width: 100% !important;
     }
 
     .product-card-buttons {
         display: flex !important;
-        gap: 8px !important;
+        gap: 6px !important;
         width: 100% !important;
     }
 
     .product-card .btn-whatsapp {
         flex: 1 1 auto !important;
-        min-height: 44px !important;
-        height: 44px !important;
-        font-size: 13.5px !important;
+        min-height: 38px !important;
+        height: 38px !important;
+        font-size: 12.5px !important;
         font-weight: 700 !important;
         border-radius: 100px !important;
         background: #25D366 !important;
         color: #ffffff !important;
         justify-content: center !important;
         white-space: nowrap !important;
-        padding: 10px 16px !important;
+        padding: 8px 12px !important;
         box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25) !important;
         transition: all 0.2s ease !important;
     }
 
     .product-card .btn-whatsapp i {
         color: #ffffff !important;
-        font-size: 17px !important;
+        font-size: 15px !important;
     }
 
     .product-card .btn-whatsapp:hover {
@@ -3447,10 +3453,10 @@ img {
     }
 
     .product-card .btn-cart {
-        width: 44px !important;
-        min-width: 44px !important;
-        height: 44px !important;
-        font-size: 16px !important;
+        width: 38px !important;
+        min-width: 38px !important;
+        height: 38px !important;
+        font-size: 14px !important;
         border-radius: 100px !important;
         border: 1px solid #dee3e9 !important;
         background: #f8fafc !important;

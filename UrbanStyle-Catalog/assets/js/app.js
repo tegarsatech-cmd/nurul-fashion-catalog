@@ -626,7 +626,7 @@ function createProductCard(product, tier = null) {
               '</select></div>'
             : '';
         const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
-        return '<div class="product-card" data-aos="zoom-in" data-product-card-id="' + product.id + '">' +
+        return '<div class="product-card" data-product-card-id="' + product.id + '">' +
             '<div class="product-image">' +
             '<img src="' + imageUrl + '" alt="" class="product-image-bg" aria-hidden="true" loading="lazy">' +
             '<img src="' + imageUrl + '" alt="' + title + '" class="product-image-main" loading="lazy">' +
