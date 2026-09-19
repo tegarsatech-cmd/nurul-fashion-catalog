@@ -889,10 +889,10 @@ a[href="#kontak"] i.fa-phone-alt {
     position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: #f8fafc;
+    background: #0f172a;
     width: 100%;
     flex-shrink: 0;
-    cursor: pointer;
+    border-radius: 14px 14px 0 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -901,33 +901,56 @@ a[href="#kontak"] i.fa-phone-alt {
 .product-card .product-image img {
     width: 100%;
     height: 100%;
-    object-fit: contain !important;
-    object-position: center center !important;
+    object-fit: cover !important;
+    object-position: center 15% !important;
     position: absolute;
     inset: 0;
-    padding: 6px;
+    padding: 0 !important;
     box-sizing: border-box;
-    transition: transform 0.35s ease;
+    image-rendering: -webkit-optimize-contrast;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.product-image-hint {
+.btn-product-zoom {
     position: absolute;
-    right: 12px;
-    bottom: 12px;
-    z-index: 2;
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
-    border-radius: var(--meta-rounded-circle);
-    color: rgba(255, 255, 255, 0.95);
-    background: rgba(10, 19, 23, 0.45);
-    font-size: 13px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 3;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn-product-zoom:hover {
+    transform: scale(1.15);
+    background: linear-gradient(135deg, #FF1493 0%, #d9147e 100%);
+    border-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(255, 20, 147, 0.55);
+}
+
+.btn-product-zoom:active {
+    transform: scale(0.95);
+}
+
+.btn-product-zoom i {
     pointer-events: none;
+    color: #ffffff !important;
 }
 
 .product-card:hover .product-image img {
-    transform: scale(1.04);
+    transform: scale(1.05);
 }
 
 .product-card .product-badge {
@@ -3221,15 +3244,16 @@ img {
         inset: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        object-fit: contain !important;
-        object-position: center center !important;
-        padding: 8px !important;
+        object-fit: cover !important;
+        object-position: center 15% !important;
+        padding: 0 !important;
         box-sizing: border-box !important;
+        image-rendering: -webkit-optimize-contrast !important;
         transition: transform 0.4s ease !important;
     }
 
     .product-card:hover .product-image img {
-        transform: scale(1.04) !important;
+        transform: scale(1.05) !important;
     }
 
     .product-card .product-details {
@@ -3401,14 +3425,15 @@ img {
     .product-card .product-image {
         aspect-ratio: 1 / 1 !important;
         height: auto !important;
-        background: #f8fafc !important;
+        background: #0f172a !important;
     }
 
     .product-card .product-image img {
-        object-fit: contain !important;
-        object-position: center center !important;
-        padding: 6px !important;
+        object-fit: cover !important;
+        object-position: center 15% !important;
+        padding: 0 !important;
         box-sizing: border-box !important;
+        image-rendering: -webkit-optimize-contrast !important;
     }
 
     .gallery-grid {
@@ -3850,5 +3875,191 @@ img {
         max-width: 1380px !important;
         margin-left: auto !important;
         margin-right: auto !important;
+    }
+}
+
+/* ==========================================================================
+   FULLSCREEN HIGH-DEFINITION PRODUCT IMAGE ZOOM VIEWER (LIGHTBOX)
+   ========================================================================== */
+#productZoomModal {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: rgba(4, 6, 12, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#productZoomModal.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.zoom-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 65%, transparent 100%);
+    gap: 12px;
+}
+
+.zoom-title-badge {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50%;
+}
+
+.zoom-title-badge i {
+    color: #FF1493;
+}
+
+.zoom-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.zoom-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.zoom-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #ffffff;
+    transform: scale(1.08);
+}
+
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+
+.zoom-btn.btn-close-zoom {
+    background: rgba(220, 38, 38, 0.35);
+    border-color: rgba(239, 68, 68, 0.6);
+}
+
+.zoom-btn.btn-close-zoom:hover {
+    background: #ef4444;
+    border-color: #ffffff;
+}
+
+.zoom-viewport {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    touch-action: none;
+}
+
+.zoom-viewport.is-dragging {
+    cursor: grabbing;
+}
+
+.zoom-image {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85), 0 0 40px rgba(255, 20, 147, 0.2);
+    transform-origin: center center;
+    transition: transform 0.05s ease-out;
+    will-change: transform;
+    pointer-events: auto;
+}
+
+.zoom-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 65%, transparent 100%);
+    pointer-events: none;
+}
+
+.zoom-status-pill {
+    pointer-events: auto;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.zoom-status-pill span {
+    color: #FF1493;
+    font-weight: 800;
+}
+
+@media (max-width: 600px) {
+    .zoom-header {
+        padding: 12px 14px;
+    }
+    .zoom-title-badge {
+        font-size: 13px;
+        max-width: 42%;
+    }
+    .zoom-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 13.5px;
+    }
+    .zoom-status-pill {
+        font-size: 11.5px;
+        padding: 5px 12px;
     }
 }
