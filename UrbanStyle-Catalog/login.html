@@ -81,34 +81,36 @@
             width: 650px;
             height: 520px;
             pointer-events: none;
-            background: radial-gradient(ellipse at 8% 22%, rgba(254, 240, 138, 0.52) 0%, rgba(251, 191, 36, 0.28) 35%, rgba(245, 158, 11, 0.08) 65%, transparent 85%);
+            background: radial-gradient(ellipse at 8% 22%, rgba(254, 240, 138, 0.55) 0%, rgba(251, 191, 36, 0.3) 35%, rgba(245, 158, 11, 0.08) 65%, transparent 85%);
             clip-path: polygon(0% 15%, 100% 0%, 100% 100%, 0% 85%);
             opacity: 0;
             transform-origin: top left;
-            transform: scale(0.92);
-            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s ease;
+            transform: translate3d(-10px, 0, 0) scale(0.92);
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: -1;
+            will-change: transform, opacity;
         }
         body.lamp-active .lamp-light-beam {
             opacity: 1;
-            transform: scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
         }
 
         /* Lamp Bedside Shade & Structure (SVG) */
         .lamp-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.9));
+            filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.18));
             transition: filter 0.5s ease;
+            will-change: filter;
         }
         body.lamp-active .lamp-svg {
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 25px rgba(251, 191, 36, 0.7));
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 28px rgba(251, 191, 36, 0.75));
         }
 
-        /* Lampshade Colors - Elegant Soft Linen/White in dark, Golden when ON */
+        /* Lampshade Colors - Clear Physical White in Dark, Golden Amber when ON */
         .lamp-shade-path {
-            fill: #cbd5e1;
-            stroke: #94a3b8;
+            fill: #FFFFFF;
+            stroke: #E2E8F0;
             stroke-width: 2.5;
             transition: fill 0.5s ease, stroke 0.5s ease;
         }
@@ -118,24 +120,26 @@
         }
 
         .lamp-bulb {
-            fill: #475569;
-            transition: fill 0.4s ease;
+            fill: #E2E8F0;
+            stroke: #CBD5E1;
+            stroke-width: 1;
+            transition: fill 0.4s ease, filter 0.4s ease;
         }
         body.lamp-active .lamp-bulb {
-            fill: #ffffff;
-            filter: drop-shadow(0 0 16px #fef08a);
+            fill: #FFFFFF;
+            filter: drop-shadow(0 0 18px #fef08a);
         }
 
-        /* Lamp Stand & Base - Sleek Silver Metallic in dark, Golden Brass when ON */
+        /* Lamp Stand & Base - Solid Crisp White/Silver in dark, Golden Brass when ON */
         .lamp-metal {
-            fill: #64748b;
-            stroke: #94a3b8;
+            fill: #F8FAFC;
+            stroke: #CBD5E1;
             stroke-width: 1.5;
             transition: fill 0.4s ease, stroke 0.4s ease;
         }
         body.lamp-active .lamp-metal {
-            fill: #78350f;
-            stroke: #d97706;
+            fill: #78350F;
+            stroke: #D97706;
         }
 
         /* ================= PULL STRING / TALI LAMPU ================= */
@@ -173,36 +177,37 @@
         .pull-chain-beads {
             width: 3.5px;
             height: 85px;
-            background: repeating-linear-gradient(to bottom, #ffffff, #ffffff 4px, #94a3b8 4px, #94a3b8 7px);
+            background: repeating-linear-gradient(to bottom, #FFFFFF, #FFFFFF 4px, #CBD5E1 4px, #CBD5E1 7px);
             border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 4px rgba(255, 255, 255, 0.4);
             transition: background 0.4s ease;
         }
         body.lamp-active .pull-chain-beads {
             background: repeating-linear-gradient(to bottom, #d97706, #d97706 4px, #78350f 4px, #78350f 7px);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         .pull-knob-handle {
             width: 15px;
             height: 25px;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            background: #FFFFFF;
             border-radius: 7px;
-            border: 1.5px solid #ffffff;
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5), inset 0 1px 2px #fff;
+            border: 2px solid #E2E8F0;
+            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.6), inset 0 1px 2px #fff;
             margin-top: -2px;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease, border-color 0.4s ease;
         }
         body.lamp-active .pull-knob-handle {
             background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
             border-color: #fde68a;
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.6), inset 0 1px 2px #fff;
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.7), inset 0 1px 2px #fff;
         }
         .lamp-pull-string:hover .pull-knob-handle {
-            box-shadow: 0 0 16px rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 18px rgba(255, 255, 255, 0.95);
             transform: scale(1.2);
         }
         body.lamp-active .lamp-pull-string:hover .pull-knob-handle {
-            box-shadow: 0 0 16px rgba(251, 191, 36, 0.95);
+            box-shadow: 0 0 18px rgba(251, 191, 36, 0.95);
         }
 
         /* ================= LOGIN CARD (Right Column) ================= */
@@ -216,7 +221,7 @@
             align-items: center;
         }
 
-        /* State when Lamp is OFF: Completely Hidden & Dark */
+        /* State when Lamp is OFF: Completely Hidden & Slide Prepared */
         .login-card {
             background: rgba(0, 0, 0, 0.72) !important;
             padding: 34px 28px;
@@ -229,15 +234,16 @@
             border: 1.5px solid rgba(255, 255, 255, 0.18);
             opacity: 0;
             pointer-events: none;
-            transform: translateX(25px) scale(0.96);
-            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+            transform: translate3d(40px, 0, 0) scale(0.96);
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+            will-change: transform, opacity;
         }
 
-        /* State when Lamp is ON: Illuminated with Warm Light & Active */
+        /* State when Lamp is ON: Smooth Slide-In & Illuminated */
         body.lamp-active .login-card {
             opacity: 1;
             pointer-events: auto;
-            transform: translateX(0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
             border-color: rgba(251, 191, 36, 0.45);
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), -15px 0 45px rgba(251, 191, 36, 0.28), 0 0 30px rgba(254, 240, 138, 0.14);
         }
@@ -248,7 +254,7 @@
             margin-bottom: 20px;
         }
         .login-logo h2 {
-            font-size: 25px;
+            font-size: 26px;
             font-weight: 800;
             color: #FFFFFF !important;
             text-shadow: 0 2px 14px rgba(0,0,0,0.95);
@@ -641,6 +647,10 @@
             .login-card {
                 padding: 24px 18px !important;
                 border-radius: 20px !important;
+                transform: translate3d(0, 30px, 0) scale(0.96);
+            }
+            body.lamp-active .login-card {
+                transform: translate3d(0, 0, 0) scale(1);
             }
             .login-logo h2 { font-size: 22px !important; }
             .login-logo p { font-size: 12.5px !important; }
