@@ -2806,11 +2806,16 @@ a[href="#kontak"] i.fa-phone-alt {
         max-width: none;
     }
 
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container {
-        width: 96% !important;
-        max-width: none !important;
-        padding: 0 24px !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: clamp(24px, 3vw, 40px) !important;
+        padding-right: clamp(24px, 3vw, 40px) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .product-grid {
@@ -2818,7 +2823,7 @@ a[href="#kontak"] i.fa-phone-alt {
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 24px !important;
         width: 100% !important;
-        max-width: none !important;
+        max-width: 100% !important;
         margin-top: 16px;
     }
 
@@ -2932,11 +2937,16 @@ a[href="#kontak"] i.fa-phone-alt {
         line-height: 1.44;
     }
 
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container {
-        width: 96% !important;
-        max-width: none !important;
-        padding: 0 24px !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: clamp(24px, 3vw, 40px) !important;
+        padding-right: clamp(24px, 3vw, 40px) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .product-grid {
@@ -2944,7 +2954,7 @@ a[href="#kontak"] i.fa-phone-alt {
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 24px !important;
         width: 100% !important;
-        max-width: none !important;
+        max-width: 100% !important;
     }
 
     .gallery-grid {
@@ -3236,14 +3246,6 @@ img {
 
 /* --- TAMPILAN DESKTOP (>= 992px): 4 KOLOM PENUH HAMPIR SELURUH LEBAR LAYAR --- */
 @media (min-width: 992px) {
-    .section > .container {
-        width: 96% !important;
-        max-width: none !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding: 0 24px !important;
-    }
-
     .navbar > .container {
         width: 96% !important;
         max-width: 1400px !important;
@@ -3252,15 +3254,20 @@ img {
         padding: 0 24px !important;
     }
 
-    /* Grid produk desktop: 4 Kolom Hampir Seluruh Lebar Layar */
+    /* Grid produk desktop: 4 Kolom Hampir Seluruh Lebar Layar (24px - 40px padding) */
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container,
     .container.product-container,
     .section.produk-unggulan > .container,
     .section.katalog > .container {
-        width: 96% !important;
-        max-width: none !important;
-        padding: 0 24px !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: clamp(24px, 3vw, 40px) !important;
+        padding-right: clamp(24px, 3vw, 40px) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .product-grid,
@@ -3270,7 +3277,8 @@ img {
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 24px !important;
         width: 100% !important;
-        max-width: none !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Kartu produk desktop: Editorial Fashion Catalog */
@@ -3457,24 +3465,23 @@ img {
 
 /* Layar Lebar >= 1200px: 4 Kolom Produk Hampir Seluruh Lebar Layar */
 @media (min-width: 1200px) {
-    .section > .container {
-        width: 96% !important;
-        max-width: none !important;
-        padding: 0 24px !important;
-    }
-
     .navbar > .container {
         max-width: 1400px !important;
     }
 
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container,
     .container.product-container,
     .section.produk-unggulan > .container,
     .section.katalog > .container {
-        width: 96% !important;
-        max-width: none !important;
-        padding: 0 24px !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: clamp(24px, 3vw, 40px) !important;
+        padding-right: clamp(24px, 3vw, 40px) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .product-grid,
@@ -3484,7 +3491,8 @@ img {
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 24px !important;
         width: 100% !important;
-        max-width: none !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     
     .gallery-grid {
@@ -3500,12 +3508,15 @@ img {
 
 /* Tablet (768px - 991px): 2 Kolom Produk */
 @media (min-width: 768px) and (max-width: 991px) {
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container,
     .container.product-container,
     .section > .container {
         width: 100% !important;
         max-width: 100% !important;
         padding: 0 20px !important;
+        box-sizing: border-box !important;
     }
 
     .product-grid,
@@ -3515,6 +3526,8 @@ img {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 20px !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .product-card .product-image {
@@ -3540,11 +3553,25 @@ img {
 /* --- TAMPILAN MOBILE KHUSUS (Smartphones <= 767px): 1 KOLOM PENUH MEMENUHI LAYAR --- */
 @media (max-width: 767px) {
     .container,
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container,
     .container.product-container {
         padding: 0 14px !important;
         width: 100% !important;
         max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .product-grid,
+    #featuredProducts,
+    #allProducts {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Value Proposition (Why Buy / Reassurance) di Mobile: Jauh Lebih Ringkas & Kompak */
@@ -3957,22 +3984,30 @@ img {
 
 /* Desktop catalog: Full Width 4 Kolom */
 @media (min-width: 992px) {
-    .section > .container,
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container {
-        width: 96% !important;
-        max-width: none !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: clamp(24px, 3vw, 40px) !important;
+        padding-right: clamp(24px, 3vw, 40px) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
     }
 }
 
 @media (min-width: 1200px) {
-    .section > .container,
+    .produk-unggulan .container,
+    .katalog .container,
     .product-container {
-        width: 96% !important;
-        max-width: none !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: clamp(24px, 3vw, 40px) !important;
+        padding-right: clamp(24px, 3vw, 40px) !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
     }
 }
 
