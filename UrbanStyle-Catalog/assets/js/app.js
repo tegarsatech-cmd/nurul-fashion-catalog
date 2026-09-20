@@ -624,6 +624,7 @@ function createProductCard(product, tier = null) {
         const items = normalizeProductItems(product);
         const title = product.judul_postingan || product.nama || 'Produk';
         const firstItem = items.find(item => item.nama) || {};
+        const colors = extractProductColors(product);
         const tierBadge = tier ? '<span class="product-tier tier-' + tier + '">No. ' + tier + '</span>' : '';
         return '<div class="product-card" data-product-card-id="' + product.id + '" role="button" tabindex="0" aria-label="Lihat detail ' + title.replace(/"/g, '&quot;') + '">' +
             '<div class="product-image product-image-zoomable" data-zoom-src="' + imageUrl.replace(/"/g, '&quot;') + '" data-zoom-title="' + title.replace(/"/g, '&quot;') + '" role="button" tabindex="0" title="Tap gambar untuk memperbesar" aria-label="Tap gambar untuk melihat foto ' + title.replace(/"/g, '&quot;') + ' layar penuh">' +
@@ -635,6 +636,7 @@ function createProductCard(product, tier = null) {
             '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
             '<h3 class="product-name">' + title + '</h3>' +
             (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
+            (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
             '</div>' +
             '</div>';
     } catch (cardError) {
@@ -966,9 +968,9 @@ function setupProductCardClicks(container) {
         if (zoomArea) {
             event.preventDefault();
             event.stopPropagation();
-            const src = zoomArea.dataset.zoomSrc;
-            const title = zoomArea.dataset.zoomTitle || 'Foto Produk';
-            openProductImageZoom(src, title);
+            const card = zoomArea.closest('.product-card[data-product-card-id]');
+            const product = allProductsData.find(item => String(item.id) === String(card?.dataset.productCardId));
+            if (product) openPreviewModal(product, 'product');
             return;
         }
         const card = event.target.closest('.product-card[data-product-card-id]');
@@ -986,7 +988,9 @@ function setupProductCardClicks(container) {
         }
         if ((event.key === 'Enter' || event.key === ' ') && event.target.classList?.contains('product-image-zoomable')) {
             event.preventDefault();
-            openProductImageZoom(event.target.dataset.zoomSrc, event.target.dataset.zoomTitle || 'Foto Produk');
+            const card = event.target.closest('.product-card[data-product-card-id]');
+            const product = allProductsData.find(item => String(item.id) === String(card?.dataset.productCardId));
+            if (product) openPreviewModal(product, 'product');
         }
     });
 }
@@ -1028,7 +1032,7 @@ function renderHeroBanners(banners = []) {
     if (banners && banners.length > 0) {
         images = banners.map(b => b.gambar).filter(Boolean);
     }
-    
+
     // Jika belum ada foto banner dari admin, gunakan default fashion images
     if (images.length === 0) {
         images = defaultHeroImages;
@@ -1103,9 +1107,9 @@ async function refreshGallery() {
             'galeri'
         );
         if (error) throw error;
-        
+
         const allItems = (data || []).map(item => ({ id: item.id, ...item }));
-        
+
         // Pisahkan item banner background home ([BANNER]) dan item galeri biasa
         const bannerPhotos = allItems.filter(item => (item.judul || '').trim().startsWith('[BANNER]'));
         galleryData = allItems.filter(item => !(item.judul || '').trim().startsWith('[BANNER]'));
@@ -1252,10 +1256,10 @@ function updatePreviewSelectionDetails() {
 
 function openPreviewModal(item, type = 'product', index = null) {
     // index used for gallery navigation
-    if (type === 'gallery' && typeof index === 'number') currentGalleryIndex = index; else currentGalleryIndex = null;
-    currentPreviewProduct = type === 'product' ? item : null;
     const modal = document.getElementById('previewModal');
     if (!modal) return;
+    if (type === 'gallery' && typeof index === 'number') currentGalleryIndex = index; else currentGalleryIndex = null;
+    currentPreviewProduct = type === 'product' ? item : null;
     const title = document.getElementById('previewTitle');
     const image = document.getElementById('previewImage');
     const price = document.getElementById('previewPrice');
@@ -1269,11 +1273,12 @@ function openPreviewModal(item, type = 'product', index = null) {
     // Fill content
     if (title) title.textContent = type === 'gallery' ? (item.judul || 'Preview Galeri') : (item.judul_postingan || item.nama || 'Preview Produk');
     if (image) image.src = item.gambar || item.image || 'https://via.placeholder.com/800x800?text=No+Image';
+    modal.classList.toggle('gallery-preview', type === 'gallery');
     if (price) price.textContent = type === 'gallery' ? '' : '';
-    if (category) category.textContent = type === 'gallery' ? '-' : (item.kategori || '-');
-    if (size) size.textContent = type === 'gallery' ? '-' : (item.ukuran || '-');
-    if (color) color.textContent = type === 'gallery' ? '-' : (item.warna || '-');
-    if (stock) stock.textContent = type === 'gallery' ? '-' : (item.stok || '-');
+    if (category) category.textContent = type === 'gallery' ? '' : (item.kategori || '-');
+    if (size) size.textContent = type === 'gallery' ? '' : (item.ukuran || '-');
+    if (color) color.textContent = type === 'gallery' ? '' : (item.warna || '-');
+    if (stock) stock.textContent = type === 'gallery' ? '' : (item.stok || '-');
     if (description) description.textContent = type === 'gallery'
         ? (item.deskripsi || item.judul || 'Klik tombol WhatsApp untuk menghubungi kami.')
         : (item.keterangan_foto || 'Klik tombol WhatsApp untuk menghubungi kami.');
@@ -1288,6 +1293,8 @@ function openPreviewModal(item, type = 'product', index = null) {
         whatsapp.dataset.productId = type === 'product' ? (item.id || '') : '';
         whatsapp.style.display = 'inline-flex';
     }
+    const previewCartButton = document.getElementById('previewCart');
+    if (previewCartButton) previewCartButton.style.display = type === 'gallery' ? 'none' : 'inline-flex';
 
     // Simpler preview: clicking image opens a lightbox; no copy/share or zoom controls-button
     const previewDetails = document.querySelector('.preview-details');
@@ -1335,8 +1342,7 @@ function closePreviewModal() {
     const modal = document.getElementById('previewModal');
     if (!modal) return;
     removePreviewLightbox();
-    closeImageLightbox();
-    modal.classList.remove('active');
+    modal.classList.remove('active', 'gallery-preview');
     document.body.classList.remove('no-scroll');
 }
 
@@ -1454,7 +1460,10 @@ function setupZoomViewer() {
     if (btnOut) btnOut.addEventListener('click', (e) => { e.stopPropagation(); zoomOut(); });
     if (btnReset) btnReset.addEventListener('click', (e) => { e.stopPropagation(); zoomReset(); });
     if (btnFull) btnFull.addEventListener('click', (e) => { e.stopPropagation(); toggleZoomFullscreen(); });
-    if (btnClose) btnClose.addEventListener('click', (e) => { e.stopPropagation(); closeProductImageZoom(); });
+    if (btnClose) btnClose.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeProductImageZoom(); });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeProductImageZoom();
+    });
 
     // Double Click to toggle zoom
     viewport.addEventListener('dblclick', (e) => {
@@ -1583,8 +1592,11 @@ function setupPreviewLightbox(type) {
     const img = document.getElementById('previewImage');
     const titleEl = document.getElementById('previewTitle');
     if (!img) return;
+    removePreviewLightbox();
     img.style.cursor = 'zoom-in';
-    const clickHandler = () => {
+    const clickHandler = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const title = titleEl ? titleEl.textContent : 'Preview Foto';
         openProductImageZoom(img.src, title);
     };
@@ -1627,12 +1639,17 @@ function navigateGallery(direction) {
     if (whatsapp) {
         whatsapp.href = createWhatsAppUrl('Halo, saya tertarik dengan foto galeri: ' + (item.judul || ''));
     }
+    setupPreviewLightbox('gallery');
 }
 
 
 const previewClose = document.getElementById('closePreviewModal');
 if (previewClose) {
-    previewClose.addEventListener('click', closePreviewModal);
+    previewClose.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closePreviewModal();
+    });
 }
 
 const previewModal = document.getElementById('previewModal');
