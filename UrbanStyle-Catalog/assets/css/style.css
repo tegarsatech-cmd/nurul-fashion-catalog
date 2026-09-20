@@ -945,6 +945,7 @@ i.fa-truck-fast {
     border-radius: var(--meta-rounded-xxxl);
     border: 1px solid var(--meta-hairline-soft);
     overflow: hidden;
+    cursor: pointer;
     box-shadow: none;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     position: relative;
@@ -960,6 +961,11 @@ i.fa-truck-fast {
     transform: translateY(-4px);
     border-color: var(--meta-hairline);
     box-shadow: 0 12px 32px rgba(20, 22, 26, 0.08);
+}
+
+.product-card:focus-visible {
+    outline: 2px solid var(--meta-primary);
+    outline-offset: 3px;
 }
 
 .product-card .product-image {
@@ -1157,6 +1163,16 @@ i.fa-truck-fast {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Spesifikasi dan aksi dipindahkan ke modal detail produk. */
+.product-card .product-stock,
+.product-card .product-colors,
+.product-card .product-actions,
+.product-card .product-sizes,
+.product-card .product-item-picker,
+.product-card .product-selected-meta {
+    display: none !important;
 }
 
 .product-card .product-stock {
