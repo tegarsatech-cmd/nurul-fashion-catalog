@@ -16,7 +16,18 @@ const searchInput = document.getElementById('searchInput');
 let allProductsData = [];
 let galleryData = [];
 let allCategories = [];
-let storeWaNumber = '';
+let storeWaNumber = loadSavedWhatsAppNumber();
+
+function loadSavedWhatsAppNumber() {
+    try {
+        const val = localStorage.getItem('nurul-fashion-wa-number') || '';
+        const digits = String(val).replace(/\D/g, '');
+        if (!digits) return '';
+        return digits.startsWith('0') ? '62' + digits.substring(1) : (digits.startsWith('62') ? digits : '62' + digits);
+    } catch (e) {
+        return '';
+    }
+}
 
 let categoriesUnsubscribe = null;
 let productsUnsubscribe = null;
@@ -268,11 +279,21 @@ function notifyOutOfStock() {
 
 function applyWhatsAppNumber(value) {
     const normalizedNumber = normalizeWhatsAppNumber(value);
-    if (normalizedNumber === storeWaNumber) return;
+    if (!normalizedNumber) return;
     storeWaNumber = normalizedNumber;
+    try {
+        localStorage.setItem('nurul-fashion-wa-number', normalizedNumber);
+    } catch (e) {}
     const waBtn = document.getElementById('waButton');
     if (waBtn) waBtn.href = createWhatsAppUrl();
     refreshRenderedProductLinks();
+    const modal = document.getElementById('previewModal');
+    if (modal && modal.classList.contains('active')) {
+        const item = currentPreviewProduct || (currentGalleryIndex !== null ? galleryData[currentGalleryIndex] : null);
+        if (item) {
+            updatePreviewWhatsapp(item, currentPreviewProduct ? 'product' : 'gallery');
+        }
+    }
 }
 
 function setupWhatsAppSync() {
@@ -1264,20 +1285,35 @@ function openPreviewModal(item, type = 'product', index = null) {
     const stock = document.getElementById('previewStock');
     const description = document.getElementById('previewDescription');
     const whatsapp = document.getElementById('previewWhatsapp');
+    const cartButton = document.getElementById('previewCart');
+    const previewItemsEl = document.getElementById('previewItems');
 
     // Fill content
     if (title) title.textContent = type === 'gallery' ? (item.judul || 'Preview Galeri') : (item.judul_postingan || item.nama || 'Preview Produk');
     if (image) image.src = item.gambar || item.image || 'https://via.placeholder.com/800x800?text=No+Image';
-    if (price) price.textContent = type === 'gallery' ? '' : '';
+    if (price) {
+        price.textContent = '';
+        price.style.display = type === 'gallery' ? 'none' : '';
+    }
     if (category) category.textContent = type === 'gallery' ? '-' : (item.kategori || '-');
     if (size) size.textContent = type === 'gallery' ? '-' : (item.ukuran || '-');
     if (color) color.textContent = type === 'gallery' ? '-' : (item.warna || '-');
     if (stock) stock.textContent = type === 'gallery' ? '-' : (item.stok || '-');
+
+    document.querySelectorAll('.preview-meta').forEach(el => {
+        el.style.display = type === 'gallery' ? 'none' : '';
+    });
+
     if (description) description.textContent = type === 'gallery'
         ? (item.deskripsi || item.judul || 'Klik tombol WhatsApp untuk menghubungi kami.')
         : (item.keterangan_foto || 'Klik tombol WhatsApp untuk menghubungi kami.');
-    renderPreviewItems(item);
-    if (type === 'product') {
+
+    if (type === 'gallery') {
+        if (previewItemsEl) previewItemsEl.innerHTML = '';
+        if (cartButton) cartButton.style.display = 'none';
+    } else {
+        if (cartButton) cartButton.style.display = 'inline-flex';
+        renderPreviewItems(item);
         updatePreviewSelectionDetails();
     }
 
@@ -1286,12 +1322,6 @@ function openPreviewModal(item, type = 'product', index = null) {
         updatePreviewWhatsapp(item, type);
         whatsapp.dataset.productId = type === 'product' ? (item.id || '') : '';
         whatsapp.style.display = 'inline-flex';
-    }
-
-    // Simpler preview: clicking image opens a lightbox; no copy/share or zoom controls-button
-    const previewDetails = document.querySelector('.preview-details');
-    if (previewDetails) {
-        // ensure layout spacing
     }
 
     // Setup simple lightbox on image click
@@ -1326,6 +1356,20 @@ if (previewWhatsapp) {
             notifyOutOfStock();
             return;
         }
+        if (!storeWaNumber) {
+            const cached = loadSavedWhatsAppNumber();
+            if (cached) {
+                storeWaNumber = cached;
+            } else {
+                event.preventDefault();
+                showToast('Nomor WhatsApp sedang dimuat, silakan coba sesaat lagi.', 'warning');
+                return;
+            }
+        }
+        const item = currentPreviewProduct || (currentGalleryIndex !== null ? galleryData[currentGalleryIndex] : null);
+        if (item) {
+            updatePreviewWhatsapp(item, currentPreviewProduct ? 'product' : 'gallery');
+        }
         if (previewWhatsapp.dataset.productId) trackWhatsAppClick(previewWhatsapp.dataset.productId);
     });
 }
@@ -1334,7 +1378,7 @@ function closePreviewModal() {
     const modal = document.getElementById('previewModal');
     if (!modal) return;
     removePreviewLightbox();
-    closeImageLightbox();
+    closeProductImageZoom();
     modal.classList.remove('active');
     document.body.classList.remove('no-scroll');
 }
