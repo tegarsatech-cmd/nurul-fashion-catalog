@@ -636,7 +636,7 @@ function createProductCard(product, tier = null) {
             '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
             '<h3 class="product-name">' + title + '</h3>' +
             (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
-            (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
+            (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div><span class="product-color-status" data-color-status aria-live="polite"></span>' : '') +
             '</div>' +
             '</div>';
     } catch (cardError) {
@@ -779,23 +779,27 @@ function getFeaturedProducts(products) {
 
             // Sinkronkan pilihan varian dengan warna yang diklik
             const clickedColor = (colorButton.dataset.colorName || '').toLowerCase().trim();
+            const product = allProductsData.find(p => String(p.id) === String(card?.dataset.productCardId));
             const select = card?.querySelector('.product-item-select');
-            if (select && card) {
-                const product = allProductsData.find(p => p.id === card.dataset.productCardId);
-                if (product) {
-                    const items = normalizeProductItems(product);
-                    const matchIndex = items.findIndex(item => {
-                        const itemCol = (item.warna || '').toLowerCase();
-                        return itemCol.includes(clickedColor) || clickedColor.includes(itemCol);
-                    });
-                    if (matchIndex !== -1 && select.value !== String(matchIndex)) {
-                        select.value = String(matchIndex);
-                        select.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
+            if (product && card) {
+                const items = normalizeProductItems(product);
+                const matchIndex = items.findIndex(item => {
+                    const itemCol = (item.warna || '').toLowerCase();
+                    return itemCol.includes(clickedColor) || clickedColor.includes(itemCol);
+                });
+                if (select && matchIndex !== -1 && select.value !== String(matchIndex)) {
+                    select.value = String(matchIndex);
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                const selectedItem = items[matchIndex] || items[0] || {};
+                const status = card.querySelector('[data-color-status]');
+                if (status) {
+                    status.textContent = 'Stok warna ' + colorButton.dataset.colorName + ': ' + (selectedItem.stok || 'Tersedia');
+                    status.classList.toggle('habis', selectedItem.stok === 'Habis');
                 }
             }
 
-            showToast('Warna: ' + colorButton.dataset.colorName, 'info');
+            showToast('Warna: ' + colorButton.dataset.colorName + ' · ' + ((product && normalizeProductItems(product).find(item => (item.warna || '').toLowerCase().includes(clickedColor))?.stok) || 'Tersedia'), 'info');
         });
         container.addEventListener('click', event => {
             const cartButton = event.target.closest('.btn-cart[data-cart-product-id]');

@@ -2980,7 +2980,7 @@ i.fa-map-marker-alt,
     }
 
     .gallery-item {
-        max-height: 250px;
+        max-height: 195px;
         border-radius: 14px;
     }
 
@@ -3455,7 +3455,7 @@ img {
         background: #f8fafc !important;
         aspect-ratio: 1 / 1 !important;
         height: auto !important;
-        max-height: 195px !important;
+        max-height: 250px !important;
         border-radius: 12px 12px 0 0 !important;
         display: flex !important;
         align-items: center !important;
@@ -3651,7 +3651,7 @@ img {
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
-    
+
     .gallery-grid {
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 20px !important;
@@ -4398,6 +4398,18 @@ img {
 }
 
 /* Final katalog card state: warna tetap terlihat, spesifikasi dan aksi tetap di modal. */
+.product-color-status {
+    display: block;
+    min-height: 16px;
+    color: var(--meta-success);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.product-color-status.habis {
+    color: var(--meta-critical);
+}
+
 .product-card .product-colors {
     display: flex !important;
 }
