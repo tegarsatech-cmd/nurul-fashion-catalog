@@ -217,19 +217,36 @@
                 <button type="button" class="modal-close" id="closePreviewModal" aria-label="Tutup preview">&times;</button>
             </div>
             <div class="preview-body">
-                <div class="preview-image">
-                    <img id="previewImage" src="" alt="Preview Produk" loading="lazy">
+                <!-- Foto khusus galeri, disembunyikan pada produk review -->
+                <div class="preview-gallery-image" id="previewGalleryImageWrapper">
+                    <img id="previewImage" src="" alt="Preview Galeri" loading="lazy">
                 </div>
                 <div class="preview-details">
                     <p class="preview-price" id="previewPrice"></p>
                     <div class="preview-items" id="previewItems"></div>
-                    <p class="preview-meta"><strong>Cocok untuk:</strong> <span id="previewCategory"></span></p>
-                    <p class="preview-meta"><strong>Ukuran:</strong> <span id="previewSize"></span></p>
-                    <p class="preview-meta"><strong>Warna:</strong> <span id="previewColor"></span></p>
-                    <p class="preview-meta"><strong>Stok:</strong> <span id="previewStock"></span></p>
-                    <p class="preview-description" id="previewDescription"></p>
-                    <button type="button" class="btn btn-cart preview-cart" id="previewCart" aria-label="Tambah produk terpilih ke keranjang">🛒</button>
-                    <a id="previewWhatsapp" class="btn btn-whatsapp preview-whatsapp" href="#" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi WhatsApp</a>
+                    <p class="preview-meta preview-category-row"><strong>Cocok untuk:</strong> <span id="previewCategory"></span></p>
+                    <p class="preview-meta preview-size-row"><strong>Ukuran:</strong> <span id="previewSize"></span></p>
+                    <p class="preview-meta preview-color-row"><strong>Warna:</strong> <span id="previewColor"></span></p>
+                    <p class="preview-meta preview-stock-row"><strong>Stok:</strong> <span id="previewStock"></span></p>
+                    <p class="preview-meta preview-description-row"><strong>Deskripsi:</strong> <span id="previewDescription"></span></p>
+                    <div class="preview-quantity-box" aria-label="Jumlah beli">
+                        <span class="preview-quantity-label">Jumlah Beli</span>
+                        <div class="preview-quantity-stepper">
+                            <button type="button" id="previewQuantityMinus" class="btn-qty" aria-label="Kurangi jumlah" disabled>&minus;</button>
+                            <span id="previewQuantity" class="qty-number" aria-live="polite">1</span>
+                            <button type="button" id="previewQuantityPlus" class="btn-qty" aria-label="Tambah jumlah">+</button>
+                        </div>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn btn-cart preview-cart" id="previewCart" aria-label="Tambah produk terpilih ke keranjang">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Keranjang</span>
+                        </button>
+                        <a id="previewWhatsapp" class="btn btn-whatsapp preview-whatsapp" href="#" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>Hubungi WhatsApp</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

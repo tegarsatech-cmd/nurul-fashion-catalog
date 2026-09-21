@@ -644,7 +644,7 @@ window.editProduk = async function(id) {
         document.getElementById('produkModalTitle').textContent = 'Edit Produk';
         document.getElementById('produkEditId').value = id;
         document.getElementById('produkJudul').value = product.judul_postingan || product.nama || '';
-        document.getElementById('produkDeskripsi').value = product.keterangan_foto || '';
+        document.getElementById('produkDeskripsi').value = product.deskripsi || product.keterangan_foto || '';
         document.getElementById('produkUkuran').value = product.ukuran || '';
         document.getElementById('produkWarna').value = product.warna || '';
         renderProductItemInputs(normalizeProductItems(product));

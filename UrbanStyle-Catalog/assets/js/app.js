@@ -36,6 +36,7 @@ let settingsUnsubscribe = null;
 let settingsBroadcast = null;
 let previewProductItems = [];
 let selectedPreviewItemIndex = 0;
+let previewQuantity = 1;
 let currentPreviewProduct = null;
 const cartStorageKey = 'nurul-fashion-cart';
 const cartPositionStorageKey = 'nurul-fashion-cart-position';
@@ -71,20 +72,21 @@ function getSelectedCartItem(product, itemIndex) {
         price: Number(item.harga) || 0,
         size: item.ukuran || product.ukuran || '',
         color: item.warna || product.warna || '',
-        description: product.keterangan_foto || '',
+        description: product.deskripsi || product.keterangan_foto || '',
         image: product.gambar || ''
     };
 }
 
-function addToCart(product, itemIndex) {
+function addToCart(product, itemIndex, quantity = 1) {
     if (isItemOutOfStock(product, itemIndex)) {
         notifyOutOfStock();
         return;
     }
     const selected = getSelectedCartItem(product, itemIndex);
     const existing = cartItems.find(item => item.key === selected.key);
-    if (existing) existing.quantity += 1;
-    else cartItems.push({ ...selected, quantity: 1 });
+    const amount = Math.max(1, Number(quantity) || 1);
+    if (existing) existing.quantity += amount;
+    else cartItems.push({ ...selected, quantity: amount });
     saveCartItems();
     showToast(selected.name + ' ditambahkan ke keranjang.', 'success');
 }
@@ -717,16 +719,25 @@ function getFeaturedProducts(products) {
         .slice(0, 4); // Hanya 4 produk terpopuler
 }
 
-    function getWhatsAppMessage(product, itemIndex) {
+    function getWhatsAppMessage(product, itemIndex, quantity = 1) {
         const items = normalizeProductItems(product);
         const item = items[itemIndex] || items[0] || {};
         const title = product.judul_postingan || product.nama || 'produk';
-        const price = item.harga === '' || item.harga === undefined ? '-' : 'Rp' + formatPrice(item.harga || 0);
+        const amount = Math.max(1, Number(quantity) || 1);
+        const unitPrice = item.harga === '' || item.harga === undefined ? null : (Number(item.harga) || 0);
+        const totalPrice = unitPrice !== null ? unitPrice * amount : null;
+        const priceText = totalPrice !== null
+            ? (amount > 1
+                ? 'Rp' + formatPrice(totalPrice) + ' (Rp' + formatPrice(unitPrice) + ' x ' + amount + ')'
+                : 'Rp' + formatPrice(unitPrice))
+            : '-';
         const photo = product.gambar || '';
-        return 'Halo, saya ingin membeli produk dari katalog.\n\n📸 Postingan: ' + title +
+        return 'Halo, saya ingin membeli produk dari katalog.\n\n' +
+            '📸 Postingan: ' + title +
             '\n👕 Produk: ' + (item.nama || title) +
-            '\n💰 Harga: ' + price +
-            '\n📝 Keterangan: ' + (product.keterangan_foto || '-') +
+            '\n🔢 Jumlah: ' + amount +
+            '\n💰 Total Harga: ' + priceText +
+            '\n📝 Deskripsi: ' + (product.deskripsi || product.keterangan_foto || '-') +
             '\n*Ukuran:* ' + (item.ukuran || product.ukuran || '-') +
             ' *Warna:* ' + (item.warna || product.warna || '-') +
             (photo ? '\n🖼️ Foto: ' + photo : '');
@@ -1226,7 +1237,7 @@ function updatePreviewWhatsapp(item, type) {
     const selected = type === 'product' ? (previewProductItems[selectedPreviewItemIndex] || {}) : null;
     whatsapp.href = createWhatsAppUrl(type === 'gallery'
         ? 'Halo, saya tertarik dengan foto galeri: ' + (item.judul || '')
-        : getWhatsAppMessage(item, selectedPreviewItemIndex));
+        : getWhatsAppMessage(item, selectedPreviewItemIndex, previewQuantity));
     const isOutOfStock = type === 'product' && selected?.stok === 'Habis';
     whatsapp.classList.toggle('disabled', isOutOfStock);
     whatsapp.dataset.outOfStock = isOutOfStock ? '1' : '0';
@@ -1239,7 +1250,22 @@ function updatePreviewSelectionDetails() {
     const size = document.getElementById('previewSize');
     const stock = document.getElementById('previewStock');
     const color = document.getElementById('previewColor');
-    if (price) price.textContent = selected.harga === '' || selected.harga === undefined ? '' : 'Rp ' + formatPrice(selected.harga || 0);
+    const minusBtn = document.getElementById('previewQuantityMinus');
+    if (minusBtn) minusBtn.disabled = previewQuantity <= 1;
+
+    const unitPrice = selected.harga === '' || selected.harga === undefined ? null : (Number(selected.harga) || 0);
+    if (price) {
+        if (unitPrice === null) {
+            price.innerHTML = '';
+        } else {
+            const totalPrice = unitPrice * previewQuantity;
+            if (previewQuantity > 1) {
+                price.innerHTML = 'Rp ' + formatPrice(totalPrice) + ' <small class="preview-unit-price">(Rp ' + formatPrice(unitPrice) + ' / pcs)</small>';
+            } else {
+                price.textContent = 'Rp ' + formatPrice(totalPrice);
+            }
+        }
+    }
     if (size) size.textContent = selected.ukuran || '-';
     if (stock) stock.textContent = selected.stok || 'Tersedia';
     if (color) color.textContent = selected.warna || currentPreviewProduct.warna || '-';
@@ -1276,9 +1302,14 @@ function openPreviewModal(item, type = 'product', index = null) {
     if (size) size.textContent = type === 'gallery' ? '' : (item.ukuran || '-');
     if (color) color.textContent = type === 'gallery' ? '' : (item.warna || '-');
     if (stock) stock.textContent = type === 'gallery' ? '' : (item.stok || '-');
+    previewQuantity = 1;
+    const quantityDisplay = document.getElementById('previewQuantity');
+    if (quantityDisplay) quantityDisplay.textContent = '1';
+    const minusBtn = document.getElementById('previewQuantityMinus');
+    if (minusBtn) minusBtn.disabled = true;
     if (description) description.textContent = type === 'gallery'
         ? (item.deskripsi || item.judul || 'Klik tombol WhatsApp untuk menghubungi kami.')
-        : (item.keterangan_foto || 'Klik tombol WhatsApp untuk menghubungi kami.');
+        : (item.deskripsi || item.keterangan_foto || 'Klik tombol WhatsApp untuk menghubungi kami.');
     renderPreviewItems(item);
     if (type === 'product') {
         updatePreviewSelectionDetails();
@@ -1615,9 +1646,24 @@ function removePreviewLightbox() {
 const previewCart = document.getElementById('previewCart');
 if (previewCart) {
     previewCart.addEventListener('click', () => {
-        if (currentPreviewProduct) addToCart(currentPreviewProduct, Number(previewCart.dataset.itemIndex) || 0);
+        if (currentPreviewProduct) addToCart(currentPreviewProduct, Number(previewCart.dataset.itemIndex) || 0, previewQuantity);
     });
 }
+
+const previewQuantityMinus = document.getElementById('previewQuantityMinus');
+const previewQuantityPlus = document.getElementById('previewQuantityPlus');
+function changePreviewQuantity(change) {
+    if (!currentPreviewProduct) return;
+    previewQuantity = Math.max(1, Math.min(99, previewQuantity + change));
+    const quantityDisplay = document.getElementById('previewQuantity');
+    if (quantityDisplay) quantityDisplay.textContent = String(previewQuantity);
+    const minusBtn = document.getElementById('previewQuantityMinus');
+    if (minusBtn) minusBtn.disabled = previewQuantity <= 1;
+    updatePreviewSelectionDetails();
+    updatePreviewWhatsapp(currentPreviewProduct, 'product');
+}
+if (previewQuantityMinus) previewQuantityMinus.addEventListener('click', () => changePreviewQuantity(-1));
+if (previewQuantityPlus) previewQuantityPlus.addEventListener('click', () => changePreviewQuantity(1));
 
 function navigateGallery(direction) {
     if (currentGalleryIndex === null) return;
