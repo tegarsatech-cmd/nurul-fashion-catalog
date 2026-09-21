@@ -2004,6 +2004,10 @@ i.fa-map-marker-alt,
     justify-content: center;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
 }
 .modal-close:hover {
     background: #fdf2f8;
@@ -2071,6 +2075,7 @@ i.fa-map-marker-alt,
 }
 
 .cart-modal-content {
+    position: relative;
     width: min(540px, calc(100% - 28px));
     max-height: min(720px, calc(100vh - 36px));
     max-height: min(720px, calc(100svh - 36px));
@@ -3964,3 +3969,21 @@ img {
     }
 }
 
+
+
+/* Sidebar Close Button */
+.nav-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 36px;
+    color: var(--meta-ink-deep);
+    cursor: pointer;
+    display: none;
+    z-index: 1000;
+}
+@media (max-width: 992px) {
+    .nav-close { display: block; }
+}

@@ -453,6 +453,9 @@ if (navToggle && navMenu) {
     });
 
     // Tutup menu saat link mana pun diklik (termasuk .btn-admin)
+    const navClose = document.getElementById('navClose');
+    if (navClose) navClose.addEventListener('click', () => setNavMenuOpen(false));
+
     navMenu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             setNavMenuOpen(false);
