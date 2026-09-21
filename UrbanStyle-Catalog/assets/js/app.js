@@ -636,7 +636,7 @@ function createProductCard(product, tier = null) {
             '<div class="product-category">Cocok untuk: ' + (product.kategori || '-') + '</div>' +
             '<h3 class="product-name">' + title + '</h3>' +
             (firstItem.harga === '' || firstItem.harga === undefined ? '' : '<div class="product-price" data-product-price>Rp ' + formatPrice(firstItem.harga || 0) + (items.filter(item => item.harga !== '').length > 1 ? ' <small>dan lainnya</small>' : '') + '</div>') +
-            (colors.length > 0 ? '<div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div><span class="product-color-status" data-color-status aria-live="polite"></span>' : '') +
+            (colors.length > 0 ? '<span class="product-color-status">Tersedia macam warna</span><div class="product-colors" data-product-colors aria-label="Warna produk">' + colors.map(c => '<button type="button" class="color-dot" data-color-name="' + c.replace(/"/g, '&quot;') + '" style="background:' + getColorVisual(c) + '" title="WARNA: ' + c + '" aria-label="WARNA: ' + c + '"></button>').join('') + '</div>' : '') +
             '</div>' +
             '</div>';
     } catch (cardError) {
@@ -792,14 +792,9 @@ function getFeaturedProducts(products) {
                     select.dispatchEvent(new Event('change', { bubbles: true }));
                 }
                 const selectedItem = items[matchIndex] || items[0] || {};
-                const status = card.querySelector('[data-color-status]');
-                if (status) {
-                    status.textContent = 'Stok warna ' + colorButton.dataset.colorName + ': ' + (selectedItem.stok || 'Tersedia');
-                    status.classList.toggle('habis', selectedItem.stok === 'Habis');
-                }
+                void selectedItem;
             }
 
-            showToast('Warna: ' + colorButton.dataset.colorName + ' · ' + ((product && normalizeProductItems(product).find(item => (item.warna || '').toLowerCase().includes(clickedColor))?.stok) || 'Tersedia'), 'info');
         });
         container.addEventListener('click', event => {
             const cartButton = event.target.closest('.btn-cart[data-cart-product-id]');
