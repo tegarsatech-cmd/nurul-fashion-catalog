@@ -14,7 +14,7 @@
 // ============================================
 import { defineConfig } from 'vite';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,7 +22,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Vite root = parent (c:/maulidah) agar konsisten.
 export default defineConfig(async ({ command }) => {
   // Ambil konfigurasi root (c:/maulidah/vite.config.js)
-  const { default: rootConfig } = await import(path.resolve(__dirname, '../vite.config.js'));
+  const rootConfigPath = pathToFileURL(path.resolve(__dirname, '../vite.config.js')).href;
+  const { default: rootConfig } = await import(rootConfigPath);
 
   // Jika rootConfig adalah function/object, bungkus ulang dengan root yang benar.
   // Root config sudah mengarahkan root ke UrbanStyle-Catalog,
