@@ -217,9 +217,12 @@
                 <button type="button" class="modal-close" id="closePreviewModal" aria-label="Tutup preview">&times;</button>
             </div>
             <div class="preview-body">
-                <!-- Foto khusus galeri, disembunyikan pada produk review -->
-                <div class="preview-gallery-image" id="previewGalleryImageWrapper">
-                    <img id="previewImage" src="" alt="Preview Galeri" loading="lazy">
+                <!-- Foto Produk / Galeri Lebih Besar & Responsif -->
+                <div class="preview-image" id="previewImageWrapper">
+                    <img id="previewImage" src="" alt="Foto Produk" loading="lazy">
+                    <span class="preview-zoom-hint" title="Tap untuk memperbesar layar penuh">
+                        <i class="fas fa-search-plus"></i> <span>Perbesar Foto</span>
+                    </span>
                 </div>
                 <div class="preview-details">
                     <p class="preview-price" id="previewPrice"></p>
@@ -238,9 +241,9 @@
                         </div>
                     </div>
                     <div class="preview-actions">
-                        <button type="button" class="btn btn-cart preview-cart" id="previewCart" aria-label="Tambah produk terpilih ke keranjang">
+                        <button type="button" class="btn btn-cart preview-cart" id="previewCart" title="Tambah ke keranjang" aria-label="Tambah produk terpilih ke keranjang">
                             <i class="fas fa-shopping-cart"></i>
-                            <span>Keranjang</span>
+                            <span class="cart-btn-label">Keranjang</span>
                         </button>
                         <a id="previewWhatsapp" class="btn btn-whatsapp preview-whatsapp" href="#" target="_blank">
                             <i class="fab fa-whatsapp"></i>
