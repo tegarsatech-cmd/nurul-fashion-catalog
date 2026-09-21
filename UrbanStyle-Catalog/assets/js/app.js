@@ -1220,7 +1220,6 @@ function renderPreviewItems(product) {
     container.innerHTML = pricedItems.length <= 1 ? '' : '<h4>Pilihan Varian</h4>' + pricedItems.map((entry, buttonIndex) =>
         '<button type="button" class="preview-item' + (buttonIndex === 0 ? ' selected' : '') + '" data-item-index="' + entry.index + '">' +
         '<span>' + (entry.item.nama || 'Model ' + (entry.index + 1)) + '</span>' +
-        '<small>' + (entry.item.ukuran ? 'Ukuran: ' + entry.item.ukuran + ' · ' : '') + (entry.item.warna ? 'Warna: ' + entry.item.warna + ' · ' : '') + 'Stok: ' + (entry.item.stok || 'Tersedia') + '</small>' +
         (entry.item.harga === '' ? '' : '<strong>Rp ' + formatPrice(entry.item.harga || 0) + '</strong>') +
         '</button>'
     ).join('');
