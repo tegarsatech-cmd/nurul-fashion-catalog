@@ -281,7 +281,7 @@ function notifyOutOfStock() {
 
 function applyWhatsAppNumber(value) {
     const normalizedNumber = normalizeWhatsAppNumber(value);
-    if (normalizedNumber === storeWaNumber) return;
+    /* if (normalizedNumber === storeWaNumber) return; */
     storeWaNumber = normalizedNumber;
     const waBtn = document.getElementById('waButton');
     if (waBtn) waBtn.href = createWhatsAppUrl();

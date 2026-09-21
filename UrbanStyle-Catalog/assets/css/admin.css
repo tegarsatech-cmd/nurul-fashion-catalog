@@ -968,6 +968,7 @@ input:disabled {
     gap: 8px;
     opacity: 0;
     transition: var(--transition);
+    z-index: 2;
 }
 
 .galeri-admin-item:hover .galeri-actions {

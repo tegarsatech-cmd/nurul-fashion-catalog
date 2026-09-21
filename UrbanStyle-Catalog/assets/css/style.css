@@ -1990,6 +1990,27 @@ i.fa-map-marker-alt,
     display: flex;
 }
 
+.modal-close {
+    background: var(--meta-surface-soft);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+    color: var(--meta-ink-deep);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.modal-close:hover {
+    background: #fdf2f8;
+    color: #EC4899;
+    transform: scale(1.05);
+}
+
 /* =========================================================
    DEFINITIVE CART SYSTEM (FLOATING ICON BUTTON & MODAL)
    ========================================================= */

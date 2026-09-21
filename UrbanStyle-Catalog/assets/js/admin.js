@@ -55,6 +55,7 @@ function validateWhatsAppNumber(num) {
 function validateUrl(url, allowEmpty = true) {
     const val = String(url || '').trim();
     if (!val && allowEmpty) return true;
+    if (val.toLowerCase().startsWith('<iframe')) return true;
     try {
         const parsed = new URL(val);
         return parsed.protocol === 'http:' || parsed.protocol === 'https:';
