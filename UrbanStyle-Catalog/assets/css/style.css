@@ -4397,6 +4397,105 @@ img {
     }
 }
 
+/* Detail produk compact: varian terlihat sekaligus tanpa scroll pada perangkat umum. */
+#previewModal:not(.gallery-preview) .preview-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    margin: 4px 0;
+    min-width: 0;
+}
+
+#previewModal:not(.gallery-preview) .preview-items h4 {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+#previewModal:not(.gallery-preview) .preview-item {
+    min-height: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 6px 7px;
+    gap: 2px;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+#previewModal:not(.gallery-preview) .preview-item span {
+    min-width: 0;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#previewModal:not(.gallery-preview) .preview-item small,
+#previewModal:not(.gallery-preview) .preview-item strong {
+    font-size: 10px;
+}
+
+@media (min-width: 769px) {
+    #previewModal:not(.gallery-preview) .modal-content.preview-modal-content {
+        max-height: calc(100vh - 24px);
+        overflow: hidden;
+        padding: 16px 18px;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-body {
+        gap: 14px;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-image,
+    #previewModal:not(.gallery-preview) .preview-image img {
+        max-height: min(38vh, 300px);
+    }
+
+    #previewModal:not(.gallery-preview) .preview-details {
+        gap: 4px;
+        min-width: 0;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 768px) {
+    #previewModal:not(.gallery-preview) .modal-content.preview-modal-content {
+        max-height: calc(100vh - 16px);
+        overflow: hidden;
+        padding: 12px 12px 10px;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-body {
+        gap: 8px;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        margin: 3px 0;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-image,
+    #previewModal:not(.gallery-preview) .preview-image img {
+        max-height: 145px;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-details {
+        gap: 4px;
+    }
+
+    #previewModal:not(.gallery-preview) .preview-whatsapp {
+        min-height: 42px;
+        padding: 9px 12px;
+        margin-top: 3px;
+    }
+}
+
 /* Final katalog card state: warna tetap terlihat, spesifikasi dan aksi tetap di modal. */
 .product-color-status {
     display: block;

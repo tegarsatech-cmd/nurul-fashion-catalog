@@ -1229,7 +1229,6 @@ function renderPreviewItems(product) {
 function updatePreviewWhatsapp(item, type) {
     const whatsapp = document.getElementById('previewWhatsapp');
     if (!whatsapp) return;
-    const title = item.judul_postingan || item.nama || '';
     const selected = type === 'product' ? (previewProductItems[selectedPreviewItemIndex] || {}) : null;
     whatsapp.href = createWhatsAppUrl(type === 'gallery'
         ? 'Halo, saya tertarik dengan foto galeri: ' + (item.judul || '')
@@ -1319,11 +1318,12 @@ if (previewItems) {
     previewItems.addEventListener('click', (event) => {
         const button = event.target.closest('.preview-item');
         if (!button) return;
-        selectedPreviewItemIndex = Number(button.dataset.itemIndex);
-        previewItems.querySelectorAll('.preview-item').forEach(item => item.classList.remove('selected'));
+        const nextIndex = Number(button.dataset.itemIndex);
+        if (nextIndex === selectedPreviewItemIndex && button.classList.contains('selected')) return;
+        selectedPreviewItemIndex = nextIndex;
+        previewItems.querySelectorAll('.preview-item.selected').forEach(item => item.classList.remove('selected'));
         button.classList.add('selected');
         if (currentPreviewProduct) {
-            const selected = previewProductItems[selectedPreviewItemIndex] || {};
             updatePreviewSelectionDetails();
             updatePreviewWhatsapp(currentPreviewProduct, 'product');
         }
