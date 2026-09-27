@@ -219,6 +219,9 @@ onAuthStateChanged(async (user) => {
 // ===== Logout =====
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
+    if (!confirm('Apakah Anda yakin ingin keluar (logout) dari panel admin?')) {
+        return;
+    }
     try { 
         await signOut(); 
         window.location.href = 'login.html';
@@ -245,6 +248,9 @@ if (accountPasswordForm) {
         }
         if (!currentUser?.email) {
             showToast('Sesi login tidak ditemukan. Silakan login kembali.', 'error');
+            return;
+        }
+        if (!confirm('Apakah Anda yakin ingin memperbarui password akun admin ini?')) {
             return;
         }
         const submitButton = accountPasswordForm.querySelector('button[type="submit"]');
@@ -669,7 +675,7 @@ window.editProduk = async function(id) {
 };
 
 window.hapusProduk = async function(id) {
-    if (!confirm('Hapus produk ini?')) return;
+    if (!confirm('Apakah Anda yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.')) return;
     try {
         const { error } = await supabase.from('products').delete().eq('id', id);
         if (error) throw error;
@@ -698,13 +704,28 @@ document.getElementById('produkForm').addEventListener('submit', async (e) => {
     const btn = e.target.querySelector('button[type="submit"]');
     const items = collectProductItems();
     if (items === null) return;
-    const title = sanitizeInput(document.getElementById('produkJudul').value);
+    const title = sanitizeInput(document.getElementById('produkJudul').value.trim());
+    const kategori = sanitizeInput(document.getElementById('produkKategori').value);
+    if (!title && (!items || items.length === 0 || !items[0]?.nama)) {
+        showToast('Judul produk atau nama barang wajib diisi.', 'warning');
+        return;
+    }
+    if (!kategori) {
+        showToast('Silakan pilih kelompok usia / kategori terlebih dahulu.', 'warning');
+        return;
+    }
+    const isEdit = Boolean(editId);
+    const confirmMsg = isEdit 
+        ? 'Apakah Anda yakin ingin menyimpan perubahan pada produk ini?' 
+        : 'Apakah Anda yakin ingin menambahkan produk baru ini ke katalog?';
+    if (!confirm(confirmMsg)) return;
+
     const data = {
         nama: title || items[0]?.nama || 'Koleksi Produk',
         judul_postingan: title || items[0]?.nama || 'Koleksi Produk',
         keterangan_foto: sanitizeInput(document.getElementById('produkDeskripsi').value),
         items,
-        kategori: sanitizeInput(document.getElementById('produkKategori').value),
+        kategori: kategori,
         harga: items[0]?.harga === '' || items[0]?.harga === undefined ? 0 : Number(items[0].harga) || 0,
         stok: items[0]?.stok || 'Tersedia',
         ukuran: sanitizeInput(document.getElementById('produkUkuran').value),
@@ -829,7 +850,7 @@ window.editKategori = async function(id) {
 };
 
 window.hapusKategori = async function(id) {
-    if (!confirm('Hapus kategori ini?')) return;
+    if (!confirm('Apakah Anda yakin ingin menghapus kelompok usia ini?')) return;
     try {
         const { error } = await supabase.from('categories').delete().eq('id', id);
         if (error) throw error;
@@ -849,6 +870,12 @@ document.getElementById('kategoriForm').addEventListener('submit', async (e) => 
         showToast('Nama kelompok usia wajib diisi.', 'warning');
         return;
     }
+    const isEdit = Boolean(editId);
+    const confirmMsg = isEdit 
+        ? 'Apakah Anda yakin ingin menyimpan perubahan pada kelompok usia ini?' 
+        : 'Apakah Anda yakin ingin menambahkan kelompok usia baru ini?';
+    if (!confirm(confirmMsg)) return;
+
     const iconKategori = sanitizeInput(document.getElementById('kategoriIcon').value) || 'fas fa-tag';
     const data = { nama: namaKategori, icon: iconKategori };
     try {
@@ -977,7 +1004,7 @@ window.editGaleri = async function(id) {
 };
 
 window.hapusGaleri = async function(id) {
-    if (!confirm('Hapus foto ini?')) return;
+    if (!confirm('Apakah Anda yakin ingin menghapus foto galeri ini? Tindakan ini tidak dapat dibatalkan.')) return;
     try {
         const { error } = await supabase.from('gallery').delete().eq('id', id);
         if (error) throw error;
@@ -1010,6 +1037,12 @@ document.getElementById('galeriForm').addEventListener('submit', async (e) => {
         showToast('Judul foto wajib diisi.', 'warning');
         return;
     }
+    const isEdit = Boolean(editId);
+    const confirmMsg = isEdit 
+        ? 'Apakah Anda yakin ingin menyimpan perubahan pada foto galeri ini?' 
+        : 'Apakah Anda yakin ingin menambahkan foto galeri baru ini?';
+    if (!confirm(confirmMsg)) return;
+
     if (!editId) {
         data.created_at = new Date().toISOString();
     }
@@ -1154,7 +1187,7 @@ window.editBanner = async function(id) {
 };
 
 window.hapusBanner = async function(id) {
-    if (!confirm('Hapus foto banner ini dari latar belakang halaman Home?')) return;
+    if (!confirm('Apakah Anda yakin ingin menghapus foto banner ini dari latar belakang halaman Home?')) return;
     try {
         const { error } = await supabase.from('gallery').delete().eq('id', id);
         if (error) throw error;
@@ -1193,6 +1226,12 @@ document.getElementById('bannerForm')?.addEventListener('submit', async (e) => {
         showToast('Judul / label banner wajib diisi.', 'warning');
         return;
     }
+    const isEdit = Boolean(editId);
+    const confirmMsg = isEdit 
+        ? 'Apakah Anda yakin ingin menyimpan perubahan banner ini?' 
+        : 'Apakah Anda yakin ingin menambahkan banner baru ini?';
+    if (!confirm(confirmMsg)) return;
+
     const judul = '[BANNER] ' + rawJudul;
     const payload = { judul: judul };
 
@@ -1243,6 +1282,9 @@ document.getElementById('btnEditKontak')?.addEventListener('click', function() {
 });
 
 document.getElementById('btnLogoutProfile')?.addEventListener('click', async function() {
+    if (!confirm('Apakah Anda yakin ingin keluar (logout) dari panel admin?')) {
+        return;
+    }
     try {
         await signOut();
         window.location.href = 'login.html';
@@ -1327,6 +1369,10 @@ document.getElementById('btnSaveKontak').addEventListener('click', async functio
     const mapsVal = document.getElementById('adminMapsUrl').value.trim();
     if (!validateUrl(igVal) || !validateUrl(fbVal) || !validateUrl(ttVal) || !validateUrl(mapsVal)) {
         showToast('Link media sosial / Google Maps harus berupa URL valid (diawali https:// atau http://).', 'warning');
+        return;
+    }
+
+    if (!confirm('Apakah Anda yakin ingin menyimpan perubahan pengaturan toko dan kontak ini?')) {
         return;
     }
 

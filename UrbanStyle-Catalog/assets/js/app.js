@@ -85,6 +85,10 @@ function addToCart(product, itemIndex, quantity = 1) {
     const selected = getSelectedCartItem(product, itemIndex);
     const existing = cartItems.find(item => item.key === selected.key);
     const amount = Math.max(1, Number(quantity) || 1);
+    const descInfo = selected.size || selected.color ? ' (' + [selected.size, selected.color].filter(Boolean).join(', ') + ')' : '';
+    if (!confirm('Tambahkan "' + selected.name + '"' + descInfo + ' sebanyak ' + amount + ' pcs ke keranjang belanja?')) {
+        return;
+    }
     if (existing) existing.quantity += amount;
     else cartItems.push({ ...selected, quantity: amount });
     saveCartItems();
@@ -94,6 +98,15 @@ function addToCart(product, itemIndex, quantity = 1) {
 function updateCartQuantity(key, change) {
     const item = cartItems.find(entry => entry.key === key);
     if (!item) return;
+    if (change < 0 && item.quantity <= 1) {
+        if (!confirm('Apakah Anda yakin ingin menghapus "' + item.name + '" dari keranjang belanja?')) {
+            return;
+        }
+        cartItems = cartItems.filter(entry => entry.key !== key);
+        saveCartItems();
+        showToast('"' + item.name + '" dihapus dari keranjang.', 'info');
+        return;
+    }
     item.quantity += change;
     if (item.quantity <= 0) cartItems = cartItems.filter(entry => entry.key !== key);
     saveCartItems();
@@ -147,7 +160,13 @@ function setupCart() {
     button.addEventListener('click', () => toggle(true));
     close?.addEventListener('click', () => toggle(false));
     clear?.addEventListener('click', () => {
-        if (cartItems.length === 0) return;
+        if (cartItems.length === 0) {
+            showToast('Keranjang belanja sudah kosong.', 'info');
+            return;
+        }
+        if (!confirm('Apakah Anda yakin ingin mengosongkan semua produk di keranjang belanja?')) {
+            return;
+        }
         cartItems = [];
         saveCartItems();
         showToast('Keranjang berhasil dikosongkan.', 'success');
@@ -161,7 +180,13 @@ function setupCart() {
     checkout?.addEventListener('click', event => {
         if (cartItems.length === 0) {
             event.preventDefault();
-            showToast('Keranjang masih kosong.', 'warning');
+            showToast('Keranjang masih kosong. Silakan pilih produk terlebih dahulu.', 'warning');
+            return;
+        }
+        const total = formatPrice(cartTotalValue());
+        const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        if (!confirm('Apakah Anda yakin ingin melanjutkan pesanan (' + count + ' item, Total: Rp ' + total + ') ke WhatsApp admin?')) {
+            event.preventDefault();
             return;
         }
         window.open(createWhatsAppUrl(getCartCheckoutMessage()), '_blank', 'noopener,noreferrer');
@@ -821,12 +846,19 @@ function getFeaturedProducts(products) {
             if (!link) return;
             const product = allProductsData.find(item => item.id === link.dataset.productId);
             if (!product) return;
-            if (isItemOutOfStock(product, Number(link.dataset.itemIndex) || 0)) {
+            const itemIdx = Number(link.dataset.itemIndex) || 0;
+            if (isItemOutOfStock(product, itemIdx)) {
                 event.preventDefault();
                 notifyOutOfStock();
                 return;
             }
-            link.href = createWhatsAppUrl(getWhatsAppMessage(product, Number(link.dataset.itemIndex) || 0));
+            const prodItem = normalizeProductItems(product)[itemIdx] || {};
+            const prodName = prodItem.nama || product.nama || 'produk ini';
+            if (!confirm('Apakah Anda yakin ingin memesan "' + prodName + '" via WhatsApp admin?')) {
+                event.preventDefault();
+                return;
+            }
+            link.href = createWhatsAppUrl(getWhatsAppMessage(product, itemIdx));
             trackWhatsAppClick(product.id);
         });
         container.dataset.whatsappListenerAttached = '1';
@@ -1364,6 +1396,11 @@ if (previewWhatsapp) {
         if (previewWhatsapp.dataset.outOfStock === '1') {
             event.preventDefault();
             notifyOutOfStock();
+            return;
+        }
+        const title = currentPreviewProduct?.judul_postingan || currentPreviewProduct?.nama || 'produk ini';
+        if (!confirm('Apakah Anda yakin ingin memesan "' + title + '" via WhatsApp admin?')) {
+            event.preventDefault();
             return;
         }
         if (previewWhatsapp.dataset.productId) trackWhatsAppClick(previewWhatsapp.dataset.productId);

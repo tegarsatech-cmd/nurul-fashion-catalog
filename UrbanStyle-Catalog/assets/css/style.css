@@ -3989,22 +3989,42 @@ img {
 }
 
 
-/* ===== BUKU PANDUAN BELANJA SECTION ===== */
+/* ===== BUKU PANDUAN BELANJA SECTION (COMPACT & PROPORTIONAL) ===== */
 .panduan-section {
     background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #f0f9ff 70%, #fdf2f8 100%);
     position: relative;
     overflow: hidden;
-    padding: var(--meta-spacing-section-lg) 0;
+    padding: 36px 0;
+}
+
+.panduan-section .section-header {
+    margin-bottom: 20px;
+}
+
+.panduan-section .section-header h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.panduan-section .section-header p {
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.panduan-section .section-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    margin-bottom: 6px;
 }
 
 .panduan-section::before {
     content: '';
     position: absolute;
-    top: -60px;
-    right: -60px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255, 20, 147, 0.08) 0%, transparent 70%);
+    top: -40px;
+    right: -40px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(255, 20, 147, 0.06) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -4012,11 +4032,11 @@ img {
 .panduan-section::after {
     content: '';
     position: absolute;
-    bottom: -40px;
-    left: -40px;
-    width: 160px;
-    height: 160px;
-    background: radial-gradient(circle, rgba(255, 105, 180, 0.06) 0%, transparent 70%);
+    bottom: -30px;
+    left: -30px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(255, 105, 180, 0.05) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -4024,39 +4044,39 @@ img {
 .panduan-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    max-width: 1000px;
+    gap: 12px;
+    max-width: 860px;
     margin: 0 auto;
 }
 
 .panduan-card {
     background: var(--meta-canvas);
-    border-radius: var(--meta-rounded-xl);
+    border-radius: 10px;
     border: 1px solid var(--meta-hairline-soft);
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .panduan-card:hover {
-    box-shadow: 0 6px 20px rgba(255, 20, 147, 0.1);
+    box-shadow: 0 4px 14px rgba(255, 20, 147, 0.08);
     border-color: var(--meta-primary-soft);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 .panduan-card.active {
     border-color: var(--meta-primary);
-    box-shadow: 0 8px 28px rgba(255, 20, 147, 0.15);
+    box-shadow: 0 4px 18px rgba(255, 20, 147, 0.12);
 }
 
 .panduan-card-header {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 18px 20px;
+    gap: 10px;
+    padding: 10px 14px;
     cursor: pointer;
     user-select: none;
-    transition: background 0.2s ease;
+    transition: background 0.15s ease;
 }
 
 .panduan-card-header:hover {
@@ -4064,23 +4084,23 @@ img {
 }
 
 .panduan-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--meta-rounded-lg);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 13px;
     color: var(--meta-canvas);
     background: linear-gradient(135deg, var(--meta-primary), var(--meta-primary-soft));
     flex-shrink: 0;
-    box-shadow: 0 3px 10px rgba(255, 20, 147, 0.25);
+    box-shadow: 0 2px 6px rgba(255, 20, 147, 0.2);
 }
 
 .panduan-card-header h3 {
     flex: 1;
     font-family: var(--font-primary);
-    font-size: 15px;
+    font-size: 13.5px;
     font-weight: 600;
     color: var(--meta-ink-deep);
     margin: 0;
@@ -4088,9 +4108,9 @@ img {
 }
 
 .panduan-arrow {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--meta-stone);
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
     flex-shrink: 0;
 }
 
@@ -4102,28 +4122,28 @@ img {
 .panduan-card-body {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
-    padding: 0 20px;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease;
+    padding: 0 14px;
 }
 
 .panduan-card.active .panduan-card-body {
-    max-height: 600px;
-    padding: 0 20px 20px;
+    max-height: 550px;
+    padding: 0 14px 12px;
 }
 
 .panduan-card-body ol,
 .panduan-card-body ul.panduan-list {
-    padding-left: 20px;
+    padding-left: 16px;
     margin: 0;
 }
 
 .panduan-card-body ol li,
 .panduan-card-body ul.panduan-list li {
     font-family: var(--font-primary);
-    font-size: 13.5px;
+    font-size: 12px;
     color: var(--meta-charcoal);
-    line-height: 1.7;
-    margin-bottom: 6px;
+    line-height: 1.55;
+    margin-bottom: 4px;
 }
 
 .panduan-card-body ol li strong,
@@ -4134,8 +4154,8 @@ img {
 
 .panduan-table-wrapper {
     overflow-x: auto;
-    margin-bottom: 12px;
-    border-radius: var(--meta-rounded-lg);
+    margin-bottom: 8px;
+    border-radius: 6px;
     border: 1px solid var(--meta-hairline-soft);
 }
 
@@ -4143,7 +4163,7 @@ img {
     width: 100%;
     border-collapse: collapse;
     font-family: var(--font-primary);
-    font-size: 13px;
+    font-size: 11.5px;
 }
 
 .panduan-table thead {
@@ -4153,11 +4173,11 @@ img {
 .panduan-table thead th {
     color: white;
     font-weight: 600;
-    padding: 10px 14px;
+    padding: 6px 8px;
     text-align: center;
-    font-size: 12.5px;
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
 }
 
 .panduan-table tbody tr {
@@ -4165,96 +4185,142 @@ img {
 }
 
 .panduan-table tbody tr:nth-child(even) {
-    background: rgba(255, 20, 147, 0.03);
+    background: rgba(255, 20, 147, 0.025);
 }
 
 .panduan-table tbody tr:hover {
-    background: rgba(255, 20, 147, 0.07);
+    background: rgba(255, 20, 147, 0.06);
 }
 
 .panduan-table tbody td {
-    padding: 9px 14px;
+    padding: 5px 8px;
     text-align: center;
     color: var(--meta-charcoal);
     border-bottom: 1px solid var(--meta-hairline-soft);
-    font-size: 13px;
+    font-size: 11.5px;
 }
 
 .panduan-note {
     font-family: var(--font-primary);
-    font-size: 12.5px;
+    font-size: 11px;
     color: var(--meta-steel);
-    background: rgba(255, 20, 147, 0.05);
+    background: rgba(255, 20, 147, 0.04);
     border-left: 3px solid var(--meta-primary-soft);
-    padding: 10px 14px;
-    border-radius: 0 var(--meta-rounded-md) var(--meta-rounded-md) 0;
-    margin-top: 12px;
-    line-height: 1.6;
+    padding: 6px 10px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 8px;
+    line-height: 1.45;
 }
 
 .panduan-note i {
     color: var(--meta-primary);
-    margin-right: 6px;
+    margin-right: 5px;
+    font-size: 11px;
 }
 
 /* Panduan Responsive */
 @media (max-width: 768px) {
+    .panduan-section {
+        padding: 26px 0;
+    }
+
+    .panduan-section .section-header {
+        margin-bottom: 16px;
+    }
+
+    .panduan-section .section-header h2 {
+        font-size: 19px;
+    }
+
     .panduan-grid {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 8px;
     }
     
     .panduan-card-header {
-        padding: 14px 16px;
-        gap: 12px;
+        padding: 9px 12px;
+        gap: 9px;
     }
     
     .panduan-icon {
-        width: 38px;
-        height: 38px;
-        font-size: 16px;
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+        border-radius: 6px;
     }
     
     .panduan-card-header h3 {
-        font-size: 14px;
+        font-size: 12.5px;
+    }
+
+    .panduan-arrow {
+        font-size: 10px;
     }
     
     .panduan-card-body {
-        padding: 0 16px;
+        padding: 0 12px;
     }
     
     .panduan-card.active .panduan-card-body {
-        padding: 0 16px 16px;
+        padding: 0 12px 10px;
     }
     
     .panduan-card-body ol li,
     .panduan-card-body ul.panduan-list li {
-        font-size: 13px;
+        font-size: 11.5px;
+        line-height: 1.45;
+        margin-bottom: 3px;
     }
     
     .panduan-table thead th {
-        padding: 8px 10px;
-        font-size: 11.5px;
+        padding: 5px 6px;
+        font-size: 10px;
     }
     
     .panduan-table tbody td {
-        padding: 7px 10px;
-        font-size: 12px;
+        padding: 4px 6px;
+        font-size: 10.5px;
+    }
+
+    .panduan-note {
+        font-size: 10.5px;
+        padding: 5px 8px;
+        margin-top: 6px;
     }
 }
 
 @media (max-width: 480px) {
     .panduan-section {
-        padding: var(--meta-spacing-section-sm) 0;
+        padding: 20px 0;
     }
     
+    .panduan-card-header {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
     .panduan-card-header h3 {
-        font-size: 13.5px;
+        font-size: 12px;
     }
     
     .panduan-icon {
-        width: 34px;
-        height: 34px;
-        font-size: 14px;
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+    }
+
+    .panduan-card-body ol li,
+    .panduan-card-body ul.panduan-list li {
+        font-size: 11px;
+    }
+
+    .panduan-table thead th {
+        padding: 4px 5px;
+        font-size: 9.5px;
+    }
+
+    .panduan-table tbody td {
+        padding: 4px 5px;
+        font-size: 10px;
     }
 }
