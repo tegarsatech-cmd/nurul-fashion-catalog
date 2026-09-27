@@ -1728,3 +1728,21 @@ if (document.readyState === 'loading') {
 } else {
     initApp();
 }
+
+// ===== BUKU PANDUAN BELANJA - Accordion Toggle =====
+function togglePanduan(headerEl) {
+    const card = headerEl.closest('.panduan-card');
+    if (!card) return;
+    
+    // Close other open cards (accordion behavior)
+    const allCards = document.querySelectorAll('.panduan-card.active');
+    allCards.forEach(function(c) {
+        if (c !== card) c.classList.remove('active');
+    });
+    
+    // Toggle current card
+    card.classList.toggle('active');
+}
+
+// Expose to global scope (needed for onclick in HTML since app.js is an ES module)
+window.togglePanduan = togglePanduan;
