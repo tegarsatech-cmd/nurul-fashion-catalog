@@ -45,7 +45,7 @@
                 <button type="button" class="nav-close" id="navClose" aria-label="Tutup menu">&times;</button>
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#katalog" class="nav-link">Katalog</a></li>
-                <li><a href="#panduan" class="nav-link">Panduan</a></li>
+                <li><a href="#panduanModal" class="nav-link" id="navPanduanLink">Panduan</a></li>
                 <li><a href="#galeri" class="nav-link">Galeri</a></li>
                 <li><a href="#kontak" class="nav-link">Kontak</a></li>
                 <li><a href="admin.html" class="btn-admin"><i class="fas fa-crown"></i> Dashboard Admin</a></li>
@@ -75,6 +75,7 @@
             <p data-aos="fade-up" data-aos-delay="600">Tampilkan karakter terbaik melalui kurasi fashion modern berkualitas dengan kenyamanan maksimal.</p>
             <div class="hero-buttons" data-aos="fade-up" data-aos-delay="800">
                 <a href="#katalog" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Lihat Koleksi</a>
+                <button type="button" class="btn btn-panduan" id="openPanduanHero"><i class="fas fa-book-open"></i> Buku Panduan</button>
                 <a href="#kontak" class="btn btn-secondary"><i class="fas fa-phone-alt"></i> Hubungi Kami</a>
             </div>
         </div>
@@ -110,128 +111,133 @@
     </section>
 
 
-    <!-- BUKU PANDUAN BELANJA -->
-    <section class="panduan-section section" id="panduan">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <span class="section-badge"><i class="fas fa-book-open"></i> Buku Panduan</span>
-                <h2>Panduan <span class="pink-text">Belanja</span></h2>
-                <p>Semua yang perlu kamu tahu sebelum berbelanja di Nurul Fashion</p>
+    <!-- MODAL BUKU PANDUAN BELANJA -->
+    <div class="panduan-modal modal" id="panduanModal" aria-hidden="true" role="dialog" aria-labelledby="panduanModalTitle">
+        <div class="panduan-modal-content">
+            <div class="panduan-modal-header">
+                <div class="panduan-header-title">
+                    <span class="panduan-badge"><i class="fas fa-book-open"></i> BUKU PANDUAN</span>
+                    <h2 id="panduanModalTitle">Panduan <span class="pink-text">Belanja</span></h2>
+                </div>
+                <button type="button" class="modal-close" id="closePanduanModal" aria-label="Tutup panduan">&times;</button>
             </div>
-            <div class="panduan-grid" data-aos="fade-up" data-aos-delay="100">
-                <!-- 1. Cara Order -->
-                <div class="panduan-card" id="panduanOrder">
-                    <div class="panduan-card-header" onclick="togglePanduan(this)">
-                        <div class="panduan-icon"><i class="fas fa-shopping-bag"></i></div>
-                        <h3>Cara Order</h3>
-                        <i class="fas fa-chevron-down panduan-arrow"></i>
-                    </div>
-                    <div class="panduan-card-body">
-                        <ol>
-                            <li><strong>Pilih produk</strong> - Browse katalog, klik produk untuk lihat detail.</li>
-                            <li><strong>Pilih jumlah</strong> - Atur jumlah beli di halaman detail produk.</li>
-                            <li><strong>Tambah ke keranjang</strong> atau langsung klik <strong>"Hubungi WhatsApp"</strong>.</li>
-                            <li><strong>Checkout via WhatsApp</strong> - Format pesanan otomatis terkirim ke admin.</li>
-                            <li><strong>Konfirmasi &amp; bayar</strong> - Admin akan membalas untuk konfirmasi dan info pembayaran.</li>
-                        </ol>
-                    </div>
-                </div>
-                <!-- 2. Panduan Ukuran Berdasarkan Umur -->
-                <div class="panduan-card" id="panduanUkuran">
-                    <div class="panduan-card-header" onclick="togglePanduan(this)">
-                        <div class="panduan-icon"><i class="fas fa-ruler-combined"></i></div>
-                        <h3>Panduan Ukuran (Berdasarkan Umur)</h3>
-                        <i class="fas fa-chevron-down panduan-arrow"></i>
-                    </div>
-                    <div class="panduan-card-body">
-                        <div class="panduan-table-wrapper">
-                            <table class="panduan-table">
-                                <thead>
-                                    <tr><th>Ukuran</th><th>Usia</th><th>Lingkar Dada</th><th>Panjang Badan</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>S</td><td>2-3 tahun</td><td>56-60 cm</td><td>38-42 cm</td></tr>
-                                    <tr><td>M</td><td>4-5 tahun</td><td>62-66 cm</td><td>44-48 cm</td></tr>
-                                    <tr><td>L</td><td>6-7 tahun</td><td>68-72 cm</td><td>50-54 cm</td></tr>
-                                    <tr><td>XL</td><td>8-9 tahun</td><td>74-78 cm</td><td>56-60 cm</td></tr>
-                                    <tr><td>XXL</td><td>10-12 tahun</td><td>80-86 cm</td><td>62-68 cm</td></tr>
-                                </tbody>
-                            </table>
+            <div class="panduan-modal-body">
+                <p class="panduan-modal-intro">Pilih kategori di bawah untuk membaca panduan belanja lengkap:</p>
+                <div class="panduan-grid">
+                    <!-- 1. Cara Order -->
+                    <div class="panduan-card" id="panduanOrder">
+                        <div class="panduan-card-header" onclick="togglePanduan(this)">
+                            <div class="panduan-icon"><i class="fas fa-shopping-bag"></i></div>
+                            <h3>Cara Order</h3>
+                            <i class="fas fa-chevron-down panduan-arrow"></i>
                         </div>
-                        <p class="panduan-note"><i class="fas fa-info-circle"></i> Ukuran bisa berbeda tiap model. Hubungi admin untuk rekomendasi terbaik.</p>
+                        <div class="panduan-card-body">
+                            <ol>
+                                <li><strong>Pilih produk</strong> - Browse katalog, klik produk untuk lihat detail.</li>
+                                <li><strong>Pilih jumlah</strong> - Atur jumlah beli di halaman detail produk.</li>
+                                <li><strong>Tambah ke keranjang</strong> atau langsung klik <strong>"Hubungi WhatsApp"</strong>.</li>
+                                <li><strong>Checkout via WhatsApp</strong> - Format pesanan otomatis terkirim ke admin.</li>
+                                <li><strong>Konfirmasi &amp; bayar</strong> - Admin akan membalas untuk konfirmasi dan info pembayaran.</li>
+                            </ol>
+                        </div>
                     </div>
-                </div>
-                <!-- 3. Cara Mengukur Badan -->
-                <div class="panduan-card" id="panduanMengukur">
-                    <div class="panduan-card-header" onclick="togglePanduan(this)">
-                        <div class="panduan-icon"><i class="fas fa-tape"></i></div>
-                        <h3>Cara Mengukur Badan</h3>
-                        <i class="fas fa-chevron-down panduan-arrow"></i>
+                    <!-- 2. Panduan Ukuran Berdasarkan Umur -->
+                    <div class="panduan-card" id="panduanUkuran">
+                        <div class="panduan-card-header" onclick="togglePanduan(this)">
+                            <div class="panduan-icon"><i class="fas fa-ruler-combined"></i></div>
+                            <h3>Panduan Ukuran (Berdasarkan Umur)</h3>
+                            <i class="fas fa-chevron-down panduan-arrow"></i>
+                        </div>
+                        <div class="panduan-card-body">
+                            <div class="panduan-table-wrapper">
+                                <table class="panduan-table">
+                                    <thead>
+                                        <tr><th>Ukuran</th><th>Usia</th><th>Lingkar Dada</th><th>Panjang Badan</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>S</td><td>2-3 tahun</td><td>56-60 cm</td><td>38-42 cm</td></tr>
+                                        <tr><td>M</td><td>4-5 tahun</td><td>62-66 cm</td><td>44-48 cm</td></tr>
+                                        <tr><td>L</td><td>6-7 tahun</td><td>68-72 cm</td><td>50-54 cm</td></tr>
+                                        <tr><td>XL</td><td>8-9 tahun</td><td>74-78 cm</td><td>56-60 cm</td></tr>
+                                        <tr><td>XXL</td><td>10-12 tahun</td><td>80-86 cm</td><td>62-68 cm</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="panduan-note"><i class="fas fa-info-circle"></i> Ukuran bisa berbeda tiap model. Hubungi admin untuk rekomendasi terbaik.</p>
+                        </div>
                     </div>
-                    <div class="panduan-card-body">
-                        <ul class="panduan-list">
-                            <li><strong>Lingkar Dada:</strong> Ukur melingkar di bagian dada terlebar dengan meteran kain. Jangan terlalu ketat.</li>
-                            <li><strong>Panjang Badan:</strong> Ukur dari bahu tertinggi lurus ke bawah sampai pinggul atau sesuai panjang yang diinginkan.</li>
-                            <li><strong>Lebar Bahu:</strong> Ukur dari ujung bahu kiri ke ujung bahu kanan secara horizontal.</li>
-                            <li><strong>Panjang Lengan:</strong> Ukur dari ujung bahu turun ke pergelangan tangan dengan siku sedikit ditekuk.</li>
-                        </ul>
-                        <p class="panduan-note"><i class="fas fa-lightbulb"></i> Gunakan meteran kain (bukan penggaris), ukur dalam keadaan berdiri tegak.</p>
+                    <!-- 3. Cara Mengukur Badan -->
+                    <div class="panduan-card" id="panduanMengukur">
+                        <div class="panduan-card-header" onclick="togglePanduan(this)">
+                            <div class="panduan-icon"><i class="fas fa-tape"></i></div>
+                            <h3>Cara Mengukur Badan</h3>
+                            <i class="fas fa-chevron-down panduan-arrow"></i>
+                        </div>
+                        <div class="panduan-card-body">
+                            <ul class="panduan-list">
+                                <li><strong>Lingkar Dada:</strong> Ukur melingkar di bagian dada terlebar dengan meteran kain. Jangan terlalu ketat.</li>
+                                <li><strong>Panjang Badan:</strong> Ukur dari bahu tertinggi lurus ke bawah sampai pinggul atau sesuai panjang yang diinginkan.</li>
+                                <li><strong>Lebar Bahu:</strong> Ukur dari ujung bahu kiri ke ujung bahu kanan secara horizontal.</li>
+                                <li><strong>Panjang Lengan:</strong> Ukur dari ujung bahu turun ke pergelangan tangan dengan siku sedikit ditekuk.</li>
+                            </ul>
+                            <p class="panduan-note"><i class="fas fa-lightbulb"></i> Gunakan meteran kain (bukan penggaris), ukur dalam keadaan berdiri tegak.</p>
+                        </div>
                     </div>
-                </div>
-                <!-- 4. Perawatan Baju -->
-                <div class="panduan-card" id="panduanPerawatan">
-                    <div class="panduan-card-header" onclick="togglePanduan(this)">
-                        <div class="panduan-icon"><i class="fas fa-hand-sparkles"></i></div>
-                        <h3>Perawatan Baju</h3>
-                        <i class="fas fa-chevron-down panduan-arrow"></i>
+                    <!-- 4. Perawatan Baju -->
+                    <div class="panduan-card" id="panduanPerawatan">
+                        <div class="panduan-card-header" onclick="togglePanduan(this)">
+                            <div class="panduan-icon"><i class="fas fa-hand-sparkles"></i></div>
+                            <h3>Perawatan Baju</h3>
+                            <i class="fas fa-chevron-down panduan-arrow"></i>
+                        </div>
+                        <div class="panduan-card-body">
+                            <ul class="panduan-list">
+                                <li><strong>Cuci pertama terpisah</strong> - Rendam air dingin + sedikit garam untuk kunci warna.</li>
+                                <li><strong>Hindari pemutih</strong> - Gunakan deterjen lembut, jangan dicampur pakaian berbahan kasar.</li>
+                                <li><strong>Jemur terbalik</strong> - Bagian dalam di luar agar warna tidak cepat pudar.</li>
+                                <li><strong>Setrika suhu rendah</strong> - Gunakan alas kain tipis, hindari kontak langsung pada print/bordir.</li>
+                                <li><strong>Simpan terlipat rapi</strong> - Hindari gantung terlalu lama agar bentuk tidak melar.</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="panduan-card-body">
-                        <ul class="panduan-list">
-                            <li><strong>Cuci pertama terpisah</strong> - Rendam air dingin + sedikit garam untuk kunci warna.</li>
-                            <li><strong>Hindari pemutih</strong> - Gunakan deterjen lembut, jangan dicampur pakaian berbahan kasar.</li>
-                            <li><strong>Jemur terbalik</strong> - Bagian dalam di luar agar warna tidak cepat pudar.</li>
-                            <li><strong>Setrika suhu rendah</strong> - Gunakan alas kain tipis, hindari kontak langsung pada print/bordir.</li>
-                            <li><strong>Simpan terlipat rapi</strong> - Hindari gantung terlalu lama agar bentuk tidak melar.</li>
-                        </ul>
+                    <!-- 5. Tips Memilih Bahan -->
+                    <div class="panduan-card" id="panduanBahan">
+                        <div class="panduan-card-header" onclick="togglePanduan(this)">
+                            <div class="panduan-icon"><i class="fas fa-leaf"></i></div>
+                            <h3>Tips Memilih Bahan</h3>
+                            <i class="fas fa-chevron-down panduan-arrow"></i>
+                        </div>
+                        <div class="panduan-card-body">
+                            <ul class="panduan-list">
+                                <li><strong>Katun:</strong> Adem, menyerap keringat - cocok untuk harian dan cuaca panas.</li>
+                                <li><strong>Toyobo/Wolfis:</strong> Jatuh, tidak menerawang - cocok untuk gamis dan formal.</li>
+                                <li><strong>Jersey:</strong> Elastis, nyaman - cocok untuk anak aktif dan pakaian santai.</li>
+                                <li><strong>Satin/Silk:</strong> Licin, elegan - cocok untuk acara pesta dan kondangan.</li>
+                            </ul>
+                            <p class="panduan-note"><i class="fas fa-info-circle"></i> Info bahan setiap produk tertera di deskripsi. Tanya admin jika ragu.</p>
+                        </div>
                     </div>
-                </div>
-                <!-- 5. Tips Memilih Bahan -->
-                <div class="panduan-card" id="panduanBahan">
-                    <div class="panduan-card-header" onclick="togglePanduan(this)">
-                        <div class="panduan-icon"><i class="fas fa-leaf"></i></div>
-                        <h3>Tips Memilih Bahan</h3>
-                        <i class="fas fa-chevron-down panduan-arrow"></i>
-                    </div>
-                    <div class="panduan-card-body">
-                        <ul class="panduan-list">
-                            <li><strong>Katun:</strong> Adem, menyerap keringat - cocok untuk harian dan cuaca panas.</li>
-                            <li><strong>Toyobo/Wolfis:</strong> Jatuh, tidak menerawang - cocok untuk gamis dan formal.</li>
-                            <li><strong>Jersey:</strong> Elastis, nyaman - cocok untuk anak aktif dan pakaian santai.</li>
-                            <li><strong>Satin/Silk:</strong> Licin, elegan - cocok untuk acara pesta dan kondangan.</li>
-                        </ul>
-                        <p class="panduan-note"><i class="fas fa-info-circle"></i> Info bahan setiap produk tertera di deskripsi. Tanya admin jika ragu.</p>
-                    </div>
-                </div>
-                <!-- 6. Kebijakan Pengembalian -->
-                <div class="panduan-card" id="panduanRetur">
-                    <div class="panduan-card-header" onclick="togglePanduan(this)">
-                        <div class="panduan-icon"><i class="fas fa-exchange-alt"></i></div>
-                        <h3>Kebijakan Pengembalian</h3>
-                        <i class="fas fa-chevron-down panduan-arrow"></i>
-                    </div>
-                    <div class="panduan-card-body">
-                        <ul class="panduan-list">
-                            <li><strong>Tukar/retur</strong> diterima dalam <strong>2x24 jam</strong> setelah barang diterima.</li>
-                            <li>Berlaku jika barang <strong>cacat produksi</strong> atau <strong>salah kirim</strong>.</li>
-                            <li>Barang harus dalam <strong>kondisi asli</strong> (belum dicuci, tag masih utuh).</li>
-                            <li>Hubungi admin via WhatsApp dan sertakan <strong>foto bukti</strong>.</li>
-                        </ul>
-                        <p class="panduan-note"><i class="fas fa-shield-alt"></i> Kami menjamin kepuasan pelanggan. Setiap laporan ditangani segera.</p>
+                    <!-- 6. Kebijakan Pengembalian -->
+                    <div class="panduan-card" id="panduanRetur">
+                        <div class="panduan-card-header" onclick="togglePanduan(this)">
+                            <div class="panduan-icon"><i class="fas fa-exchange-alt"></i></div>
+                            <h3>Kebijakan Pengembalian</h3>
+                            <i class="fas fa-chevron-down panduan-arrow"></i>
+                        </div>
+                        <div class="panduan-card-body">
+                            <ul class="panduan-list">
+                                <li><strong>Tukar/retur</strong> diterima dalam <strong>2x24 jam</strong> setelah barang diterima.</li>
+                                <li>Berlaku jika barang <strong>cacat produksi</strong> atau <strong>salah kirim</strong>.</li>
+                                <li>Barang harus dalam <strong>kondisi asli</strong> (belum dicuci, tag masih utuh).</li>
+                                <li>Hubungi admin via WhatsApp dan sertakan <strong>foto bukti</strong>.</li>
+                            </ul>
+                            <p class="panduan-note"><i class="fas fa-shield-alt"></i> Kami menjamin kepuasan pelanggan. Setiap laporan ditangani segera.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- PRODUK UNGGULAN -->
     <section class="produk-unggulan section" id="produk">
@@ -410,7 +416,7 @@
                     <ul>
                         <li><a href="#home">Home</a></li>
                         <li><a href="#katalog">Katalog</a></li>
-                        <li><a href="#panduan">Panduan</a></li>
+                        <li><a href="#panduanModal" id="footerPanduanLink">Panduan</a></li>
                         <li><a href="#galeri">Galeri</a></li>
                         <li><a href="#kontak">Kontak</a></li>
                     </ul>

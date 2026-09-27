@@ -1746,14 +1746,68 @@ if (previewModal) {
 window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         closePreviewModal();
+        closePanduanModal();
     }
 });
+
+// ===== BUKU PANDUAN BELANJA MODAL =====
+function openPanduanModal() {
+    const modal = document.getElementById('panduanModal');
+    if (!modal) return;
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+}
+
+function closePanduanModal() {
+    const modal = document.getElementById('panduanModal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+}
+
+function setupPanduanModal() {
+    const openBtn = document.getElementById('openPanduanHero');
+    const closeBtn = document.getElementById('closePanduanModal');
+    const modal = document.getElementById('panduanModal');
+    const navLink = document.getElementById('navPanduanLink');
+    const footerLink = document.getElementById('footerPanduanLink');
+
+    if (openBtn) openBtn.addEventListener('click', openPanduanModal);
+    if (closeBtn) closeBtn.addEventListener('click', closePanduanModal);
+
+    if (modal) {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) closePanduanModal();
+        });
+    }
+
+    if (navLink) {
+        navLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            setNavMenuOpen(false);
+            openPanduanModal();
+        });
+    }
+
+    if (footerLink) {
+        footerLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            openPanduanModal();
+        });
+    }
+}
+
+window.openPanduanModal = openPanduanModal;
+window.closePanduanModal = closePanduanModal;
 
 // ===== Init =====
 function initApp() {
     setupWhatsAppSync();
     setupCart();
     setupZoomViewer();
+    setupPanduanModal();
     loadCategories();
     loadProducts();
     loadGallery();
@@ -1772,7 +1826,7 @@ function togglePanduan(headerEl) {
     if (!card) return;
     
     // Close other open cards (accordion behavior)
-    const allCards = document.querySelectorAll('.panduan-card.active');
+    const allCards = document.querySelectorAll('.panduan-modal .panduan-card.active, .panduan-card.active');
     allCards.forEach(function(c) {
         if (c !== card) c.classList.remove('active');
     });
