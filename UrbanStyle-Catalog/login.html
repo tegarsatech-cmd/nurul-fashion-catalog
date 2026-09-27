@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,8 +8,19 @@
     <title>Login Admin - Nurul Fashion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { width: 100%; overflow-x: hidden; height: 100%; color-scheme: dark; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            overflow-x: hidden;
+            height: 100%;
+            color-scheme: dark;
+        }
+
         body {
             display: flex;
             align-items: center;
@@ -23,6 +35,7 @@
             width: 100%;
             transition: background 0.6s ease;
         }
+
         body.lamp-active {
             background: #040508;
         }
@@ -37,6 +50,7 @@
             background: radial-gradient(circle at calc(50% - 160px) 45%, rgba(254, 240, 138, 0.22) 0%, rgba(251, 191, 36, 0.1) 40%, transparent 70%);
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         body.lamp-active .lamp-ambient-glow {
             opacity: 1;
         }
@@ -90,6 +104,7 @@
             z-index: 1;
             will-change: transform, opacity;
         }
+
         body.lamp-active .lamp-light-beam {
             opacity: 1;
             transform: scale(1);
@@ -103,6 +118,7 @@
             transition: filter 0.5s ease;
             will-change: filter;
         }
+
         body.lamp-active .lamp-svg {
             filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 35px rgba(251, 191, 36, 0.9));
         }
@@ -115,6 +131,7 @@
             filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.45));
             transition: fill 0.5s ease, stroke 0.5s ease, filter 0.5s ease;
         }
+
         body.lamp-active .lamp-shade-path {
             fill: url(#lampShadeGlowGrad);
             stroke: #f59e0b;
@@ -127,6 +144,7 @@
             stroke-width: 1.5;
             transition: fill 0.4s ease, filter 0.4s ease;
         }
+
         body.lamp-active .lamp-bulb {
             fill: #FFFBEB;
             stroke: #FEF08A;
@@ -141,6 +159,7 @@
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
             transition: fill 0.4s ease, stroke 0.4s ease, filter 0.4s ease;
         }
+
         body.lamp-active .lamp-metal {
             fill: url(#lampMetalOnGrad);
             stroke: #D97706;
@@ -162,21 +181,37 @@
             transform-origin: top center;
             transition: transform 0.2s ease;
         }
+
         .lamp-pull-string:hover {
             animation: cordSway 1.8s ease-in-out infinite alternate;
         }
+
         .lamp-pull-string.is-pulling {
             animation: cordSnapPull 0.35s ease-out !important;
         }
 
         @keyframes cordSway {
-            0% { transform: rotate(-3deg); }
-            100% { transform: rotate(3deg); }
+            0% {
+                transform: rotate(-3deg);
+            }
+
+            100% {
+                transform: rotate(3deg);
+            }
         }
+
         @keyframes cordSnapPull {
-            0% { transform: translateY(0); }
-            45% { transform: translateY(22px); }
-            100% { transform: translateY(0); }
+            0% {
+                transform: translateY(0);
+            }
+
+            45% {
+                transform: translateY(22px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
         }
 
         .pull-chain-beads {
@@ -187,14 +222,22 @@
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
             transition: background 0.4s ease;
         }
+
         body.lamp-active .pull-chain-beads {
             background: repeating-linear-gradient(to bottom, #d97706, #d97706 4px, #78350f 4px, #78350f 7px);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         @keyframes cordPulseGlow {
-            0%, 100% { box-shadow: 0 0 14px rgba(255, 255, 255, 0.85), inset 0 2px 4px #fff; }
-            50% { box-shadow: 0 0 28px rgba(255, 255, 255, 1), inset 0 2px 4px #fff; }
+
+            0%,
+            100% {
+                box-shadow: 0 0 14px rgba(255, 255, 255, 0.85), inset 0 2px 4px #fff;
+            }
+
+            50% {
+                box-shadow: 0 0 28px rgba(255, 255, 255, 1), inset 0 2px 4px #fff;
+            }
         }
 
         .pull-knob-handle {
@@ -208,16 +251,19 @@
             animation: cordPulseGlow 2.5s ease-in-out infinite;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease, border-color 0.4s ease;
         }
+
         body.lamp-active .pull-knob-handle {
             background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
             border-color: #fde68a;
             box-shadow: 0 4px 14px rgba(251, 191, 36, 0.7), inset 0 1px 2px #fff;
             animation: none;
         }
+
         .lamp-pull-string:hover .pull-knob-handle {
             box-shadow: 0 0 24px rgba(255, 255, 255, 1);
             transform: scale(1.25);
         }
+
         body.lamp-active .lamp-pull-string:hover .pull-knob-handle {
             box-shadow: 0 0 20px rgba(251, 191, 36, 1);
         }
@@ -265,6 +311,7 @@
             text-align: center;
             margin-bottom: 20px;
         }
+
         .login-logo h2 {
             font-size: 26px !important;
             font-weight: 800 !important;
@@ -273,20 +320,21 @@
             background: none !important;
             -webkit-background-clip: initial !important;
             background-clip: initial !important;
-            text-shadow: 0 2px 14px rgba(0,0,0,0.95), 0 0 24px rgba(255,255,255,0.4) !important;
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 0 24px rgba(255, 255, 255, 0.4) !important;
             letter-spacing: 0.5px;
             margin: 0;
         }
+
         .login-logo p {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             font-size: 13.5px !important;
             font-weight: 500;
             margin-top: 4px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
             opacity: 0.95;
         }
-        
+
         .security-badge-top {
             display: inline-flex;
             align-items: center;
@@ -301,15 +349,19 @@
             margin-top: 8px;
             font-weight: 700;
             letter-spacing: 0.3px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
+
         .security-badge-top i {
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            background: #2563EB !important; /* Latar Biru */
-            color: #ffffff !important;      /* Perisai Putih */
-            border: 1.5px solid #ffffff !important; /* Aksen Putih */
+            background: #2563EB !important;
+            /* Latar Biru */
+            color: #ffffff !important;
+            /* Perisai Putih */
+            border: 1.5px solid #ffffff !important;
+            /* Aksen Putih */
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -318,7 +370,10 @@
         }
 
         /* Form Inputs (Hitam Transparan dengan Teks Putih & Sinar Lampu Menembus) */
-        .form-group { margin-bottom: 15px; }
+        .form-group {
+            margin-bottom: 15px;
+        }
+
         .form-group label {
             display: block;
             font-size: 14px;
@@ -326,9 +381,10 @@
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             margin-bottom: 6px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
             letter-spacing: 0.3px;
         }
+
         .form-group input {
             width: 100%;
             padding: 13px 15px;
@@ -343,30 +399,57 @@
             transition: all 0.3s ease;
             outline: none;
             box-sizing: border-box;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
+
         .form-group input::placeholder {
             color: rgba(255, 255, 255, 0.65) !important;
             -webkit-text-fill-color: rgba(255, 255, 255, 0.65) !important;
             opacity: 1;
             font-weight: 400;
         }
+
         .form-group input:focus {
             border-color: #FFFFFF !important;
             background: rgba(0, 0, 0, 0.58) !important;
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25), 0 0 18px rgba(254, 240, 138, 0.35) !important;
         }
-        .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { padding-right: 48px !important; }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            padding-right: 48px !important;
+        }
+
         .password-toggle {
-            position: absolute; right: 2px; top: 2px; bottom: 2px; width: 44px;
-            background: transparent; border: none; border-radius: 8px;
-            color: #FFFFFF !important; font-size: 18px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            position: absolute;
+            right: 2px;
+            top: 2px;
+            bottom: 2px;
+            width: 44px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF !important;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
         }
-        .password-toggle i { color: #FFFFFF !important; }
-        .password-toggle:hover { background: rgba(255, 255, 255, 0.18); }
+
+        .password-toggle i {
+            color: #FFFFFF !important;
+        }
+
+        .password-toggle:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
 
         /* Robot Checkbox ('Saya bukan robot') - Hitam Transparan */
         .robot-check-container {
@@ -382,20 +465,24 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
             transition: all 0.25s ease;
         }
+
         .robot-check-container.error-highlight {
             border-color: #ef4444 !important;
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.35);
         }
+
         .robot-check-container.verified {
             border-color: #10b981 !important;
             background: rgba(16, 185, 129, 0.2) !important;
         }
+
         .robot-check-left {
             display: flex;
             align-items: center;
             gap: 12px;
             cursor: pointer;
         }
+
         .robot-checkbox {
             width: 28px;
             height: 28px;
@@ -410,13 +497,16 @@
             transition: all 0.2s ease;
             position: relative;
         }
+
         .robot-checkbox:hover {
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
+
         .robot-checkbox:focus-visible {
             outline: 2px solid #ffffff;
             outline-offset: 2px;
         }
+
         .robot-spinner {
             display: none;
             width: 16px;
@@ -426,37 +516,59 @@
             border-radius: 50%;
             animation: robotSpin 0.7s linear infinite;
         }
+
         @keyframes robotSpin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
+
         .robot-check-icon {
             display: none;
             color: #10b981;
             font-size: 16px;
             animation: checkBounce 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         @keyframes checkBounce {
-            0% { transform: scale(0.4); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.4);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
+
         .robot-checkbox.loading {
             border-color: #ffffff;
             background: rgba(0, 0, 0, 0.8);
         }
-        .robot-checkbox.loading .robot-spinner { display: block; }
+
+        .robot-checkbox.loading .robot-spinner {
+            display: block;
+        }
+
         .robot-checkbox.checked {
             border-color: #10b981;
             background: rgba(0, 0, 0, 0.8);
         }
-        .robot-checkbox.checked .robot-check-icon { display: block; }
+
+        .robot-checkbox.checked .robot-check-icon {
+            display: block;
+        }
+
         .robot-label {
             font-size: 14.5px;
             font-weight: 700;
             color: #FFFFFF !important;
             cursor: pointer;
             margin: 0;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
+
         .robot-check-right {
             display: flex;
             flex-direction: column;
@@ -464,14 +576,17 @@
             gap: 2px;
             color: #FFFFFF !important;
         }
+
         .robot-brand-icon {
             font-size: 18px;
             color: #FFFFFF !important;
             filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
         }
+
         .robot-brand-icon i {
             color: #FFFFFF !important;
         }
+
         .robot-brand-text {
             font-size: 9px;
             font-weight: 700;
@@ -479,16 +594,19 @@
             text-transform: uppercase;
             color: #FFFFFF !important;
         }
+
         .robot-brand-links {
             font-size: 9px;
             color: #FFFFFF !important;
             opacity: 0.85;
         }
+
         .robot-brand-links a {
             color: #FFFFFF !important;
             text-decoration: none;
             font-weight: 600;
         }
+
         .robot-brand-links a:hover {
             text-decoration: underline;
         }
@@ -497,11 +615,16 @@
         .step-panel {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        .step-hidden { display: none !important; }
+
+        .step-hidden {
+            display: none !important;
+        }
+
         .two-factor-header {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .two-factor-icon {
             width: 60px;
             height: 60px;
@@ -517,20 +640,33 @@
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
             animation: pulse2FA 2s infinite ease-in-out;
         }
+
         .two-factor-icon i {
             color: #FFFFFF !important;
         }
+
         @keyframes pulse2FA {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-            50% { transform: scale(1.06); box-shadow: 0 0 30px rgba(255, 255, 255, 0.45); }
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            }
+
+            50% {
+                transform: scale(1.06);
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.45);
+            }
         }
+
         .two-factor-header h3 {
             font-size: 21px;
             font-weight: 800;
             color: #FFFFFF !important;
             margin-bottom: 6px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
+
         .two-factor-header p {
             font-size: 14px;
             color: #FFFFFF !important;
@@ -538,12 +674,14 @@
             line-height: 1.45;
             font-weight: 500;
         }
+
         .otp-inputs {
             display: flex;
             justify-content: center;
             gap: 8px;
             margin: 18px 0;
         }
+
         .otp-digit {
             width: 48px;
             height: 52px;
@@ -557,8 +695,9 @@
             transition: all 0.2s ease;
             font-family: monospace;
             color: #FFFFFF !important;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
         }
+
         .otp-digit:focus {
             border-color: #FFFFFF;
             background: rgba(0, 0, 0, 0.6) !important;
@@ -568,53 +707,123 @@
 
         /* Notice / Error / Info Messages - All White Text & Icons */
         .login-error {
-            display: none; align-items: flex-start; gap: 8px;
-            padding: 13px 15px; background: rgba(220, 38, 38, 0.35) !important;
-            border: 1.5px solid #ef4444 !important; color: #FFFFFF !important;
-            border-radius: 10px; font-size: 13.5px; font-weight: 600;
-            margin-bottom: 14px; animation: errorShake 0.4s ease;
-            line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            display: none;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 13px 15px;
+            background: rgba(220, 38, 38, 0.35) !important;
+            border: 1.5px solid #ef4444 !important;
+            color: #FFFFFF !important;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            animation: errorShake 0.4s ease;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        .login-error i { color: #FFFFFF !important; }
+
+        .login-error i {
+            color: #FFFFFF !important;
+        }
+
         .login-info {
-            display: none; align-items: flex-start; gap: 8px;
-            padding: 13px 15px; background: rgba(2, 132, 199, 0.35) !important;
-            border: 1.5px solid #38bdf8 !important; color: #FFFFFF !important;
-            border-radius: 10px; font-size: 13.5px; font-weight: 600;
-            margin-bottom: 14px; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            display: none;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 13px 15px;
+            background: rgba(2, 132, 199, 0.35) !important;
+            border: 1.5px solid #38bdf8 !important;
+            color: #FFFFFF !important;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        .login-info i { color: #FFFFFF !important; }
+
+        .login-info i {
+            color: #FFFFFF !important;
+        }
+
         .login-countdown {
-            display: none; align-items: center; gap: 8px;
-            padding: 13px 15px; background: rgba(220, 38, 38, 0.35) !important;
-            border: 1.5px solid #ef4444 !important; color: #FFFFFF !important;
-            border-radius: 10px; font-size: 13.5px; font-weight: 700;
-            margin-bottom: 14px; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 15px;
+            background: rgba(220, 38, 38, 0.35) !important;
+            border: 1.5px solid #ef4444 !important;
+            color: #FFFFFF !important;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        .login-countdown i { color: #FFFFFF !important; }
+
+        .login-countdown i {
+            color: #FFFFFF !important;
+        }
+
         @keyframes errorShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
+
         .login-success {
-            display: none; align-items: center; gap: 8px;
-            padding: 13px 15px; background: rgba(22, 163, 74, 0.35) !important;
-            border: 1.5px solid #22c55e !important; color: #FFFFFF !important;
-            border-radius: 10px; font-size: 13.5px; font-weight: 600; margin-bottom: 14px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 15px;
+            background: rgba(22, 163, 74, 0.35) !important;
+            border: 1.5px solid #22c55e !important;
+            color: #FFFFFF !important;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
-        .login-success i { color: #FFFFFF !important; }
+
+        .login-success i {
+            color: #FFFFFF !important;
+        }
 
         /* Buttons - Full Pink (#FF1493) for Primary */
         .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 13px 24px; border-radius: 12px;
-            font-family: 'Times New Roman', Times, serif; font-size: 15.5px; font-weight: 700;
-            text-decoration: none; cursor: pointer; transition: all 0.3s ease;
-            border: none; min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-height: 46px;
         }
-        .btn i { color: #FFFFFF !important; }
+
+        .btn i {
+            color: #FFFFFF !important;
+        }
+
         .btn-primary {
             background: #FF1493 !important;
             color: #FFFFFF !important;
@@ -624,32 +833,48 @@
             width: 100%;
             border: none !important;
         }
+
         .btn-primary:hover {
             background: #ff2a9d !important;
             transform: scale(1.02);
             box-shadow: 0 8px 30px rgba(255, 20, 147, 0.85) !important;
         }
+
         .btn-primary:active {
             transform: scale(0.98);
         }
+
         .btn-primary:disabled {
             opacity: 0.65;
             cursor: not-allowed;
             transform: none !important;
         }
-        
+
         .btn-secondary-action {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 10px; padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 12px;
             background: rgba(0, 0, 0, 0.42) !important;
             color: #FFFFFF !important;
             border: 1.5px solid rgba(255, 255, 255, 0.28) !important;
             border-radius: 12px;
-            font-family: 'Times New Roman', Times, serif; font-size: 14px; font-weight: 600;
-            text-decoration: none; transition: all 0.3s ease; width: 100%; cursor: pointer;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            width: 100%;
+            cursor: pointer;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
         }
-        .btn-secondary-action i { color: #FFFFFF !important; }
+
+        .btn-secondary-action i {
+            color: #FFFFFF !important;
+        }
+
         .btn-secondary-action:hover {
             border-color: #FFFFFF !important;
             color: #FFFFFF !important;
@@ -659,16 +884,21 @@
 
         /* ================= RESPONSIVE MOBILE ADJUSTMENTS ================= */
         @media (max-width: 860px) {
-            body { padding: 16px 12px; }
+            body {
+                padding: 16px 12px;
+            }
+
             .lamp-login-layout {
                 flex-direction: column;
                 gap: 20px;
                 align-items: center;
             }
+
             .lamp-body {
                 width: 160px;
                 height: 240px;
             }
+
             .lamp-light-beam {
                 top: 50px;
                 left: -100px;
@@ -677,45 +907,94 @@
                 clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
                 background: radial-gradient(ellipse at 50% 10%, rgba(254, 240, 138, 0.62) 0%, rgba(251, 191, 36, 0.38) 35%, rgba(245, 158, 11, 0.12) 65%, transparent 88%);
             }
+
             .lamp-pull-string {
                 top: 86px;
                 left: 82px;
                 height: 104px;
             }
-            .pull-chain-beads { height: 68px; }
+
+            .pull-chain-beads {
+                height: 68px;
+            }
+
             .login-card-section {
                 max-width: 100%;
                 width: 100%;
                 min-height: auto;
             }
+
             .login-card {
                 padding: 24px 18px !important;
                 border-radius: 20px !important;
             }
-            .login-logo h2 { font-size: 22px !important; }
-            .login-logo p { font-size: 12.5px !important; }
-            .otp-digit { width: 40px; height: 46px; font-size: 19px; }
-            .form-group input { font-size: 14.5px !important; padding: 11px 13px !important; }
+
+            .login-logo h2 {
+                font-size: 22px !important;
+            }
+
+            .login-logo p {
+                font-size: 12.5px !important;
+            }
+
+            .otp-digit {
+                width: 40px;
+                height: 46px;
+                font-size: 19px;
+            }
+
+            .form-group input {
+                font-size: 14.5px !important;
+                padding: 11px 13px !important;
+            }
         }
+
         @media (max-width: 480px) {
-            body { padding: 10px 8px; }
-            .lamp-login-layout { gap: 10px; }
-            .lamp-body { width: 120px; height: 180px; }
-            .lamp-light-beam { 
-                left: -60px; 
-                width: 240px; 
-                height: 320px; 
-                top: 40px; 
+            body {
+                padding: 10px 8px;
+            }
+
+            .lamp-login-layout {
+                gap: 10px;
+            }
+
+            .lamp-body {
+                width: 120px;
+                height: 180px;
+            }
+
+            .lamp-light-beam {
+                left: -60px;
+                width: 240px;
+                height: 320px;
+                top: 40px;
                 clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
                 background: radial-gradient(ellipse at 50% 10%, rgba(254, 240, 138, 0.62) 0%, rgba(251, 191, 36, 0.38) 35%, rgba(245, 158, 11, 0.12) 65%, transparent 88%);
             }
-            .lamp-pull-string { top: 65px; left: 57px; height: 78px; }
-            .pull-chain-beads { height: 51px; }
-            .login-card { padding: 20px 14px !important; }
-            .otp-digit { width: 36px; height: 42px; font-size: 17px; }
+
+            .lamp-pull-string {
+                top: 65px;
+                left: 57px;
+                height: 78px;
+            }
+
+            .pull-chain-beads {
+                height: 51px;
+            }
+
+            .login-card {
+                padding: 20px 14px !important;
+            }
+
+            .otp-digit {
+                width: 36px;
+                height: 42px;
+                font-size: 17px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Ambient Room Lighting -->
@@ -723,7 +1002,7 @@
 
     <!-- Main Container: Lamp Left, Login Right -->
     <div class="lamp-login-layout">
-        
+
         <!-- ================= 1. LAMP UNIT (SEBELAH KIRI) ================= -->
         <div class="lamp-container">
             <div class="lamp-body">
@@ -735,66 +1014,67 @@
                     <defs>
                         <!-- 3D White Shading for Lampshade in Dark -->
                         <linearGradient id="lampShadeOffGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#E2E8F0"/>
-                            <stop offset="25%" stop-color="#FFFFFF"/>
-                            <stop offset="70%" stop-color="#FFFFFF"/>
-                            <stop offset="100%" stop-color="#CBD5E1"/>
+                            <stop offset="0%" stop-color="#E2E8F0" />
+                            <stop offset="25%" stop-color="#FFFFFF" />
+                            <stop offset="70%" stop-color="#FFFFFF" />
+                            <stop offset="100%" stop-color="#CBD5E1" />
                         </linearGradient>
 
                         <!-- Warm Light Lampshade Gradient when ON -->
                         <linearGradient id="lampShadeGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#fffbeb"/>
-                            <stop offset="35%" stop-color="#fef08a"/>
-                            <stop offset="80%" stop-color="#fbbf24"/>
-                            <stop offset="100%" stop-color="#d97706"/>
+                            <stop offset="0%" stop-color="#fffbeb" />
+                            <stop offset="35%" stop-color="#fef08a" />
+                            <stop offset="80%" stop-color="#fbbf24" />
+                            <stop offset="100%" stop-color="#d97706" />
                         </linearGradient>
 
                         <!-- Chrome / Polished White Metallic Rod in Dark -->
                         <linearGradient id="lampMetalOffGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#CBD5E1"/>
-                            <stop offset="35%" stop-color="#FFFFFF"/>
-                            <stop offset="70%" stop-color="#F1F5F9"/>
-                            <stop offset="100%" stop-color="#94A3B8"/>
+                            <stop offset="0%" stop-color="#CBD5E1" />
+                            <stop offset="35%" stop-color="#FFFFFF" />
+                            <stop offset="70%" stop-color="#F1F5F9" />
+                            <stop offset="100%" stop-color="#94A3B8" />
                         </linearGradient>
 
                         <!-- Golden Brass Rod when ON -->
                         <linearGradient id="lampMetalOnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#78350F"/>
-                            <stop offset="35%" stop-color="#FBBF24"/>
-                            <stop offset="70%" stop-color="#F59E0B"/>
-                            <stop offset="100%" stop-color="#92400E"/>
+                            <stop offset="0%" stop-color="#78350F" />
+                            <stop offset="35%" stop-color="#FBBF24" />
+                            <stop offset="70%" stop-color="#F59E0B" />
+                            <stop offset="100%" stop-color="#92400E" />
                         </linearGradient>
                     </defs>
 
                     <!-- Lamp Finial Top -->
-                    <circle cx="100" cy="18" r="6" class="lamp-metal"/>
-                    <rect x="96" y="24" width="8" height="6" class="lamp-metal" rx="1"/>
+                    <circle cx="100" cy="18" r="6" class="lamp-metal" />
+                    <rect x="96" y="24" width="8" height="6" class="lamp-metal" rx="1" />
 
                     <!-- Lampshade (Tudung Lampu Tidur) -->
                     <!-- Top rim -->
-                    <ellipse cx="100" cy="30" rx="36" ry="6" class="lamp-shade-path"/>
+                    <ellipse cx="100" cy="30" rx="36" ry="6" class="lamp-shade-path" />
                     <!-- Main Cone -->
-                    <polygon points="64,30 136,30 162,112 38,112" class="lamp-shade-path"/>
+                    <polygon points="64,30 136,30 162,112 38,112" class="lamp-shade-path" />
                     <!-- Bottom rim ellipse -->
-                    <ellipse cx="100" cy="112" rx="62" ry="13" class="lamp-shade-path"/>
+                    <ellipse cx="100" cy="112" rx="62" ry="13" class="lamp-shade-path" />
 
                     <!-- Lamp Bulb (Visible under shade) -->
-                    <circle cx="100" cy="115" r="14" class="lamp-bulb"/>
+                    <circle cx="100" cy="115" r="14" class="lamp-bulb" />
 
                     <!-- Lamp Rod / Stand -->
-                    <rect x="96" y="122" width="8" height="130" class="lamp-metal" rx="2"/>
+                    <rect x="96" y="122" width="8" height="130" class="lamp-metal" rx="2" />
                     <!-- Decorative Ring / Collar on Stem -->
-                    <rect x="92" y="160" width="16" height="6" class="lamp-metal" rx="2"/>
-                    <rect x="94" y="244" width="12" height="5" class="lamp-metal" rx="1"/>
+                    <rect x="92" y="160" width="16" height="6" class="lamp-metal" rx="2" />
+                    <rect x="94" y="244" width="12" height="5" class="lamp-metal" rx="1" />
 
                     <!-- Solid Stepped Pedestal Base -->
-                    <ellipse cx="100" cy="252" rx="34" ry="7" class="lamp-metal"/>
-                    <path d="M 64 252 Q 100 244 136 252 L 142 266 Q 100 274 58 266 Z" class="lamp-metal"/>
-                    <ellipse cx="100" cy="266" rx="44" ry="9" class="lamp-metal"/>
+                    <ellipse cx="100" cy="252" rx="34" ry="7" class="lamp-metal" />
+                    <path d="M 64 252 Q 100 244 136 252 L 142 266 Q 100 274 58 266 Z" class="lamp-metal" />
+                    <ellipse cx="100" cy="266" rx="44" ry="9" class="lamp-metal" />
                 </svg>
 
                 <!-- Pull String Cord (Tali Saklar Lampu) -->
-                <div class="lamp-pull-string" id="lampPullString" role="button" tabindex="0" aria-label="Saklar Tali Lampu" title="Tarik tali untuk menyalakan/mematikan lampu">
+                <div class="lamp-pull-string" id="lampPullString" role="button" tabindex="0"
+                    aria-label="Saklar Tali Lampu" title="Tarik tali untuk menyalakan/mematikan lampu">
                     <div class="pull-chain-beads"></div>
                     <div class="pull-knob-handle"></div>
                 </div>
@@ -803,7 +1083,7 @@
 
         <!-- ================= 2. LOGIN CARD (SEBELAH KANAN) ================= -->
         <div class="login-card-section">
-            
+
             <!-- The Main Login Card (Illuminated by Lamp) -->
             <div class="login-card" id="loginCard">
                 <div class="login-logo">
@@ -824,21 +1104,27 @@
                 <div id="stepLogin" class="step-panel">
                     <form id="loginForm" class="login-form" novalidate>
                         <!-- Honeypot Bot Traps -->
-                        <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
-                            <input type="text" id="hp_user_website" name="hp_user_website" tabindex="-1" autocomplete="off">
-                            <input type="text" id="hp_secondary_phone" name="hp_secondary_phone" tabindex="-1" autocomplete="off">
+                        <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;"
+                            aria-hidden="true">
+                            <input type="text" id="hp_user_website" name="hp_user_website" tabindex="-1"
+                                autocomplete="off">
+                            <input type="text" id="hp_secondary_phone" name="hp_secondary_phone" tabindex="-1"
+                                autocomplete="off">
                         </div>
 
                         <div class="form-group">
                             <label for="loginEmail">Email Admin</label>
-                            <input type="email" id="loginEmail" placeholder="admin@nurulfashion.com" required autocomplete="username">
+                            <input type="email" id="loginEmail" placeholder="admin@nurulfashion.com" required
+                                autocomplete="username">
                         </div>
 
                         <div class="form-group">
                             <label for="loginPassword">Password</label>
                             <div class="password-wrapper">
-                                <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
-                                <button type="button" class="password-toggle" id="passwordToggle" tabindex="-1" title="Lihat/Sembunyikan Password">
+                                <input type="password" id="loginPassword" placeholder="••••••••" required
+                                    autocomplete="current-password">
+                                <button type="button" class="password-toggle" id="passwordToggle" tabindex="-1"
+                                    title="Lihat/Sembunyikan Password">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
@@ -847,7 +1133,8 @@
                         <!-- Verifikasi 'Saya bukan robot' -->
                         <div class="robot-check-container" id="robotCheckContainer">
                             <div class="robot-check-left" id="robotCheckTrigger">
-                                <button type="button" class="robot-checkbox" id="robotCheckbox" role="checkbox" aria-checked="false" aria-label="Saya bukan robot">
+                                <button type="button" class="robot-checkbox" id="robotCheckbox" role="checkbox"
+                                    aria-checked="false" aria-label="Saya bukan robot">
                                     <span class="robot-spinner"></span>
                                     <i class="fas fa-check robot-check-icon"></i>
                                 </button>
@@ -859,7 +1146,8 @@
                                 </div>
                                 <span class="robot-brand-text">Proteksi</span>
                                 <div class="robot-brand-links">
-                                    <a href="#" tabindex="-1" onclick="return false;">Privasi</a> &bull; <a href="#" tabindex="-1" onclick="return false;">Ketentuan</a>
+                                    <a href="#" tabindex="-1" onclick="return false;">Privasi</a> &bull; <a href="#"
+                                        tabindex="-1" onclick="return false;">Ketentuan</a>
                                 </div>
                             </div>
                         </div>
@@ -881,12 +1169,14 @@
                             <i class="fas fa-shield-halved"></i>
                         </div>
                         <h3>Verifikasi 2 Langkah</h3>
-                        <p>Masukkan 6 digit kode keamanan dari aplikasi autentikasi Anda (Google Authenticator / Authy).</p>
+                        <p>Masukkan 6 digit kode keamanan dari aplikasi autentikasi Anda (Google Authenticator / Authy).
+                        </p>
                     </div>
 
                     <form id="form2FA" novalidate>
                         <div class="otp-inputs" id="otpInputsContainer">
-                            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="0" autofocus>
+                            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="0"
+                                autofocus>
                             <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="1">
                             <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="2">
                             <input type="text" inputmode="numeric" maxlength="1" class="otp-digit" data-index="3">
@@ -994,7 +1284,7 @@
         function clearRateLimitState() {
             try {
                 localStorage.removeItem(RATE_LIMIT_STORAGE_KEY);
-            } catch (e) {}
+            } catch (e) { }
         }
 
         function calculateLockoutDuration(attempts) {
@@ -1019,7 +1309,7 @@
 
         function startCountdown(targetTime) {
             if (countdownInterval) clearInterval(countdownInterval);
-            
+
             loginBtn.disabled = true;
             if (btnVerify2FA) btnVerify2FA.disabled = true;
 
@@ -1167,7 +1457,7 @@
         btnCancel2FA.addEventListener('click', async () => {
             try {
                 await signOut();
-            } catch (e) {}
+            } catch (e) { }
             switchToStep('login');
         });
 
@@ -1351,12 +1641,12 @@
                     gain.connect(ctx.destination);
                     osc.start();
                     osc.stop(ctx.currentTime + 0.05);
-                } catch (e) {}
+                } catch (e) { }
             }
 
             function toggleLamp() {
                 isLampOn = !isLampOn;
-                
+
                 // Pull animation trigger on string
                 if (pullString) {
                     pullString.classList.add('is-pulling');
@@ -1384,4 +1674,5 @@
         })();
     </script>
 </body>
+
 </html>
