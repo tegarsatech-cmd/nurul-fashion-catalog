@@ -816,6 +816,12 @@ function getFeaturedProducts(products) {
             colors?.forEach(dot => dot.classList.remove('active'));
             colorButton.classList.add('active');
 
+            // Update text keterangan warna saat diklik
+            const colorStatus = card?.querySelector('.product-color-status');
+            if (colorStatus) {
+                colorStatus.innerHTML = 'Warna: <strong>' + (colorButton.dataset.colorName || '') + '</strong>';
+            }
+
             // Sinkronkan pilihan varian dengan warna yang diklik
             const clickedColor = (colorButton.dataset.colorName || '').toLowerCase().trim();
             const product = allProductsData.find(p => String(p.id) === String(card?.dataset.productCardId));
